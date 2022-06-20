@@ -21,7 +21,6 @@ const http_1 = __importDefault(require("http"));
 function startApolloServer() {
     return __awaiter(this, void 0, void 0, function* () {
         const configurations = {
-            // Note: You may need sudo to run on port 443
             production: { ssl: true, port: 443, hostname: "kiszka.com" },
             development: { ssl: false, port: 4000, hostname: "localhost" },
         };
@@ -35,7 +34,10 @@ function startApolloServer() {
         });
         yield server.start();
         const app = (0, express_1.default)();
-        server.applyMiddleware({ app });
+        server.applyMiddleware({
+            app,
+            path: "/api",
+        });
         // Create the HTTPS or HTTP server, per configuration
         let httpServer;
         if (config.ssl) {

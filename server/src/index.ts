@@ -7,7 +7,6 @@ import http from "http";
 
 async function startApolloServer() {
 	const configurations = {
-		// Note: You may need sudo to run on port 443
 		production: { ssl: true, port: 443, hostname: "kiszka.com" },
 		development: { ssl: false, port: 4000, hostname: "localhost" },
 	};
@@ -24,7 +23,10 @@ async function startApolloServer() {
 	await server.start();
 
 	const app = express();
-	server.applyMiddleware({ app });
+	server.applyMiddleware({
+		app,
+		path: "/api",
+	});
 
 	// Create the HTTPS or HTTP server, per configuration
 	let httpServer;
