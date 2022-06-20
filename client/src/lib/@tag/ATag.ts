@@ -3,10 +3,16 @@ import * as ReflectHelper from "./util/ReflectHelper";
 
 export enum EnumTagType {
 	GENERIC = "generic",
+
 	COMPOUND = "comp",
+	LIST = "list",
+
 	BOOLEAN = "bool",
+
 	CHARACTER = "char",
 	STRING = "string",
+	UUID = "uuid",
+
 	NUMBER = "number",
 	UINT8 = "uint8",
 	INT8 = "int8",
@@ -16,14 +22,9 @@ export enum EnumTagType {
 	INT32 = "int32",
 	UINT64 = "uint64",
 	INT64 = "int64",
-	UUID = "uuid",
-}
+};
 
 export interface ITag {
-	type: EnumTagType;
-	name: string;
-	value: any;
-
 	getType(): EnumTagType;
 	setType(type: EnumTagType): void;
 
@@ -32,15 +33,15 @@ export interface ITag {
 
 	getValue(): any;
 	setValue(value: any): boolean;
-}
+};
 
 export type TagGroup = ATag[] | Set<ATag>;
 export type Validator = (...args: any) => boolean;
 
 export class ATag implements ITag {
-	type: EnumTagType;
-	name: string;
-	value: any;
+	protected type: EnumTagType;
+	protected name: string;
+	protected value: any;
 
 	constructor({
 		type,

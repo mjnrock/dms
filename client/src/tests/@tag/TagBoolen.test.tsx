@@ -4,7 +4,7 @@ describe("TagBoolean", () => {
 	const tag = new TagBoolean("test", true);
 
 	test("should have a name", () => {
-		expect(tag.name).toBe("test");
+		expect(tag.getName()).toBe("test");
 	});
 	test("should have boolean value", () => {
 		expect(typeof tag.getValue() === "boolean").toBe(true);

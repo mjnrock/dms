@@ -4,7 +4,7 @@ describe("TagString", () => {
 	const tag = new TagString("test", "this is a string");
 
 	test("should have a name", () => {
-		expect(tag.name).toBe("test");
+		expect(tag.getName()).toBe("test");
 	});
 	test("should have string value", () => {
 		expect(typeof tag.getValue() === "string").toBe(true);

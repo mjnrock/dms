@@ -26,7 +26,7 @@ export const EnumNumberRange = {
 };
 
 export class TagNumber extends ATag {
-	constructor(name: string, value: number) {
+	constructor(name: string, value: number | null) {
 		super({
 			type: EnumTagType.NUMBER,
 			name: name,
@@ -34,7 +34,7 @@ export class TagNumber extends ATag {
 		});
 	}
 
-	public setValue(value: number): boolean {
+	public setValue(value: number | null): boolean {
 		this.value = value;
 
 		return true;

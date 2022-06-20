@@ -2,14 +2,14 @@ import { EnumTagType } from "./ATag";
 import TagNumber, { EnumNumberRange } from "./TagNumber";
 
 export class TagUint64 extends TagNumber {
-	constructor(name: string, value: number) {
+	constructor(name: string, value: number | null) {
 		super(name, value);
 
 		this.setType(EnumTagType.INT64);
 	}
 
-	public setValue(value: number): boolean {
-		if(value >= EnumNumberRange.UINT64_MIN && value <= EnumNumberRange.UINT64_MAX) {
+	public setValue(value: number | null): boolean {
+		if(value === null || value >= EnumNumberRange.UINT64_MIN && value <= EnumNumberRange.UINT64_MAX) {
 			this.value = value;
 
 			return true;

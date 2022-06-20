@@ -14,10 +14,12 @@ describe("TagCompound", () => {
 	test("should have a name", () => {
 		tag.setName("test");
 
-		expect(tag.name).toBe("test");
+		expect(tag.getName()).toBe("test");
 	});
 	test("should have iterable children", () => {
 		expect(tag.getValue()[ Symbol.iterator ]).toBeDefined();
 		expect(typeof tag.getValue() !== "string").toBe(true);
 	});
+
+	console.log(tag.toString(2));
 });

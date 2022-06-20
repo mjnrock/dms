@@ -4,7 +4,7 @@ describe("TagCharacter", () => {
 	const tag = new TagCharacter("test", "a");
 
 	test("should have a name", () => {
-		expect(tag.name).toBe("test");
+		expect(tag.getName()).toBe("test");
 	});
 	test("should have char value", () => {
 		expect(tag.getValue()).toBe("a");

@@ -1,4 +1,4 @@
-import ATag, { EnumTagType, TagGroup, ITag } from "./ATag";
+import ATag, { EnumTagType, TagGroup } from "./ATag";
 
 export class TagCompound extends ATag {
 	constructor(name: string, value: TagGroup = []) {

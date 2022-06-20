@@ -1,7 +1,7 @@
 import ATag, { EnumTagType } from "./ATag";
 
 export class TagString extends ATag {
-	constructor(name: string, value: string) {
+	constructor(name: string, value: string | null) {
 		super({
 			type: EnumTagType.STRING,
 			name: name,
@@ -9,7 +9,7 @@ export class TagString extends ATag {
 		});
 	}
 
-	public setValue(value: string): boolean {
+	public setValue(value: string | null): boolean {
 		this.value = value;
 
 		return true;
