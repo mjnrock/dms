@@ -5,7 +5,7 @@ export class TagUint64 extends TagNumber {
 	constructor(name: string, value: number | null) {
 		super(name, value);
 
-		this.setType(EnumTagType.INT64);
+		this.setSubType(EnumTagType.INT64);
 	}
 
 	public setValue(value: number | null): boolean {

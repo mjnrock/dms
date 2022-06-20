@@ -20,6 +20,4 @@ describe("TagCompound", () => {
 		expect(tag.getValue()[ Symbol.iterator ]).toBeDefined();
 		expect(typeof tag.getValue() !== "string").toBe(true);
 	});
-
-	console.log(tag.toString(2));
 });

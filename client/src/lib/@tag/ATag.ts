@@ -39,31 +39,46 @@ export type TagGroup = ATag[] | Set<ATag>;
 export type Validator = (...args: any) => boolean;
 
 export class ATag implements ITag {
+	public id: string = uuid();
+
+	/**
+	 * The discrete type of the Tag
+	 */
 	protected type: EnumTagType;
+
+	/**
+	 * The sub-type of the Tag (e.g. Int16)
+	 */
+	protected subType: EnumTagType | string | null = null;
+
+	/**
+	 * The unique name of the tag
+	 */
 	protected name: string;
+
+	/**
+	 * The actual value contained within the Tag
+	 */
 	protected value: any;
 
 	constructor({
 		type,
+		subType = null,
 		name,
 		value,
 	}: {
 		type: EnumTagType;
+		subType?: EnumTagType | string | null;
 		name: string;
 		value: any;
 	}) {
-		ReflectHelper.defineProperty(this, "id", {
-			enumerable: false,
-			configurable: false,
-			writable: false,
-			value: uuid(),
-		});
-
 		this.type = EnumTagType.GENERIC;
+		this.subType = null;
 		this.name = this.id.toString();
 		this.value = null;
 
 		this.setType(type);
+		this.setSubType(subType);
 		this.setName(name);
 		this.setValue(value);
 	}
@@ -77,6 +92,13 @@ export class ATag implements ITag {
 	}
 	public setType(type: EnumTagType): void {
 		this.type = type;
+	}
+
+	public getSubType(): EnumTagType | string | null {
+		return this.subType;
+	}
+	public setSubType(subType: EnumTagType | string | null): void {
+		this.subType = subType;
 	}
 
 	public getName(): string {

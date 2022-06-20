@@ -10,7 +10,7 @@ export class TagUuid extends TagString {
 	constructor(name: string, value?: string) {
 		super(name, value || uuid());
 
-		this.setType(EnumTagType.UUID);
+		this.setSubType(EnumTagType.UUID);
 	}
 
 	public setValue(value: string): boolean {
