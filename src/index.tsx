@@ -1,7 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import App from "./App";
+import AppRoutes from "./routes/package";
 // import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(
@@ -10,7 +12,21 @@ const root = ReactDOM.createRoot(
 
 root.render(
 	<React.StrictMode>
-		<App />
+		<BrowserRouter>
+			<Routes>
+				<Route path="/" element={ <App /> }>
+					<Route path="test" element={ <AppRoutes.TestRoute1 /> } />
+					<Route
+						path="*"
+						element={
+							<main style={ { padding: "1rem" } }>
+								<p>404, yo</p>
+							</main>
+						}
+					/>
+				</Route>
+			</Routes>
+		</BrowserRouter>
 	</React.StrictMode>,
 );
 
