@@ -11,6 +11,12 @@ export class TagCompound extends ATag {
 
 	public size(): number {
 		return this.value.size;
+	}	
+
+	public setValue(value: TagGroup): boolean {
+		this.value = new Set(value);
+
+		return true;
 	}
 
 	public getChildren(): ATag[] {
@@ -57,12 +63,12 @@ export class TagCompound extends ATag {
 	}
 
 	public toObject(): object {
-		const obj: ITag = {
+		const obj: any = {
 			type: this.type,
 			name: this.name,
 			value: {},
 		};
-		
+
 		for (const child of this.value) {
 			obj.value[child.getName()] = child.toObject();
 		}

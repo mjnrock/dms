@@ -9,8 +9,10 @@ export class TagString extends ATag {
 		});
 	}
 
-	public setValue(value: string): void {
+	public setValue(value: string): boolean {
 		this.value = value;
+
+		return true;
 	}
 
 	public length(): number {

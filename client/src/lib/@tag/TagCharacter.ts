@@ -5,16 +5,18 @@ export class TagCharacter extends ATag {
 		super({
 			type: EnumTagType.CHARACTER,
 			name: name,
-			value: value[ 0 ],
+			value: value[0],
 		});
+	}
+
+	public setValue(value: string): boolean {
+		this.value = value[0];
+
+		return true;
 	}
 
 	public toCharCode(): number {
 		return this.value.charCodeAt(0);
-	}
-
-	public setValue(value: any): void {
-		this.value = value[ 0 ];
 	}
 }
 

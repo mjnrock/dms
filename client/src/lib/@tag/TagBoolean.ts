@@ -9,8 +9,10 @@ export class TagBoolean extends ATag {
 		});
 	}
 
-	public setValue(value: boolean): void {
+	public setValue(value: boolean): boolean {
 		this.value = value;
+
+		return true;
 	}
 
 	public toggle(): void {
