@@ -33,3 +33,5 @@ export namespace Tags {
 	export const TagUint64 = _TagUint64;
 	export const TagUuid = _TagUuid;
 };
+
+export default Tags;

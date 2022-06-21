@@ -1,4 +1,4 @@
-import ATag, { EnumTagType } from "../../lib/@tag/tags/ATag";
+import ATag, { EnumTagType } from "../../../lib/@tag/tags/ATag";
 
 describe("ATag", () => {
 	const tag = new ATag({

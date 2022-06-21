@@ -1,41 +1,33 @@
-import * as Tags from "./../tags/package";
+import ATag from "../tags/ATag";
+import Tags from "./../tags/package";
 
 export class Transformer {
-	public static ToObject(tag: Tags.ATag): object {
+	public static ToObject(tag: InstanceType<typeof Tags.ATag>): object {
 		return tag.toObject();
 	}
-	public static ToString(tag: Tags.ATag): string {
+	public static ToString(tag: InstanceType<typeof Tags.ATag>): string {
 		return tag.toString();
 	}
 
-	public static ToSchema(tag, array, parentID, parent) {
-		if (array === null || array === void 0) {
-			array = [];
-		}
-		if (parentID === void 0) {
-			parentID = null;
-		}
-
+	public static ToSchema(tag: ATag, array: Array<any> = [], parentID: any = null, parent: any = null) {
 		let ID = array.length + 1;
-		array.push({
-			ID: ID,
-			ParentID: parentID,
-			Route: `${
-				parent !== null && parent !== void 0 ? `${parent.Route}.` : ""
-			}${ID}`,
-			Key: tag.GetKey(),
-			Path: `${
-				parent !== null && parent !== void 0 ? `${parent.Path}.` : ""
-			}${tag.GetKey()}`,
-			Ordinality: tag.GetOrdinality(),
-			Tag: tag,
-		});
 
-		if (tag instanceof Tag.TagCompound || tag instanceof Tag.TagList) {
+		const schema = {
+			id: ID,
+			parentId: parentID,
+			route: `${parent !== null && parent !== void 0 ? `${parent.route}.` : ""}${ID}`,
+			name: tag.getName(),
+			path: `${parent !== null && parent !== void 0 ? `${parent.path}.` : ""}${tag.getName()}`,
+			tag: tag,
+		};
+
+		array.push(schema);
+
+		if (tag instanceof Tags.TagCompound || tag instanceof Tags.TagList) {
 			let lastEntry = array[array.length - 1];
-			for (let i in tag.Value) {
+			for(let nextTag of tag.getChildren()) {
 				array = Transformer.ToSchema(
-					tag.Value[i],
+					nextTag,
 					array,
 					ID,
 					lastEntry,
@@ -45,6 +37,6 @@ export class Transformer {
 
 		return array;
 	}
-}
+};
 
 export default Transformer;
