@@ -16,6 +16,23 @@ import _TagUint64 from "./TagUint64";
 import _TagUuid from "./TagUuid";
 
 export namespace Tags {
+	export type ATag = _ATag;
+	export type TagBoolean = _TagBoolean;
+	export type TagCharacter = _TagCharacter;
+	export type TagCompound = _TagCompound;
+	export type TagInt8 = _TagInt8;
+	export type TagInt16 = _TagInt16;
+	export type TagInt32 = _TagInt32;
+	export type TagInt64 = _TagInt64;
+	export type TagList = _TagList;
+	export type TagNumber = _TagNumber;
+	export type TagString = _TagString;
+	export type TagUint8 = _TagUint8;
+	export type TagUint16 = _TagUint16;
+	export type TagUint32 = _TagUint32;
+	export type TagUint64 = _TagUint64;
+	export type TagUuid = _TagUuid;
+	
 	export const ATag = _ATag;
 	export const TagBoolean = _TagBoolean;
 	export const TagCharacter = _TagCharacter;

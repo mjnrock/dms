@@ -130,7 +130,11 @@ export class ATag implements ITag {
 		return JSON.stringify(this.toObject());
 	}
 
-	public copy(clone: boolean = false, empty: boolean = false): ATag {
+	/**
+	 * Copy the Tag, creating a new instance.
+	 * @empty will clear .value when true, and @clone will copy .id
+	 */
+	public copy(empty: boolean = false, clone: boolean = false): ATag {
 		const tag = new (this.constructor as new () => this)();
 
 		if(clone === true) {
