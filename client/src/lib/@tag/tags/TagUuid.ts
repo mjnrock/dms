@@ -3,7 +3,7 @@ import { EnumTagType } from "./ATag";
 import TagString from "./TagString";
 
 export class TagUuid extends TagString {
-	static GenerateUuid(): string {
+	static GenerateUUID(): string {
 		return uuid();
 	};
 

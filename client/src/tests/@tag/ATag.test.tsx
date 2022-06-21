@@ -1,4 +1,4 @@
-import ATag, { EnumTagType } from "../../lib/@tag/ATag";
+import ATag, { EnumTagType } from "../../lib/@tag/tags/ATag";
 
 describe("ATag", () => {
 	const tag = new ATag({
@@ -8,9 +8,9 @@ describe("ATag", () => {
 	});
 
 	test("should be 'generic'", () => {
-		expect(tag.type).toBe(EnumTagType.GENERIC);
+		expect(tag.getType()).toBe(EnumTagType.GENERIC);
 	});
 	test("should have a name", () => {
-		expect(tag.name).toBe("test");
+		expect(tag.getName()).toBe("test");
 	});
 });

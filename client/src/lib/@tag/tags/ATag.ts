@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid";
-import * as ReflectHelper from "./util/ReflectHelper";
+import * as ReflectHelper from "../lib/ReflectHelper";
 
 export enum EnumTagType {
 	GENERIC = "generic",
