@@ -18,6 +18,9 @@ export class TagCompound extends ATag {
 
 		return true;
 	}
+	public clearValue(): void {
+		this.value = new Set();
+	}
 
 	public getChildren(): ATag[] {
 		return Array.from(this.value);

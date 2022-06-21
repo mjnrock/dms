@@ -21,7 +21,7 @@ export enum EnumTagType {
 	INT32 = "int32",
 	UINT64 = "uint64",
 	INT64 = "int64",
-};
+}
 
 export interface ITag {
 	getType(): EnumTagType;
@@ -32,7 +32,7 @@ export interface ITag {
 
 	getValue(): any;
 	setValue(value: any): boolean;
-};
+}
 
 export type TagGroup = ATag[] | Set<ATag>;
 export type Validator = (...args: any) => boolean;
@@ -115,6 +115,9 @@ export class ATag implements ITag {
 
 		return true;
 	}
+	public clearValue(): void {
+		this.value = null;
+	}
 
 	public toObject(): object {
 		return {
@@ -125,6 +128,24 @@ export class ATag implements ITag {
 	}
 	public toString(): string {
 		return JSON.stringify(this.toObject());
+	}
+
+	public copy(clone: boolean = false, empty: boolean = false): ATag {
+		const tag = new (this.constructor as new () => this)();
+
+		if(clone === true) {
+			tag.id = this.id;
+		}
+
+		tag.setType(this.type);
+		tag.setSubType(this.subType);
+		tag.setName(this.name);
+
+		if(empty !== true) {
+			tag.setValue(this.value);
+		}
+
+		return tag;
 	}
 }
 

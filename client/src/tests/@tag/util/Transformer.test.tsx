@@ -15,5 +15,7 @@ describe("Transformer", () => {
 	});
 
 	// console.log(tag.getName());
-	console.log(Transformer.ToSchema(tag));
+	// console.log(Transformer.ToSchema(tag));
+	// console.log(Transformer.FlattenTagStructure(tag));
+	console.log(Transformer.ToHierarchy(tag));
 });

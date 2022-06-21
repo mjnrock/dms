@@ -33,6 +33,9 @@ export class TagList extends ATag {
 
 		return true;
 	}
+	public clearValue(): void {
+		this.value = [];
+	}
 
 	public getContentType(): EnumTagType | null{
 		return this.contentType;
