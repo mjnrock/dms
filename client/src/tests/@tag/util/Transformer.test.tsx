@@ -42,7 +42,11 @@ describe("Transformer", () => {
 		expect(toHier.every(([ id, pid ]) => typeof id === "number" && typeof (pid === "number" || id === null))).toBe(true);
 	});
 
-	// console.log(Transformer.ToSchema(tag));
-	// console.log(Transformer.FlattenTagStructure(tag));
-	// console.log(Transformer.ToHierarchy(tag));
+	test("should be a schema array", () => {
+		const toSch = Transformer.ToSchema(fromObj);
+
+		expect(Array.isArray(toSch)).toBe(true);
+		expect(toSch.every(obj => Object.getPrototypeOf(toObj) === Object.prototype)).toBe(true);
+		expect(toSch.every(obj => typeof obj.id === "number" && typeof (obj.pid === "number" || obj.id === null))).toBe(true);
+	});
 });
