@@ -11,9 +11,6 @@ export const ComponentSchema = new mongoose.Schema({
 		type: String,
 	},
 	data: {
-		type: Object,
-	},
-	default: {
-		type: Array,
+		type: String,
 	},
 });

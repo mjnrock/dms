@@ -3,6 +3,6 @@ export type MetadataModel = {
 	ref: string;
 	refType: string;
 	namespace: string;
-	tags: string[];
+	tags: [string];
 	description: string;
 };

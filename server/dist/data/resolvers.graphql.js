@@ -18,68 +18,37 @@ const db_1 = require("../db");
  **/
 exports.resolvers = {
     Query: {
-        getFriends: (root) => {
+        getDomains: (root) => {
             return new Promise((resolve, reject) => {
-                db_1.Friends.find((err, friends) => {
+                db_1.Domains.find((err, domains) => {
                     if (err)
                         reject(err);
                     else
-                        resolve(friends);
+                        resolve(domains);
                 });
             });
         },
-        getSeries: (root) => {
+        findADomain: (root, domain) => {
             return new Promise((resolve, reject) => {
-                db_1.Series.find((err, series) => {
+                db_1.Domains.findOne({ uuid: domain.uuid }, (err, domain) => {
                     if (err)
                         reject(err);
                     else
-                        resolve(series);
-                });
-            });
-        },
-        findAFriend: (root, friend) => {
-            return new Promise((resolve, reject) => {
-                db_1.Friends.findOne({ _id: friend.id }, (err, friend) => {
-                    if (err)
-                        reject(err);
-                    else
-                        resolve(friend);
-                });
-            });
-        },
-        findASeries: (root, series) => {
-            return new Promise((resolve, reject) => {
-                db_1.Series.findOne({ _id: series.id }, (err, series) => {
-                    if (err)
-                        reject(err);
-                    else
-                        resolve(series);
+                        resolve(domain);
                 });
             });
         },
     },
     Mutation: {
-        addFriend: (root, { friend }) => {
-            const rest = __rest(friend, []);
-            const newFriend = new db_1.Friends(Object.assign({}, rest));
+        addDomain: (root, { domain }) => {
+            const rest = __rest(domain, []);
+            const newDomain = new db_1.Domains(Object.assign({}, rest));
             return new Promise((resolve, reject) => {
-                newFriend.save((err, friend) => {
+                newDomain.save((err, domain) => {
                     if (err)
                         reject(err);
                     else
-                        resolve(friend);
-                });
-            });
-        },
-        addSeries: (root, { series }) => {
-            const rest = __rest(series, []);
-            const newSeries = new db_1.Series(Object.assign({}, rest));
-            return new Promise((resolve, reject) => {
-                newSeries.save((err, series) => {
-                    if (err)
-                        reject(err);
-                    resolve(series);
+                        resolve(domain);
                 });
             });
         },

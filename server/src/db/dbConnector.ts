@@ -6,7 +6,7 @@ const { DomainSchema, ComponentSchema, ReducerSchema, MetadataSchema } = require
  **/
 const host = `localhost`;
 const port = 27017;
-mongoose.connect(`mongodb://${ host }:${ port } /dms`, {
+mongoose.connect(`mongodb://${ host }:${ port }/dms`, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 });
