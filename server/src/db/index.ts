@@ -1,2 +1,2 @@
 export * from "./schema";
-export * from "./dbConnector";
+export * from "./DBConnector";
