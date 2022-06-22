@@ -21,7 +21,7 @@ export enum EnumTagType {
 	INT32 = "int32",
 	UINT64 = "uint64",
 	INT64 = "int64",
-}
+};
 
 export interface ITag {
 	getType(): EnumTagType;
@@ -48,7 +48,7 @@ export class ATag implements ITag {
 	/**
 	 * The sub-type of the Tag (e.g. Int16)
 	 */
-	protected subType: EnumTagType | string | null = null;
+	protected logicalType: EnumTagType | string | null = null;
 
 	/**
 	 * The unique name of the tag
@@ -62,22 +62,22 @@ export class ATag implements ITag {
 
 	constructor({
 		type,
-		subType = null,
+		logicalType = null,
 		name,
 		value,
 	}: {
 		type: EnumTagType;
-		subType?: EnumTagType | string | null;
+		logicalType?: EnumTagType | string | null;
 		name: string;
 		value: any;
 	}) {
 		this.type = EnumTagType.GENERIC;
-		this.subType = null;
+		this.logicalType = null;
 		this.name = this.id.toString();
 		this.value = null;
 
 		this.setType(type);
-		this.setSubType(subType);
+		this.setLogicalType(logicalType || type);
 		this.setName(name);
 		this.setValue(value);
 	}
@@ -93,11 +93,11 @@ export class ATag implements ITag {
 		this.type = type;
 	}
 
-	public getSubType(): EnumTagType | string | null {
-		return this.subType;
+	public getLogicalType(): EnumTagType | string | null {
+		return this.logicalType;
 	}
-	public setSubType(subType: EnumTagType | string | null): void {
-		this.subType = subType;
+	public setLogicalType(logicalType: EnumTagType | string | null): void {
+		this.logicalType = logicalType;
 	}
 
 	public getName(): string {
@@ -122,6 +122,7 @@ export class ATag implements ITag {
 	public toObject(): object {
 		return {
 			type: this.type,
+			logicalType: this.logicalType,
 			name: this.name,
 			value: this.value,
 		};
@@ -142,7 +143,7 @@ export class ATag implements ITag {
 		}
 
 		tag.setType(this.type);
-		tag.setSubType(this.subType);
+		tag.setLogicalType(this.logicalType);
 		tag.setName(this.name);
 
 		if(empty !== true) {

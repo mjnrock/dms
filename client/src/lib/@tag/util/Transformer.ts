@@ -1,4 +1,5 @@
 import Tags from "./../tags/package";
+import { EnumTagType } from "../tags/ATag";
 
 /**
  * NOTE: Transformations that reorganize children into parent-child relationships will, in general,
@@ -37,6 +38,27 @@ export class Transformer {
 		return tag.toObject();
 	}
 
+	public static FromObject(obj: any): Tags.ATag | false {
+		if(typeof obj.value === "object") {
+			const children = [];
+			for(let childObj of Object.values(obj.value)) {
+				const child = this.FromObject(childObj);
+
+				if(child) {
+					children.push(child);
+				}
+			}
+
+			if(obj.type === EnumTagType.COMPOUND) {
+				return new Tags.TagCompound(obj.name, children);
+			} else if(obj.type === EnumTagType.LIST) {
+				return new Tags.TagList(obj.name, children, obj.contentType);
+			}
+		}
+
+		return Tags.Create(obj);
+	}
+
 	/**
 	 * Under the hood, all tags will first be converted into their respective objects, and then
 	 * serialized into a string using JSON.stringify().
@@ -56,20 +78,21 @@ export class Transformer {
 		array: Array<object> = [],
 		parentID: any = null,
 	): Array<object> {
-		let ID = array.length + 1;
+		let id = array.length + 1,
+			modTag = tag instanceof Tags.TagCompound || tag instanceof Tags.TagList ? tag.copy(true, true) : tag;
 
-		array.push({
-			id: ID,
-			pid: parentID,
-			tag:
-				tag instanceof Tags.TagCompound || tag instanceof Tags.TagList
-					? tag.copy(true, true)
-					: tag,
-		});
+		array.push([
+			id,
+			parentID,
+			modTag.getType(),
+			modTag.getLogicalType(),
+			modTag.getName(),
+			modTag instanceof Tags.TagCompound || tag instanceof Tags.TagList ? null : modTag.getValue(),
+		]);
 
 		if(tag instanceof Tags.TagCompound || tag instanceof Tags.TagList) {
 			for(let child of tag.getValue()) {
-				array = Transformer.ToHierarchy(child, array, ID);
+				array = Transformer.ToHierarchy(child, array, id);
 			}
 		}
 

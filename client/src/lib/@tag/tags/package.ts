@@ -1,4 +1,4 @@
-import _ATag from "./ATag";
+import _ATag, { EnumTagType } from "./ATag";
 import _TagBoolean from "./TagBoolean";
 import _TagCharacter from "./TagCharacter";
 import _TagCompound from "./TagCompound";
@@ -49,6 +49,72 @@ export namespace Tags {
 	export const TagUint32 = _TagUint32;
 	export const TagUint64 = _TagUint64;
 	export const TagUuid = _TagUuid;
+
+	export function ClassLookup(obj: Tags.ATag | object) {
+		const type = obj instanceof ATag ? obj.getType() : obj.type;
+		const logicalType = obj instanceof ATag ? obj.getLogicalType() : obj.logicalType;
+
+		switch(type) {
+			case EnumTagType.BOOLEAN:
+				return TagBoolean;
+			case EnumTagType.CHARACTER:
+				return TagCharacter;
+			case EnumTagType.COMPOUND:
+				return TagCompound;
+			case EnumTagType.LIST:
+				return TagList;
+			case EnumTagType.NUMBER:
+				switch(logicalType) {
+					case EnumTagType.NUMBER:
+						return TagNumber;
+					case EnumTagType.UINT8:
+						return TagUint8;
+					case EnumTagType.UINT16:
+						return TagUint16;
+					case EnumTagType.UINT32:
+						return TagUint32;
+					case EnumTagType.UINT64:
+						return TagUint64;
+					case EnumTagType.INT8:
+						return TagInt8;
+					case EnumTagType.INT16:
+						return TagInt16;
+					case EnumTagType.INT32:
+						return TagInt32;
+					case EnumTagType.INT64:
+						return TagInt64;
+					default:
+						return TagNumber;
+				}
+			case EnumTagType.STRING:
+				switch(logicalType) {
+					case EnumTagType.STRING:
+						return TagString;
+					case EnumTagType.UUID:
+						return TagUuid;
+					default:
+						return TagString;
+				}
+		}
+
+		return false;
+	};
+
+	export function Create(obj: Tags.ATag | object) {
+		const clazz = ClassLookup(obj);
+		if(clazz) {
+			const tag = new clazz();
+
+			tag.setName(obj.name);
+			tag.setType(obj.type);
+			tag.setLogicalType(obj.logicalType);
+			tag.setValue(obj.value);
+
+			return tag;
+		}
+
+		return false;
+	}
 };
 
 export default Tags;
