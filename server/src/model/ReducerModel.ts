@@ -3,4 +3,5 @@ export type ReducerModel = {
 	parent: string;
 	domain: string;
 	fn: string;
+	// hof?: boolean;	/* If TRUE, this Reducer returns another function, instead of a state object */
 };
