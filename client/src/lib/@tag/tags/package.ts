@@ -14,6 +14,7 @@ import _TagUint16 from "./TagUint16";
 import _TagUint32 from "./TagUint32";
 import _TagUint64 from "./TagUint64";
 import _TagUuid from "./TagUuid";
+import { ITag } from "./ATag";
 
 export namespace Tags {
 	export type ATag = _ATag;
@@ -50,7 +51,12 @@ export namespace Tags {
 	export const TagUint64 = _TagUint64;
 	export const TagUuid = _TagUuid;
 
-	export function ClassLookup(obj: Tags.ATag | object) {
+	export function ClassLookup(obj: ATag | object): ATag | false;
+	export function ClassLookup(obj: any): any {
+		if(typeof obj !== "object") {
+			return false;
+		}
+		
 		const type = obj instanceof ATag ? obj.getType() : obj.type;
 		const logicalType = obj instanceof ATag ? obj.getLogicalType() : obj.logicalType;
 
@@ -100,10 +106,16 @@ export namespace Tags {
 		return false;
 	};
 
-	export function Create(obj: Tags.ATag | object) {
+	export function Create(obj: Tags.ATag | object): Tags.ATag | false;
+	export function Create(obj: any) {
+		if(typeof obj !== "object") {
+			return false;
+		}
+		
 		const clazz = ClassLookup(obj);
 		if(clazz) {
-			const tag = new clazz();
+			// @ts-ignore
+			const tag: ATag = new clazz(obj.name, obj.value);
 
 			tag.setName(obj.name);
 			tag.setType(obj.type);

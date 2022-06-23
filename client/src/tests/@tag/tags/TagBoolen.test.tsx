@@ -1,4 +1,4 @@
-import TagBoolean from "../../lib/@tag/TagBoolean";
+import TagBoolean from "./../../../lib/@tag/tags/TagBoolean";
 
 describe("TagBoolean", () => {
 	const tag = new TagBoolean("test", true);

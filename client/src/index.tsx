@@ -15,7 +15,7 @@ root.render(
 		<BrowserRouter>
 			<Routes>
 				<Route path="/" element={ <App /> }>
-					<Route path="test" element={ <AppRoutes.TestRoute1 /> } />
+					<Route path="main" element={ <AppRoutes.Main /> } />
 					<Route
 						path="*"
 						element={

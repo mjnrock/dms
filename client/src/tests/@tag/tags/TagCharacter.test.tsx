@@ -1,4 +1,4 @@
-import TagCharacter from "../../lib/@tag/TagCharacter";
+import TagCharacter from "./../../../lib/@tag/tags/TagCharacter";
 
 describe("TagCharacter", () => {
 	const tag = new TagCharacter("test", "a");

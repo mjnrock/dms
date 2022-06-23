@@ -1,5 +1,5 @@
-import TestRoute1 from "./TestRoute1";
+import Main from "./Main";
 
 export default {
-	TestRoute1,
+	Main,
 };

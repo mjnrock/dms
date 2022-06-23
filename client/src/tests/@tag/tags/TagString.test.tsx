@@ -1,4 +1,4 @@
-import TagString from "../../lib/@tag/TagString";
+import TagString from "./../../../lib/@tag/tags/TagString";
 
 describe("TagString", () => {
 	const tag = new TagString("test", "this is a string");

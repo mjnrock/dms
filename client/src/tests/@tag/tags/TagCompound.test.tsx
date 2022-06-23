@@ -1,6 +1,6 @@
-import TagBoolean from "../../lib/@tag/TagBoolean";
-import TagCompound from "../../lib/@tag/TagCompound";
-import TagString from "../../lib/@tag/TagString";
+import TagBoolean from "./../../../lib/@tag/tags/TagBoolean";
+import TagCompound from "./../../../lib/@tag/tags/TagCompound";
+import TagString from "./../../../lib/@tag/tags/TagString";
 
 describe("TagCompound", () => {
 	const tag = new TagCompound("a", [

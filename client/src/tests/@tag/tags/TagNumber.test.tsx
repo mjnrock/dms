@@ -1,4 +1,4 @@
-import TagNumber from "../../lib/@tag/TagNumber";
+import TagNumber from "./../../../lib/@tag/tags/TagNumber";
 
 describe("TagNumber", () => {
 	const tag = new TagNumber("test", 45.35);
