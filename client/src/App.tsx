@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import { Button, Navbar, Alignment } from "@blueprintjs/core";
+import { Button, Navbar, Alignment, ButtonGroup } from "@blueprintjs/core";
 
 /**
  * Contains the @imports for Blueprint CSS
@@ -13,7 +13,7 @@ export function App() {
 	return (
 		<div className="h-screen w-full">
 			<Navbar className="bg-gray-300">
-				<Navbar.Group align={ Alignment.LEFT }>
+				<Navbar.Group align="left">
 					<Navbar.Heading className="font-bold mono">DMS</Navbar.Heading>
 					<Navbar.Divider />
 
@@ -23,14 +23,27 @@ export function App() {
 
 			<div className="flex flex-1 h-full overflow-y-auto">
 				<div className="flex-none h-full">
-					<div className="flex flex-col flex-nowrap h-full justify-between p-2 overflow-auto gap-2 bg-gray-200">
-						<Button icon="home" onClick={ e => navigate(`/domain`) }>Domain</Button>
-						<Button icon="home" onClick={ e => navigate(`/domain`) }>Domain</Button>
-						<Button icon="home" onClick={ e => navigate(`/domain`) }>Domain</Button>
-						<Button icon="home" onClick={ e => navigate(`/domain`) }>Domain</Button>
-						<Button icon="home" onClick={ e => navigate(`/domain`) }>Domain</Button>
+					<ButtonGroup alignText="left" className="flex flex-col flex-nowrap h-full justify-between p-2 overflow-auto gap-2 bg-gray-200">
+						<div className="text-xs font-bold">Core</div>
+						<Button icon="applications" onClick={ e => navigate(`/domain`) }>Domains</Button>
+						<Button icon="cube-add" onClick={ e => navigate(`/component`) }>Components</Button>
+						<Button icon="function" onClick={ e => navigate(`/reducer`) }>Reducers</Button>
+						<Button icon="code" onClick={ e => navigate(`/method`) }>Methods</Button>
+
+						<div className="text-xs">Groups</div>
+						<Button icon="new-grid-item" onClick={ e => navigate(`/entity`) }>Entities</Button>
+						<Button icon="search-around" onClick={ e => navigate(`/module`) }>Modules</Button>
+						<Button icon="layout-hierarchy" onClick={ e => navigate(`/collection`) }>Collections</Button>
+
+						<div className="text-xs">Instances</div>
+						<Button icon="new-layer" onClick={ e => navigate(`/record`) }>Records</Button>
+						<Button icon="new-layers" onClick={ e => navigate(`/pool`) }>Pools</Button>
+
+						<div className="text-xs">Other</div>
+						<Button icon="id-number" onClick={ e => navigate(`/metadata`) }>Metadata</Button>
+						<Button icon="document" onClick={ e => navigate(`/documentation`) }>Documentation</Button>
 						<div className="flex-1" />
-					</div>
+					</ButtonGroup>
 				</div>
 				<div className="flex flex-col flex-1 overflow-x-hidden overflow-y-auto relative p-2 bg-gray-100">
 					<Outlet />
