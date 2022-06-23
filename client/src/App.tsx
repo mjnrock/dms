@@ -7,7 +7,13 @@ import { Button, Navbar, ButtonGroup } from "@blueprintjs/core";
  */
 import "./assets/css/main.css";
 
+import "primereact/resources/themes/tailwind-light/theme.css";  //theme
+import "primereact/resources/primereact.min.css";                  //core css
+import "primeicons/primeicons.css";                                //icons
+
+
 const sideBarLinks = [
+	//*	Core
 	{
 		type: "divider",
 		text: "Core",
@@ -37,6 +43,7 @@ const sideBarLinks = [
 		icon: "code",
 	},
 
+	//* Groups
 	{
 		type: "divider",
 		text: "Groups",
@@ -60,6 +67,7 @@ const sideBarLinks = [
 		icon: "layout-hierarchy",
 	},
 
+	//* Instances
 	{
 		type: "divider",
 		text: "Instances",
@@ -77,6 +85,7 @@ const sideBarLinks = [
 		icon: "new-layers",
 	},
 
+	//* Other
 	{
 		type: "divider",
 		text: "Other",
