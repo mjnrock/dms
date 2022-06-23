@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.friendSchema = void 0;
 const mongoose = require("mongoose");
-exports.friendSchema = new mongoose.Schema({
+export const friendSchema = new mongoose.Schema({
     firstName: {
         type: String,
     },

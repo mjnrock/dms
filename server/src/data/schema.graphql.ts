@@ -44,5 +44,7 @@ export const typeDefs = gql`
 
 	type Mutation {
 		addDomain(domain: DomainInput): Domain
+		updateDomain(uuid: String, name: String): Domain
+		deleteDomain(uuid: String): Domain
 	}
 `;

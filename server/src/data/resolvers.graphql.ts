@@ -38,5 +38,21 @@ export const resolvers = {
 				});
 			});
 		},
+		updateDomain: (root: any, { uuid, name }) => {
+			return new Promise((resolve, reject) => {
+				Domains.findOneAndUpdate({ uuid }, { name }, (err: any, domain: DomainModel) => {
+					if (err) reject(err);
+					else resolve(domain);
+				});
+			});
+		},
+		deleteDomain: (root: any, { uuid }) => {
+			return new Promise((resolve, reject) => {
+				Domains.find({ uuid }).remove((err: any, domain: DomainModel) => {
+					if (err) reject(err);
+					else resolve(domain);
+				});
+			});
+		},
 	},
 };

@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Series = exports.Friends = void 0;
 const mongoose = require("mongoose");
 const { environment } = require("../config/config");
 const { friendSchema, seriesSchema } = require("./schema");
@@ -17,6 +14,5 @@ db.on("error", () => {
     console.error("Error while connecting to DB");
 });
 const Friends = mongoose.model("Friends", friendSchema);
-exports.Friends = Friends;
 const Series = mongoose.model("Series", seriesSchema);
-exports.Series = Series;
+export { Friends, Series };
