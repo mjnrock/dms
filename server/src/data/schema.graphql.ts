@@ -19,6 +19,7 @@ export const typeDefs = gql`
 		parent: String
 		domain: String
 		fn: String
+		scope: [String]
 	}
 
 	type Metadata {

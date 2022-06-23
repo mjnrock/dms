@@ -13,4 +13,7 @@ export const ReducerSchema = new mongoose.Schema({
 	fn: {
 		type: String,
 	},
+	scope: {
+		type: Array,
+	},
 });
