@@ -1,13 +1,103 @@
+import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { Button, Navbar, Alignment, ButtonGroup } from "@blueprintjs/core";
+import { Button, Navbar, ButtonGroup } from "@blueprintjs/core";
 
 /**
  * Contains the @imports for Blueprint CSS
  */
 import "./assets/css/main.css";
 
+const sideBarLinks = [
+	{
+		type: "divider",
+		text: "Core",
+	},
+	{
+		type: "button",
+		url: "/domain",
+		text: "Domains",
+		icon: "applications",
+	},
+	{
+		type: "button",
+		url: "/component",
+		text: "Components",
+		icon: "cube-add",
+	},
+	{
+		type: "button",
+		url: "/reducer",
+		text: "Reducers",
+		icon: "function",
+	},
+	{
+		type: "button",
+		url: "/method",
+		text: "Methods",
+		icon: "code",
+	},
+
+	{
+		type: "divider",
+		text: "Groups",
+	},
+	{
+		type: "button",
+		url: "/entity",
+		text: "Entities",
+		icon: "new-grid-item",
+	},
+	{
+		type: "button",
+		url: "/module",
+		text: "Modules",
+		icon: "search-around",
+	},
+	{
+		type: "button",
+		url: "/collection",
+		text: "Collections",
+		icon: "layout-hierarchy",
+	},
+
+	{
+		type: "divider",
+		text: "Instances",
+	},
+	{
+		type: "button",
+		url: "/record",
+		text: "Records",
+		icon: "new-layer",
+	},
+	{
+		type: "button",
+		url: "/pool",
+		text: "Pools",
+		icon: "new-layers",
+	},
+
+	{
+		type: "divider",
+		text: "Other",
+	},
+	{
+		type: "button",
+		url: "/metadata",
+		text: "Metadata",
+		icon: "id-number",
+	},
+	{
+		type: "button",
+		url: "/documentation",
+		text: "Documentation",
+		icon: "document",
+	},
+];
+
 //NOTE: App (via ReactRouter6) acts as the wrapper (via Outlet) here, and as such, only logic that should span the entire app should be placed here.
 export function App() {
+	const [ isSidebarCollapsed, setIsSideCollapsed ] = useState(false);
 	const navigate = useNavigate();
 
 	return (
@@ -22,28 +112,37 @@ export function App() {
 			</Navbar>
 
 			<div className="flex flex-1 h-full overflow-y-auto">
-				<div className="flex-none h-full">
+				<div className={ `flex-none h-full ${ isSidebarCollapsed ? "w-[55px]" : "w-[165px]" }` }>
 					<ButtonGroup alignText="left" className="flex flex-col flex-nowrap h-full justify-between p-2 overflow-auto gap-2 bg-gray-200">
-						<div className="text-xs font-bold">Core</div>
-						<Button icon="applications" onClick={ e => navigate(`/domain`) }>Domains</Button>
-						<Button icon="cube-add" onClick={ e => navigate(`/component`) }>Components</Button>
-						<Button icon="function" onClick={ e => navigate(`/reducer`) }>Reducers</Button>
-						<Button icon="code" onClick={ e => navigate(`/method`) }>Methods</Button>
+						{
+							isSidebarCollapsed
+								? sideBarLinks.reduce((a: any, obj: any) => {
+									if(obj.type === "divider") {
+										return a;
+									}
 
-						<div className="text-xs">Groups</div>
-						<Button icon="new-grid-item" onClick={ e => navigate(`/entity`) }>Entities</Button>
-						<Button icon="search-around" onClick={ e => navigate(`/module`) }>Modules</Button>
-						<Button icon="layout-hierarchy" onClick={ e => navigate(`/collection`) }>Collections</Button>
-
-						<div className="text-xs">Instances</div>
-						<Button icon="new-layer" onClick={ e => navigate(`/record`) }>Records</Button>
-						<Button icon="new-layers" onClick={ e => navigate(`/pool`) }>Pools</Button>
-
-						<div className="text-xs">Other</div>
-						<Button icon="id-number" onClick={ e => navigate(`/metadata`) }>Metadata</Button>
-						<Button icon="document" onClick={ e => navigate(`/documentation`) }>Documentation</Button>
+									return [
+										...a,
+										<Button className="h-[35px]" icon={ obj.icon } title={ obj.text } onClick={ e => navigate(obj.url) } />
+									];
+								}, [])
+								: sideBarLinks.map((obj: any) => {
+									if(obj.type === "divider") {
+										return (
+											<div className="text-xs">{ obj.text }</div>
+										);
+									} else {
+										return (
+											<Button icon={ obj.icon } title={ obj.text } onClick={ e => navigate(obj.url) }>{ obj.text }</Button>
+										);
+									}
+								})
+						}
 						<div className="flex-1" />
+
+						<Button icon={ `double-chevron-${ isSidebarCollapsed ? "right" : "left" }` } onClick={ e => setIsSideCollapsed(!isSidebarCollapsed) } />
 					</ButtonGroup>
+
 				</div>
 				<div className="flex flex-col flex-1 overflow-x-hidden overflow-y-auto relative p-2 bg-gray-100">
 					<Outlet />

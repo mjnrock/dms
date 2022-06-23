@@ -19,8 +19,9 @@ root.render(
 					<Route
 						path="*"
 						element={
-							<main style={ { padding: "1rem" } }>
-								<p>404, yo</p>
+							<main>
+								<p>404</p>
+								<p>Link not found</p>
 							</main>
 						}
 					/>
