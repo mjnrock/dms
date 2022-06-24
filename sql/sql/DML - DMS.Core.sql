@@ -18,14 +18,33 @@ VALUES
 	(3, 'Production');
 
 
-INSERT INTO Core.Component(
+INSERT INTO Core.Component (
 	DomainID,
 	[Name],
 	[Data]
 )
 VALUES
 	(3, 'Position', '{"x":"uint8", "y":"uint8"}'),
-	(3, 'Position3', '{"x":"uint8", "y":"uint8", "z":"uint8"}');
+	(3, 'Position3', '{"x":"uint8", "y":"uint8", "z":"uint8"}'),
+	(3, 'Velocity', '{"vx":"int8", "vy":"int8", "vz":"int8"}');
+
+
+INSERT INTO Core.Entity (
+	DomainID,
+	[Name],
+	[Type]
+)
+VALUES
+	(3, 'Skwrl', '["living","animal","character"]');
+
+
+INSERT INTO Core.EntityComponent (
+	EntityID,
+	ComponentID
+)
+VALUES
+	(1, 1),
+	(1, 3);
 
 	
 DECLARE @Ref VARCHAR(255) = (SELECT UUID FROM Core.Component WHERE [Name] = 'Position');

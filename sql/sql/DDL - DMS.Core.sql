@@ -93,7 +93,7 @@ CREATE TABLE Core.Domain (
 
 CREATE TABLE Core.Component (
 	ComponentID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-	DomainID INT NULL FOREIGN KEY REFERENCES Core.Domain (DomainID),
+	DomainID INT NOT NULL FOREIGN KEY REFERENCES Core.Domain (DomainID),
 	[Name] VARCHAR(255) NOT NULL,			-- string
 	[Data] NVARCHAR(MAX) NOT NULL,			-- json
 
@@ -107,9 +107,33 @@ ALTER TABLE Core.Component
 
 CREATE TABLE Core.Reducer (
 	ReducerID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-	DomainID INT NULL FOREIGN KEY REFERENCES Core.Domain (DomainID),
+	DomainID INT NOT NULL FOREIGN KEY REFERENCES Core.Domain (DomainID),
 	Fn NVARCHAR(MAX) NOT NULL,				-- fn
 	Scope VARCHAR(4000) NULL,				-- string[]
+
+	UUID UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
+	CreatedDateTimeUTC DATETIME2(3) NOT NULL DEFAULT SYSUTCDATETIME(),
+	ModifiedDateTimeUTC DATETIME2(3) NOT NULL DEFAULT SYSUTCDATETIME(),
+	DeactivatedDateTimeUTC DATETIME2(3) NULL
+);
+
+CREATE TABLE Core.Entity (
+	EntityID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	DomainID INT NOT NULL FOREIGN KEY REFERENCES Core.Domain (DomainID),
+	[Name] VARCHAR(255) NOT NULL,			-- string
+	[Type] VARCHAR(4000) NULL,				-- string[]
+
+	UUID UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
+	CreatedDateTimeUTC DATETIME2(3) NOT NULL DEFAULT SYSUTCDATETIME(),
+	ModifiedDateTimeUTC DATETIME2(3) NOT NULL DEFAULT SYSUTCDATETIME(),
+	DeactivatedDateTimeUTC DATETIME2(3) NULL
+);
+
+CREATE TABLE Core.EntityComponent (
+	EntityComponentID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	EntityID INT NOT NULL FOREIGN KEY REFERENCES Core.Entity (EntityID),
+	ComponentID INT NOT NULL FOREIGN KEY REFERENCES Core.Component (ComponentID),
+	[Order] INT NULL,
 
 	UUID UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
 	CreatedDateTimeUTC DATETIME2(3) NOT NULL DEFAULT SYSUTCDATETIME(),
@@ -204,12 +228,36 @@ FROM
 	CROSS APPLY OPENJSON(m.Tags, '$') j
 GO
 
+CREATE VIEW Core.vwEntity AS
+SELECT
+	e.EntityID,
+	e.DomainID,
+	e.[Name],
+	e.[Type],
+	e.UUID,
+	e.CreatedDateTimeUTC,
+	e.ModifiedDateTimeUTC,
+	e.DeactivatedDateTimeUTC,
+	ec.EntityComponentID,
+	ec.UUID AS EntityComponentUUID,
+	c.ComponentID,
+	c.UUID AS ComponentUUID,
+	ec.[Order] AS ComponentOrder,
+	c.[Name] AS Component,
+	c.[Data] AS ComponentData
+FROM
+	Core.Entity e
+	LEFT JOIN Core.EntityComponent ec
+		ON e.EntityID = ec.EntityID
+	LEFT JOIN Core.Component c
+		ON ec.ComponentID = c.ComponentID
+GO
+
 
 
 --	==============================================
 --		TVF
 --	==============================================
-
 CREATE FUNCTION Core.tvfGetComponentTags
 (	
 	@InputFlag VARCHAR(255) = 'name',
@@ -243,6 +291,53 @@ RETURN
 		) OR (
 			@InputFlag = 'uuid'
 			AND c.UUID = @Input
+		)
+)
+GO
+
+
+
+CREATE FUNCTION Core.tvfGetEntity
+(	
+	@InputFlag VARCHAR(255) = 'name',
+	@Input VARCHAR(255)
+)
+RETURNS TABLE 
+AS
+RETURN 
+(
+	SELECT
+		e.EntityID,
+		e.DomainID,
+		e.[Name],
+		e.[Type],
+		e.UUID,
+		e.CreatedDateTimeUTC,
+		e.ModifiedDateTimeUTC,
+		e.DeactivatedDateTimeUTC,
+		ec.EntityComponentID,
+		ec.UUID AS EntityComponentUUID,
+		c.ComponentID,
+		c.UUID AS ComponentUUID,
+		ec.[Order] AS ComponentOrder,
+		c.[Name] AS Component,
+		c.[Data] AS ComponentData
+	FROM
+		Core.Entity e
+		LEFT JOIN Core.EntityComponent ec
+			ON e.EntityID = ec.EntityID
+		LEFT JOIN Core.Component c
+			ON ec.ComponentID = c.ComponentID
+	WHERE
+		(
+			@InputFlag = 'name'
+			AND e.[Name] = @Input
+		) OR (
+			@InputFlag = 'id'
+			AND e.EntityID = CAST(@Input AS INT)
+		) OR (
+			@InputFlag = 'uuid'
+			AND e.UUID = @Input
 		)
 )
 GO

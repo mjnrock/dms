@@ -36,12 +36,12 @@ const sideBarLinks = [
 		text: "Reducers",
 		icon: "function",
 	},
-	{
-		type: "button",
-		url: "/method",
-		text: "Methods",
-		icon: "code",
-	},
+	// {
+	// 	type: "button",
+	// 	url: "/method",
+	// 	text: "Methods",
+	// 	icon: "code",
+	// },
 
 	//* Groups
 	{

@@ -23,6 +23,27 @@ FROM
 SELECT
 	*
 FROM
+	Core.Entity;
+
+SELECT
+	*
+FROM
+	Core.vwEntity;
+
+SELECT
+	*
+FROM
+	Core.tvfGetEntity('name', 'Skwrl');
+	--Core.tvfGetEntity('id', 1);
+	
+SELECT
+	*
+FROM
+	Core.EntityComponent;
+
+SELECT
+	*
+FROM
 	Core.Reducer;
 
 SELECT
