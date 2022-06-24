@@ -1,0 +1,28 @@
+[req]
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+
+[req_distinguished_name]
+countryName = US
+countryName_default = US
+stateOrProvinceName = Michigan
+stateOrProvinceName_default = Michigan
+localityName = Oakland
+localityName_default = Oakland
+organizationalUnitName = Kiszka
+organizationalUnitName_default = Kiszka
+commonName = *.kiszka.com
+commonName_max = 64
+
+[ v3_req ]
+# Extensions to add to a certificate request
+basicConstraints = CA:TRUE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment, keyCertSign
+extendedKeyUsage=serverAuth, clientAuth, codeSigning
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = kiszka.com
+DNS.2 = *.kiszka.com
+DNS.3 = buddha.com
+DNS.4 = *.buddha.com
