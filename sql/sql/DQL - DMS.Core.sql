@@ -11,15 +11,7 @@ FROM
 	Core.Domain;
 
 SELECT
-	DomainID,
-	ParentDomainID,
-	[Name],
-	UUID,
-	[Level],
-	[Path],
-	CreatedDateTimeUTC,
-	ModifiedDateTimeUTC,
-	DeactivatedDateTimeUTC
+	*
 FROM
 	Core.vwDomain;
 
@@ -37,6 +29,18 @@ SELECT
 	*
 FROM
 	Core.Metadata;
+
+SELECT
+	*
+FROM
+	Core.vwComponentTags;
+
+SELECT
+	*
+FROM
+	Core.tvfGetComponentTags('name', 'Position');
+	--Core.tvfGetComponentTags('uuid', 'EB72D281-C82F-4C1E-B406-34E01D69AC23');
+	--Core.tvfGetComponentTags('id', 1);
 
 
 --	==============================================

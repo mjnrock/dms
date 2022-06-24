@@ -13,3 +13,12 @@ SELECT
 FROM
 	Core.Component
 FOR JSON PATH
+
+
+SELECT
+	*,
+	JSON_VALUE(Tags, '$'),
+	JSON_VALUE(Tags, '$[0]'),
+	JSON_VALUE(Tags, '$[1]')
+FROM
+	Core.Metadata;

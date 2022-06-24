@@ -1,6 +1,11 @@
 USE DMS
 GO
 
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
 --CREATE SCHEMA Core
 --GO
 
@@ -125,6 +130,8 @@ CREATE TABLE Core.Metadata (
 	ModifiedDateTimeUTC DATETIME2(3) NOT NULL DEFAULT SYSUTCDATETIME(),
 	DeactivatedDateTimeUTC DATETIME2(3) NULL
 );
+ALTER TABLE Core.Metadata
+	ADD CONSTRAINT [Tags as JSON] CHECK (ISJSON(Tags)=1);
 
 
 
@@ -178,3 +185,64 @@ SELECT
 	DeactivatedDateTimeUTC
 FROM
 	CTE;
+GO
+
+CREATE VIEW Core.vwComponentTags AS
+SELECT
+	c.ComponentID,
+	c.UUID AS ComponentUUID,
+	c.[Name] AS Component,
+	m.MetadataID,
+	m.UUID AS MetadataUUID,
+	j.[key] AS [Index],
+	j.[value] AS Tag
+FROM
+	Core.Metadata m
+	INNER JOIN Core.Component c
+		ON m.RefType = 'Component'
+		AND m.Ref = c.UUID
+	CROSS APPLY OPENJSON(m.Tags, '$') j
+GO
+
+
+
+--	==============================================
+--		TVF
+--	==============================================
+
+CREATE FUNCTION Core.tvfGetComponentTags
+(	
+	@InputFlag VARCHAR(255) = 'name',
+	@Input VARCHAR(255)
+)
+RETURNS TABLE 
+AS
+RETURN 
+(
+	SELECT
+		c.ComponentID,
+		c.UUID AS ComponentUUID,
+		c.[Name] AS Component,
+		m.MetadataID,
+		m.UUID AS MetadataUUID,
+		j.[key] AS [Index],
+		j.[value] AS Tag
+	FROM
+		Core.Metadata m
+		INNER JOIN Core.Component c
+			ON m.RefType = 'Component'
+			AND m.Ref = c.UUID
+		CROSS APPLY OPENJSON(m.Tags, '$') j
+	WHERE
+		(
+			@InputFlag = 'name'
+			AND c.[Name] = @Input
+		) OR (
+			@InputFlag = 'id'
+			AND c.ComponentID = CAST(@Input AS INT)
+		) OR (
+			@InputFlag = 'uuid'
+			AND c.UUID = @Input
+		)
+)
+GO

@@ -1,10 +1,46 @@
 // @ts-nocheck
 import { Menubar } from "primereact/menubar";
+import { useEffect, useState } from "react";
 
 export function Domain() {
+	const [ json, setJson ] = useState("");
+
+	useEffect(() => {
+		if(!json.length) {
+			fetch("https://buddha.com:3001/")
+				.then((response) => response.json())
+				.then((data) => {
+					setJson(data);
+				});
+		}
+	}, []);
+
 	return (
 		<div>
 			<Menubar />
+
+			{
+				Object.values(json).map((record) => {
+					return (
+						<div>
+							<br />
+							{
+								Object.entries(record).map(([ key, value ]) => {
+									return (
+										<div className="flex">
+											<div className="flex-1 font-bold text-left">{ key }</div>
+											<div className="flex-1 text-left font-italic">{ value }</div>
+										</div>
+									);
+								})
+							}
+							<br />
+
+							<hr />
+						</div>
+					);
+				})
+			}
 		</div>
 	);
 };

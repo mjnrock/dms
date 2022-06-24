@@ -1,8 +1,9 @@
+import { v4 as uuid } from "uuid";
 import fs from "fs";
 import express from "express";
 import https from "https";
 import { WebSocketServer } from "ws";
-import { v4 as uuid } from "uuid";
+import MSSQL from "mssql";
 
 const config = {
 	port: 3001,
@@ -33,10 +34,26 @@ app.use((req, res, next) => {
 
 //?	Test:	https://kiszka.com:3001/
 app.get("/", function (req, res, next) {
-	// console.log("get route", req.testing);
-	res.json({
-		cats: 2,
-		names: ["Buddha", "Kiszka"],
+	const query = `SELECT * FROM Core.vwDomain`;
+	new MSSQL.ConnectionPool({
+		user: `dms_api`,
+		password: `dms_api`,
+		server: `localhost`,
+		database: `DMS`,
+		port: 1433,
+		trustServerCertificate: true,	/* 	This is needed for localhost (self-signed cert) testing */
+		encrypt: true
+	}).connect().then(pool => {
+		return pool.request().query(query);
+	}).then(result => {
+		let rows = result.recordset;
+
+		res.setHeader("Access-Control-Allow-Origin", "*");
+		res.status(200).json(rows);
+		MSSQL.close();
+	}).catch(err => {
+		res.status(500).send({ message: `${ err }` });
+		MSSQL.close();
 	});
 });
 
@@ -59,14 +76,14 @@ wss.on("connection", client => {
 		try {
 			const data = JSON.parse(input);
 			console.log(`Message received`, data);
-		} catch(e) {}
+		} catch(e) { }
 	});
 });
 
 server.listen(config.port, err => {
-	if (err) {
+	if(err) {
 		console.log("An error occured", err);
 		process.exit();
 	}
-	console.log(`DMS Server is listening on port: ${config.port}`);
+	console.log(`DMS Server is listening on port: ${ config.port }`);
 });
