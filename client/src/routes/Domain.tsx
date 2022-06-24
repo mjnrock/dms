@@ -20,19 +20,17 @@ export function Domain() {
 			<Menubar />
 
 			{
-				Object.values(json).map((record) => {
+				Object.values(json).map((record, i) => {
 					return (
-						<div>
+						<div key={ i }>
 							<br />
 							{
-								Object.entries(record).map(([ key, value ]) => {
-									return (
-										<div className="flex">
-											<div className="flex-1 font-bold text-left">{ key }</div>
-											<div className="flex-1 text-left font-italic">{ value }</div>
-										</div>
-									);
-								})
+								Object.entries(record).map(([ key, value ], j) => (
+									<div className="flex" key={ j }>
+										<div className="flex-1 font-bold text-left">{ key }</div>
+										<div className="flex-1 text-left font-italic">{ value }</div>
+									</div>
+								))
 							}
 							<br />
 
