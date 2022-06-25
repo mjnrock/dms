@@ -29,13 +29,13 @@ BEGIN
 	SET NOCOUNT ON;
 	DECLARE @Schema VARCHAR(255) = 'Core';
 	DECLARE @SQL NVARCHAR(MAX) = '';
-	--DECLARE @Where NVARCHAR(MAX) = @Clause;
+	DECLARE @FQN VARCHAR(255) = CONCAT('[', @Schema, '].[', @Table, ']');	-- Expect entries to NOT be quoted (make more robust later)
 
     IF @Operation = 'read'
 		BEGIN
 			IF @JSON = '["*"]'
 				BEGIN
-					SET @SQL = CONCAT('SELECT * FROM ', @Schema, '.', @Table);
+					SET @SQL = CONCAT('SELECT * FROM ', @FQN);
 				END
 			ELSE
 				BEGIN
@@ -50,12 +50,12 @@ BEGIN
 					WHERE
 						c.TABLE_NAME = @Table;
 
-					SET @SQL = CONCAT(SUBSTRING(@SQL, 0, LEN(@SQL)), ' FROM ', @Schema, '.', @Table);
+					SET @SQL = CONCAT(SUBSTRING(@SQL, 0, LEN(@SQL)), ' FROM ', @FQN);
 				END
 		END
 	ELSE IF @Operation = 'insert'
 		BEGIN
-			SET @SQL = CONCAT('INSERT INTO ', @Schema, '.', @Table, '(');
+			SET @SQL = CONCAT('INSERT INTO ', @FQN, '(');
 														
 			SELECT
 				@SQL = CONCAT(@SQL, '[', c.COLUMN_NAME, '],')
@@ -82,7 +82,7 @@ BEGIN
 		END
 	ELSE IF @Operation = 'update'
 		BEGIN
-			SET @SQL = CONCAT('UPDATE ', @Schema, '.', @Table, ' SET ');
+			SET @SQL = CONCAT('UPDATE ', @FQN, ' SET ');
 														
 			SELECT
 				@SQL = CONCAT(@SQL, '[', j.[key], '] = ',
@@ -102,7 +102,7 @@ BEGIN
 		END
 	ELSE IF @Operation = 'upsert'
 		BEGIN
-			SET @SQL = CONCAT('SELECT COUNT(*) FROM ', @Schema, '.', @Table);
+			SET @SQL = CONCAT('SELECT COUNT(*) FROM ', @FQN);
 			
 			DECLARE @ResultCount INT = 0;
 			IF LEN(@Where) > 0
@@ -145,7 +145,7 @@ BEGIN
 		BEGIN
 			IF LEN(@Where) > 0
 				BEGIN
-					SET @SQL = CONCAT('DELETE FROM ', @Schema, '.', @Table);
+					SET @SQL = CONCAT('DELETE FROM ', @FQN);
 				END
 			ELSE
 				BEGIN
