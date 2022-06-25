@@ -104,6 +104,41 @@ const sideBarLinks = [
 	},
 ];
 
+export class API {
+	public static Host = `buddha.com`;
+	public static Port = `3001`;
+	public static WebSocket = new WebSocket(`wss://${ API.Host }:${ API.Port }/`);
+};
+API.WebSocket.addEventListener("message", e => {
+	console.log(e.data);
+});
+setTimeout(() => {
+	// API.WebSocket.send(JSON.stringify([
+	// 	"insert",
+	// 	"Domain",
+	// 	{
+	// 		Name: "ReactTest",
+	// 		ParentDomainID: 4,
+	// 	},
+	// ]));
+
+	// API.WebSocket.send(JSON.stringify([
+	// 	"update",
+	// 	"Domain",
+	// 	{
+	// 		Name: "ReactTestzzz",
+	// 	},
+	// 	"ParentDomainID=4"
+	// ]));
+
+	// API.WebSocket.send(JSON.stringify([
+	// 	"read",
+	// 	"Domain",
+	// 	["*"],
+	// 	"ParentDomainID=4",
+	// ]));
+}, 1000)
+
 //NOTE: App (via ReactRouter6) acts as the wrapper (via Outlet) here, and as such, only logic that should span the entire app should be placed here.
 export function App() {
 	const [ isSidebarCollapsed, setIsSideCollapsed ] = useState(false);
@@ -121,7 +156,7 @@ export function App() {
 			</Navbar>
 
 			<div className="flex flex-1 h-full overflow-y-auto">
-				<div className={ `flex-none h-full ${ isSidebarCollapsed ? "w-[55px]" : "w-[165px]" }` }>
+				<div className={ `flex-none h-full ${ isSidebarCollapsed ? "w-[50px]" : "w-[165px]" }` }>
 					<ButtonGroup alignText="left" className="flex flex-col justify-between h-full gap-2 p-2 overflow-auto bg-gray-200 flex-nowrap">
 						{
 							isSidebarCollapsed

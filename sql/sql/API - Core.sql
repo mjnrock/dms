@@ -23,13 +23,13 @@ ALTER PROCEDURE Core.spCRUD
 	@Operation VARCHAR(255),
 	@Table VARCHAR(255),
 	@JSON VARCHAR(4000),
-	@Clause VARCHAR(4000) = ''
+	@Where NVARCHAR(MAX) = ''
 AS
 BEGIN
 	SET NOCOUNT ON;
 	DECLARE @Schema VARCHAR(255) = 'Core';
 	DECLARE @SQL NVARCHAR(MAX) = '';
-	DECLARE @Where NVARCHAR(MAX) = @Clause;
+	--DECLARE @Where NVARCHAR(MAX) = @Clause;
 
     IF @Operation = 'read'
 		BEGIN

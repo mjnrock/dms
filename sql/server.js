@@ -32,31 +32,6 @@ app.use((req, res, next) => {
 	return next();
 });
 
-//?	Test:	https://kiszka.com:3001/
-app.get("/", function (req, res, next) {
-	const query = `SELECT * FROM Core.vwDomain`;
-	new MSSQL.ConnectionPool({
-		user: `dms_api`,
-		password: `dms_api`,
-		server: `localhost`,
-		database: `DMS`,
-		port: 1433,
-		trustServerCertificate: true,	/* 	This is needed for localhost (self-signed cert) testing */
-		encrypt: true
-	}).connect().then(pool => {
-		return pool.request().query(query);
-	}).then(result => {
-		let rows = result.recordset;
-
-		res.setHeader("Access-Control-Allow-Origin", "*");
-		res.status(200).json(rows);
-		MSSQL.close();
-	}).catch(err => {
-		res.status(500).send({ message: `${ err }` });
-		MSSQL.close();
-	});
-});
-
 const server = https.createServer({ key, cert }, app);
 
 const wss = new WebSocketServer({ server });
@@ -76,6 +51,28 @@ wss.on("connection", client => {
 		try {
 			const data = JSON.parse(input);
 			console.log(`Message received`, data);
+
+			let [ op, table, json, where ] = data;
+			json = JSON.stringify(json);
+
+			const query = `EXEC [Core].[spCRUD] @Operation = '${ op }', @Table = '${ table }', @JSON = '${ json }'${ !!where ? `, @Where = '${ where }'` : "" }`;
+			// console.log(query);
+
+			new MSSQL.ConnectionPool({
+				user: `dms_api`,
+				password: `dms_api`,
+				server: `localhost`,
+				database: `DMS`,
+				port: 1433,
+				trustServerCertificate: true,	/* 	This is needed for localhost (self-signed cert) testing */
+				encrypt: true
+			}).connect().then(pool => {
+				return pool.request().query(query);
+			}).then(result => {
+				let rows = result.recordset;
+
+				console.log(`ResultSet:`, rows);
+			});
 		} catch(e) { }
 	});
 });
