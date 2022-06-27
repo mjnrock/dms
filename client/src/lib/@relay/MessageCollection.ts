@@ -42,10 +42,14 @@ export class MessageCollection {
 
 		return this;
 	}
-	public removeAll() {
+	public empty() {
 		this.messages.clear();
 
 		return this;
+	}
+
+	get size() {
+		return Array.from(this.messages).reduce((acc, [, messages]) => acc + messages.size, 0);
 	}
 
 	public get(ts: number): Message[] {

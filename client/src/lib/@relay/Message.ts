@@ -11,14 +11,37 @@ export class Message {
 		this.data = data;
 		this.emitter = emitter;
 
+		if(typeof tags === "string") {
+			tags = [tags];
+		} else if(!Array.isArray(tags)) {
+			tags = Array.from(tags);
+		}
+
 		this.meta = {
-			type: type || Array.from(tags)[ 0 ],
-			tags: new Set(tags),
-			
 			...meta,
+			
+			type: meta.type || type || tags[ 0 ],
+			tags: new Set(meta.tags || tags),
+			
 
 			timestamp: Date.now(),
 		};
+	}
+
+	toObject() {
+		const obj = {
+			...this,
+		};
+
+		obj.meta.tags = Array.from(obj.meta.tags);
+
+		return obj;
+	}
+	toJson(): string {
+		return JSON.stringify(this.toObject());
+	}
+	toString(): string {
+		return this.toJson();
 	}
 
 	static From(data: any): Message {
@@ -29,18 +52,6 @@ export class Message {
 	}
 	static FromString(str: string): Message {
 		return this.FromJson(str);
-	}
-
-	toObject() {
-		return {
-			...this,
-		};
-	}
-	toJson(): string {
-		return JSON.stringify(this.toObject());
-	}
-	toString(): string {
-		return this.toJson();
 	}
 };
 
