@@ -32,15 +32,23 @@ export class DMS {
 	 */
 	static Driver = MSSQL;
 
-	constructor(config, reassign = false) {
+	constructor (config, reassign = false) {
 		if(DMS.Instance && reassign !== true) {
 			return DMS.Instance;
 		}
-		
+
 		this.connectionPool = new MSSQL.ConnectionPool(config);
 		DMS.Instance = this;
 
 		return this;
+	}
+
+	/**
+	 * Assign an instance-level getter, as this class is normally used in
+	 * a singleton capacity.
+	 */
+	get Driver() {
+		return DMS.Driver;
 	}
 
 	/**
@@ -93,10 +101,14 @@ export class DMS {
 		const conn = await this.connect();
 		const request = conn.request();
 
+		console.log(7777777)
+
 		this.attach(request, params);
 
 		const result = await request.execute(sproc);
 		const rows = result.recordset;
+
+		console.log(888888, result)
 
 		this.disconnect();
 
@@ -107,6 +119,7 @@ export class DMS {
 	 * Execute a CRUD operation using the CRUD stored procedure (see SQL files)
 	 */
 	async CRUD(params) {
+		console.log(6666666)
 		return await this.execute(`[Core].[spCRUD]`, params);
 	}
 };
@@ -114,7 +127,7 @@ export class DMS {
 /**
  * Explicitly export the DMS Singleton instance, for direct grabbing
  */
-export const Singleton = DMS.Instance;
+export const Singleton = DMS.Instance || new DMS(Config);
 
 /**
  * Export the singleton as the default export, for convenience

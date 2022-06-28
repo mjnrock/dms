@@ -9,16 +9,26 @@ import { WebSocketServer } from "ws";
  */
 import DMS from "./DMS";
 
+/**
+ * This holds general configuration for the server,
+ * as well as the SSL certificate and key.
+ */
 const config = {
 	port: 3001,
 	ssl_key: `./ssl/kiszka.key`,
 	ssl_cert: `./ssl/kiszka.crt`,
+	key: null,	// assigned below
+	cert: null,	// assigned below
 };
 
-const app = express();
+/**
+ * Assign the key and cert to the config object directly.
+ */
+config.key = fs.readFileSync(config.ssl_key);
+config.cert = fs.readFileSync(config.ssl_cert);
 
-const key = fs.readFileSync(config.ssl_key);
-const cert = fs.readFileSync(config.ssl_cert);
+
+const app = express();
 
 /**
  * This is a newer way to do the work commonly seen with `bodyParser`
@@ -36,7 +46,7 @@ app.use((req, res, next) => {
 	return next();
 });
 
-const server = https.createServer({ key, cert }, app);
+const server = https.createServer({ key: config.key, cert: config.cert }, app);
 const wss = new WebSocketServer({ server });
 wss.on("connection", client => {
 	console.log("Client connected");
@@ -59,6 +69,8 @@ wss.on("connection", client => {
 
 			let [ op, table, json, where ] = data;
 			json = JSON.stringify(json);
+
+			console.log(DMS.CRUD);
 
 			// * Request version
 			// const results = await DMS.execute(`[Core].[spCRUD]`, {
