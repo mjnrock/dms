@@ -17,10 +17,10 @@ export const Config = {
 };
 
 /**
- * Create a single instance of the DMS class.  If needed, an instance can be
+ * Create a singleton instance of the DMS class.  If needed, an instance can be
  * returned by passing << true >> to the constructor's @reassign parameter.
  * 
- * NOTE: When you explicate @reassign on a construction, the singleton instance (.Instance)
+ * NOTE: When you explicate @reassign on a construction, the singleton instance (DMS.Instance)
  * will be reassigned to that instance.
  */
 export class DMS {
