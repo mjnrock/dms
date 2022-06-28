@@ -150,7 +150,7 @@ setTimeout(() => {
 		"read",
 		"Domain",
 		["*"],
-		// "ParentDomainID=4",
+		"ParentDomainID=4",
 	]));
 }, 1000)
 

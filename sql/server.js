@@ -5,6 +5,8 @@ import https from "https";
 import { WebSocketServer } from "ws";
 import MSSQL from "mssql";
 
+import DMS from "./DMS";
+
 const config = {
 	port: 3001,
 	ssl_key: `./ssl/kiszka.key`,
@@ -33,16 +35,6 @@ app.use((req, res, next) => {
 });
 
 const server = https.createServer({ key, cert }, app);
-const mssqlConfig = {
-	user: `dms_api`,
-	password: `dms_api`,
-	server: `localhost`,
-	database: `DMS`,
-	port: 1433,
-	trustServerCertificate: true,	/* 	This is needed for localhost (self-signed cert) testing */
-	encrypt: true
-};
-
 const wss = new WebSocketServer({ server });
 wss.on("connection", client => {
 	console.log("Client connected");
@@ -58,7 +50,7 @@ wss.on("connection", client => {
 	})
 
 
-	client.on("message", input => {
+	client.on("message", async input => {
 		try {
 			const data = JSON.parse(input);
 			console.log(`Message received`, data);
@@ -66,28 +58,21 @@ wss.on("connection", client => {
 			let [ op, table, json, where ] = data;
 			json = JSON.stringify(json);
 
-			const conn = new MSSQL.ConnectionPool(mssqlConfig);
-			conn.connect().then(pool => {
-				//* Query version
-				// const query = `EXEC [Core].[spCRUD] @Operation = '${ op }', @Table = '${ table }', @JSON = '${ json }'${ !!where ? `, @Where = '${ where }'` : "" }`;
-				// return pool.request().query(query);
-
-				//* Request version
-				const req = pool.request()
-					.input("Operation", MSSQL.VarChar(255), op)
-					.input("Table", MSSQL.VarChar(255), table)
-					.input("JSON", MSSQL.VarChar(4000), json);
-
-				if(!!where) {
-					req.input("Where", MSSQL.NVarChar(MSSQL.MAX), where);
-				}
-
-				return req.execute(`[Core].[spCRUD]`);
-			}).then(result => {
-				let rows = result.recordset;
-
-				console.log(`ResultSet:`, rows);
+			// * Request version
+			// const results = await DMS.Execute(`[Core].[spCRUD]`, {
+			const results = await DMS.ExecCRUD({
+				Operation: [ MSSQL.VarChar(255), op ],
+				Table: [ MSSQL.VarChar(255), table ],
+				JSON: [ MSSQL.VarChar(4000), json ],
+				Where: !!where ? [ MSSQL.NVarChar(MSSQL.MAX), where ] : false
 			});
+
+			console.log(results);
+
+			//* Query version
+			// const results = await DMS.Query(`EXEC [Core].[spCRUD] @Operation = '${ op }', @Table = '${ table }', @JSON = '${ json }'${ !!where ? `, @Where = '${ where }'` : "" }`);
+
+			// console.log(results);
 		} catch(e) { }
 	});
 });
