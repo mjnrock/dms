@@ -1,28 +1,59 @@
 import MSSQL from "mssql";
 
+/**
+ * A default configuration object for the DMS SQL Server localhost instance.
+ * 
+ * NOTE: A sql account is required and needs "datareader", "datawriter",
+ * and "execute" (on spCRUD) permissions.
+ */
+export const Config = {
+	user: `dms_api`,
+	password: `dms_api`,
+	server: `localhost`,
+	database: `DMS`,
+	port: 1433,
+	trustServerCertificate: true,	/* 	This is needed for localhost (self-signed cert) testing */
+	encrypt: true
+};
+
+/**
+ * Create a single instance of the DMS class.  If needed, an instance can be
+ * returned by passing << true >> to the constructor's @reassign parameter.
+ * 
+ * NOTE: If you override a construction, the static Instance will be reassigned
+ * to the most recent instantiation.
+ */
 export class DMS {
-	static Config = {
-		CRUD: `[Core].[spCRUD]`,
-	};	
-	static TediousConfig = {
-		user: `dms_api`,
-		password: `dms_api`,
-		server: `localhost`,
-		database: `DMS`,
-		port: 1433,
-		trustServerCertificate: true,	/* 	This is needed for localhost (self-signed cert) testing */
-		encrypt: true
-	};
-	static ConnectionPool = new MSSQL.ConnectionPool(this.TediousConfig);
+	static Instance = new DMS(Config);
 
-	static async Connect() {
-		return await this.ConnectionPool.connect();
-	}
-	static async Disconnect() {
-		return await this.ConnectionPool.close();
+	constructor(config, reassign = false) {
+		if(DMS.Instance && reassign !== true) {
+			return DMS.Instance;
+		}
+		
+		this.connectionPool = new MSSQL.ConnectionPool(config);
+		DMS.Instance = this;
+
+		return this;
 	}
 
-	static Attach(request, params) {
+	/**
+	 * Grab a connection from the pool
+	 */
+	async connect() {
+		return await this.connectionPool.connect();
+	}
+	/**
+	 * Disconnect from the pool
+	 */
+	async disconnect() {
+		return await this.connectionPool.close();
+	}
+
+	/**
+	 * Attach any provided input parameters to the request
+	 */
+	attach(request, params) {
 		for(let [ param, input ] of Object.entries(params)) {
 			if(input !== false) {
 				const [ type, value ] = input;
@@ -34,8 +65,11 @@ export class DMS {
 		return request;
 	}
 
-	static async Query(query) {
-		const conn = await this.Connect();
+	/**
+	 * Execute a free-form SQL query
+	 */
+	async query(query) {
+		const conn = await this.connect();
 		const request = conn.request();
 
 		const result = await request.query(query);
@@ -46,23 +80,40 @@ export class DMS {
 		return rows;
 	}
 
-	static async Execute(sproc, params) {
-		const conn = await this.Connect();
+	/**
+	 * Execute a stored procedure
+	 */
+	async execute(sproc, params) {
+		const conn = await this.connect();
 		const request = conn.request();
 
-		this.Attach(request, params);
+		this.attach(request, params);
 
 		const result = await request.execute(sproc);
 		const rows = result.recordset;
 
-		this.Disconnect();
+		this.disconnect();
 
 		return rows;
 	}
 
-	static async ExecCRUD(params) {
-		return await this.Execute(this.Config.CRUD, params);
+	/**
+	 * Execute a CRUD operation using the CRUD stored procedure
+	 */
+	async execCRUD(params) {
+		return await this.execute(`[Core].[spCRUD]`, params);
 	}
 };
 
-export default DMS;
+/**
+ * Explicitly export the DMS Singleton instance, for direct grabbing
+ */
+export const Singleton = DMS.Instance;
+
+/**
+ * Export the singleton as the default export, for convenience
+ * 
+ * NOTE: Select the class explicitly if the singleton is inappropriate,
+ * or needs to be reassigned.
+ */
+export default Singleton;

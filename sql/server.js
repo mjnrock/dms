@@ -5,6 +5,9 @@ import https from "https";
 import { WebSocketServer } from "ws";
 import MSSQL from "mssql";
 
+/**
+ * DMS exports a Singleton instance by default
+ */
 import DMS from "./DMS";
 
 const config = {
@@ -59,8 +62,8 @@ wss.on("connection", client => {
 			json = JSON.stringify(json);
 
 			// * Request version
-			// const results = await DMS.Execute(`[Core].[spCRUD]`, {
-			const results = await DMS.ExecCRUD({
+			// const results = await DMS.execute(`[Core].[spCRUD]`, {
+			const results = await DMS.execCRUD({
 				Operation: [ MSSQL.VarChar(255), op ],
 				Table: [ MSSQL.VarChar(255), table ],
 				JSON: [ MSSQL.VarChar(4000), json ],
@@ -70,7 +73,7 @@ wss.on("connection", client => {
 			console.log(results);
 
 			//* Query version
-			// const results = await DMS.Query(`EXEC [Core].[spCRUD] @Operation = '${ op }', @Table = '${ table }', @JSON = '${ json }'${ !!where ? `, @Where = '${ where }'` : "" }`);
+			// const results = await DMS.query(`EXEC [Core].[spCRUD] @Operation = '${ op }', @Table = '${ table }', @JSON = '${ json }'${ !!where ? `, @Where = '${ where }'` : "" }`);
 
 			// console.log(results);
 		} catch(e) { }
