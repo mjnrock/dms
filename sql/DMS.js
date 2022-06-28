@@ -20,11 +20,17 @@ export const Config = {
  * Create a single instance of the DMS class.  If needed, an instance can be
  * returned by passing << true >> to the constructor's @reassign parameter.
  * 
- * NOTE: If you override a construction, the static Instance will be reassigned
- * to the most recent instantiation.
+ * NOTE: When you explicate @reassign on a construction, the singleton instance (.Instance)
+ * will be reassigned to that instance.
  */
 export class DMS {
 	static Instance = new DMS(Config);
+
+	/**
+	 * Attach the driver to allow for ad-hoc manipulation and things like SQL type assignments
+	 * in the parameters.
+	 */
+	static Driver = MSSQL;
 
 	constructor(config, reassign = false) {
 		if(DMS.Instance && reassign !== true) {

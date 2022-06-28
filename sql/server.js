@@ -3,7 +3,6 @@ import fs from "fs";
 import express from "express";
 import https from "https";
 import { WebSocketServer } from "ws";
-import MSSQL from "mssql";
 
 /**
  * DMS exports a Singleton instance by default
@@ -64,10 +63,10 @@ wss.on("connection", client => {
 			// * Request version
 			// const results = await DMS.execute(`[Core].[spCRUD]`, {
 			const results = await DMS.execCRUD({
-				Operation: [ MSSQL.VarChar(255), op ],
-				Table: [ MSSQL.VarChar(255), table ],
-				JSON: [ MSSQL.VarChar(4000), json ],
-				Where: !!where ? [ MSSQL.NVarChar(MSSQL.MAX), where ] : false
+				Operation: [ DMS.Driver.VarChar(255), op ],
+				Table: [ DMS.Driver.VarChar(255), table ],
+				JSON: [ DMS.Driver.VarChar(4000), json ],
+				Where: !!where ? [ DMS.Driver.NVarChar(DMS.Driver.MAX), where ] : false
 			});
 
 			console.log(results);
