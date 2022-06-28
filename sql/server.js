@@ -62,7 +62,7 @@ wss.on("connection", client => {
 
 			// * Request version
 			// const results = await DMS.execute(`[Core].[spCRUD]`, {
-			const results = await DMS.execCRUD({
+			const results = await DMS.CRUD({
 				Operation: [ DMS.Driver.VarChar(255), op ],
 				Table: [ DMS.Driver.VarChar(255), table ],
 				JSON: [ DMS.Driver.VarChar(4000), json ],
