@@ -104,7 +104,7 @@ export class DMS {
 	}
 
 	/**
-	 * Execute a CRUD operation using the CRUD stored procedure
+	 * Execute a CRUD operation using the CRUD stored procedure (see SQL files -- spCRUD)
 	 */
 	async CRUD(params) {
 		return await this.execute(`[Core].[spCRUD]`, params);
