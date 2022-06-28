@@ -146,12 +146,12 @@ setTimeout(() => {
 	// 	"ParentDomainID=4"
 	// ]));
 
-	// API.WebSocket.send(JSON.stringify([
-	// 	"read",
-	// 	"Domain",
-	// 	["*"],
-	// 	"ParentDomainID=4",
-	// ]));
+	API.WebSocket.send(JSON.stringify([
+		"read",
+		"Domain",
+		["*"],
+		// "ParentDomainID=4",
+	]));
 }, 1000)
 
 //NOTE: App (via ReactRouter6) acts as the wrapper (via Outlet) here, and as such, only logic that should span the entire app should be placed here.
