@@ -1,19 +1,46 @@
 // @ts-nocheck
 import { Menubar } from "primereact/menubar";
 import { useEffect, useState } from "react";
+import Message from "../lib/@relay/Message";
+
+//TODO Make this more robust, move to a more centralized context with hooks, and add an onopen handler to kick things off
+export class API {
+	public static Host = `buddha.com`;
+	public static Port = `3001`;
+	public static WebSocket = new WebSocket(`wss://${ API.Host }:${ API.Port }/`);
+
+	public static Send(data: any) {
+		if(data instanceof Message) {
+			API.WebSocket.send(data.toJson());
+		} else {
+			API.WebSocket.send(Message.From(data).toJson());
+		}
+	}
+};
 
 export function Domain() {
-	const [ json, setJson ] = useState("");
+	const [ json, setJson ] = useState();
 
 	useEffect(() => {
-		if(!json.length) {
-			fetch("https://buddha.com:3001/")
-				.then((response) => response.json())
-				.then((data) => {
-					setJson(data);
-				});
-		}
+		API.WebSocket.addEventListener("message", e => {
+			const msg = Message.FromJson(e.data);
+			
+			setJson(msg.data);
+		});
+
+		setTimeout(() => {
+			API.WebSocket.send(JSON.stringify([
+				"read",
+				"Domain",
+				["*"],
+				// "ParentDomainID=4",
+			]))
+		}, 1000);
 	}, []);
+
+	if(!json) {
+		return <div>Loading...</div>;
+	}
 
 	return (
 		<div>

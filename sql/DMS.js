@@ -101,14 +101,10 @@ export class DMS {
 		const conn = await this.connect();
 		const request = conn.request();
 
-		console.log(7777777)
-
 		this.attach(request, params);
 
 		const result = await request.execute(sproc);
 		const rows = result.recordset;
-
-		console.log(888888, result)
 
 		this.disconnect();
 
@@ -119,7 +115,6 @@ export class DMS {
 	 * Execute a CRUD operation using the CRUD stored procedure (see SQL files)
 	 */
 	async CRUD(params) {
-		console.log(6666666)
 		return await this.execute(`[Core].[spCRUD]`, params);
 	}
 };

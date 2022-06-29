@@ -4,6 +4,8 @@ import express from "express";
 import https from "https";
 import { WebSocketServer } from "ws";
 
+import Message from "./lib/@relay/Message";
+
 /**
  * DMS exports a Singleton instance by default
  */
@@ -64,13 +66,12 @@ wss.on("connection", client => {
 
 	client.on("message", async input => {
 		try {
+			//TODO Formalize the handling here with a type router for a command bus
 			const data = JSON.parse(input);
 			console.log(`Message received`, data);
 
 			let [ op, table, json, where ] = data;
 			json = JSON.stringify(json);
-
-			console.log(DMS.CRUD);
 
 			// * Request version
 			// const results = await DMS.execute(`[Core].[spCRUD]`, {
@@ -81,12 +82,19 @@ wss.on("connection", client => {
 				Where: !!where ? [ DMS.Driver.NVarChar(DMS.Driver.MAX), where ] : false
 			});
 
-			console.log(results);
+			console.log(results.length ? "Results" : "No results");
 
 			//* Query version
 			// const results = await DMS.query(`EXEC [Core].[spCRUD] @Operation = '${ op }', @Table = '${ table }', @JSON = '${ json }'${ !!where ? `, @Where = '${ where }'` : "" }`);
 
 			// console.log(results);
+
+			//TODO Use the full Relay package here, rather than an ad-hoc tsc compiled version
+			client.send(Message.From({
+				data: results,
+				emitter: client.uuid,
+				type: `CRUD`,
+			}).toJson());
 		} catch(e) { }
 	});
 });

@@ -10,7 +10,6 @@ import "./assets/css/main.css";
 import "primereact/resources/themes/tailwind-light/theme.css";  //theme
 import "primereact/resources/primereact.min.css";                  //core css
 import "primeicons/primeicons.css";                                //icons
-import Message from "./lib/@relay/Message";
 
 
 const sideBarLinks = [
@@ -104,55 +103,6 @@ const sideBarLinks = [
 		icon: "document",
 	},
 ];
-
-export class API {
-	public static Host = `buddha.com`;
-	public static Port = `3001`;
-	public static WebSocket = new WebSocket(`wss://${ API.Host }:${ API.Port }/`);
-
-	public static Send(data: any) {
-		if(data instanceof Message) {
-			API.WebSocket.send(data.toJson());
-		} else {
-			API.WebSocket.send(Message.From(data).toJson());
-		}
-	}
-};
-API.WebSocket.addEventListener("message", e => {
-	console.log(e.data);
-});
-
-const json = Message.From({ data: 1234, tags: ["cat"] }).toJson();
-console.log(json);
-const message = Message.FromJson(json);
-console.log(message);
-
-setTimeout(() => {
-	// API.WebSocket.send(JSON.stringify([
-	// 	"insert",
-	// 	"Domain",
-	// 	{
-	// 		Name: "ReactTest",
-	// 		ParentDomainID: 4,
-	// 	},
-	// ]));
-
-	// API.WebSocket.send(JSON.stringify([
-	// 	"update",
-	// 	"Domain",
-	// 	{
-	// 		Name: "ReactTestzzz",
-	// 	},
-	// 	"ParentDomainID=4"
-	// ]));
-
-	API.WebSocket.send(JSON.stringify([
-		"read",
-		"Domain",
-		["*"],
-		"ParentDomainID=4",
-	]));
-}, 1000)
 
 //NOTE: App (via ReactRouter6) acts as the wrapper (via Outlet) here, and as such, only logic that should span the entire app should be placed here.
 export function App() {
