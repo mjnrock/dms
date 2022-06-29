@@ -2,6 +2,8 @@
 import { Menubar } from "primereact/menubar";
 import { useEffect, useState } from "react";
 import Message from "../lib/@relay/Message";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 
 //TODO Make this more robust, move to a more centralized context with hooks, and add an onopen handler to kick things off
 export class API {
@@ -20,19 +22,27 @@ export class API {
 
 export function Domain() {
 	const [ json, setJson ] = useState();
+	const columns = [
+		{ field: "DomainID", header: "ID" },
+		{ field: "ParentDomainID", header: "Parent" },
+		{ field: "Level", header: "Depth" },
+		{ field: "Name", header: "Name" },
+		{ field: "Path", header: "Path" },
+		{ field: "UUID", header: "UUID" }
+	];
 
 	useEffect(() => {
 		API.WebSocket.addEventListener("message", e => {
 			const msg = Message.FromJson(e.data);
-			
+
 			setJson(msg.data);
 		});
 
 		setTimeout(() => {
 			API.WebSocket.send(JSON.stringify([
 				"read",
-				"Domain",
-				["*"],
+				"vwDomain",
+				[ "*" ],
 				// "ParentDomainID=4",
 			]))
 		}, 1000);
@@ -42,30 +52,28 @@ export function Domain() {
 		return <div>Loading...</div>;
 	}
 
+	/**
+	 * TODO: Setup a template version for the data table and abstract into a reusable component
+	 * ? Use the PrimeReact DataTable CRUD example (https://www.primefaces.org/primereact/datatable/crud/)
+	 */
 	return (
 		<div>
 			<Menubar />
 
-			{
-				Object.values(json).map((record, i) => {
-					return (
-						<div key={ i }>
-							<br />
-							{
-								Object.entries(record).map(([ key, value ], j) => (
-									<div className="flex" key={ j }>
-										<div className="flex-1 font-bold text-left">{ key }</div>
-										<div className="flex-1 text-left font-italic">{ value }</div>
-									</div>
-								))
-							}
-							<br />
-
-							<hr />
-						</div>
-					);
-				})
-			}
+			<DataTable
+				value={ Object.values(json) }
+				size="small"
+				removableSort
+				selectionMode="single"
+				onSelectionChange={ e => console.log(e.value) }
+				responsiveLayout="scroll"
+			>
+				{
+					columns.map((col, i) => {
+						return <Column key={ col.field } field={ col.field } header={ col.header } sortable />;
+					})
+				}
+			</DataTable>
 		</div>
 	);
 };
@@ -75,140 +83,140 @@ export default Domain;
 
 
 //? Prime React Menubar Example (https://www.primefaces.org/primereact/menubar/)
-// import React from 'react';
-// import { Menubar } from 'primereact/menubar';
-// import { InputText } from 'primereact/inputtext';
+// import React from "react";
+// import { Menubar } from "primereact/menubar";
+// import { InputText } from "primereact/inputtext";
 
 // const MenubarDemo = () => {
 //     const items = [
 //         {
-//             label: 'File',
-//             icon: 'pi pi-fw pi-file',
+//             label: "File",
+//             icon: "pi pi-fw pi-file",
 //             items: [
 //                 {
-//                     label: 'New',
-//                     icon: 'pi pi-fw pi-plus',
+//                     label: "New",
+//                     icon: "pi pi-fw pi-plus",
 //                     items: [
 //                         {
-//                             label: 'Bookmark',
-//                             icon: 'pi pi-fw pi-bookmark'
+//                             label: "Bookmark",
+//                             icon: "pi pi-fw pi-bookmark"
 //                         },
 //                         {
-//                             label: 'Video',
-//                             icon: 'pi pi-fw pi-video'
+//                             label: "Video",
+//                             icon: "pi pi-fw pi-video"
 //                         },
 
 //                     ]
 //                 },
 //                 {
-//                     label: 'Delete',
-//                     icon: 'pi pi-fw pi-trash'
+//                     label: "Delete",
+//                     icon: "pi pi-fw pi-trash"
 //                 },
 //                 {
 //                     separator: true
 //                 },
 //                 {
-//                     label: 'Export',
-//                     icon: 'pi pi-fw pi-external-link'
+//                     label: "Export",
+//                     icon: "pi pi-fw pi-external-link"
 //                 }
 //             ]
 //         },
 //         {
-//             label: 'Edit',
-//             icon: 'pi pi-fw pi-pencil',
+//             label: "Edit",
+//             icon: "pi pi-fw pi-pencil",
 //             items: [
 //                 {
-//                     label: 'Left',
-//                     icon: 'pi pi-fw pi-align-left'
+//                     label: "Left",
+//                     icon: "pi pi-fw pi-align-left"
 //                 },
 //                 {
-//                     label: 'Right',
-//                     icon: 'pi pi-fw pi-align-right'
+//                     label: "Right",
+//                     icon: "pi pi-fw pi-align-right"
 //                 },
 //                 {
-//                     label: 'Center',
-//                     icon: 'pi pi-fw pi-align-center'
+//                     label: "Center",
+//                     icon: "pi pi-fw pi-align-center"
 //                 },
 //                 {
-//                     label: 'Justify',
-//                     icon: 'pi pi-fw pi-align-justify'
+//                     label: "Justify",
+//                     icon: "pi pi-fw pi-align-justify"
 //                 },
 
 //             ]
 //         },
 //         {
-//             label: 'Users',
-//             icon: 'pi pi-fw pi-user',
+//             label: "Users",
+//             icon: "pi pi-fw pi-user",
 //             items: [
 //                 {
-//                     label: 'New',
-//                     icon: 'pi pi-fw pi-user-plus',
+//                     label: "New",
+//                     icon: "pi pi-fw pi-user-plus",
 
 //                 },
 //                 {
-//                     label: 'Delete',
-//                     icon: 'pi pi-fw pi-user-minus',
+//                     label: "Delete",
+//                     icon: "pi pi-fw pi-user-minus",
 
 //                 },
 //                 {
-//                     label: 'Search',
-//                     icon: 'pi pi-fw pi-users',
+//                     label: "Search",
+//                     icon: "pi pi-fw pi-users",
 //                     items: [
 //                         {
-//                             label: 'Filter',
-//                             icon: 'pi pi-fw pi-filter',
+//                             label: "Filter",
+//                             icon: "pi pi-fw pi-filter",
 //                             items: [
 //                                 {
-//                                     label: 'Print',
-//                                     icon: 'pi pi-fw pi-print'
+//                                     label: "Print",
+//                                     icon: "pi pi-fw pi-print"
 //                                 }
 //                             ]
 //                         },
 //                         {
-//                             icon: 'pi pi-fw pi-bars',
-//                             label: 'List'
+//                             icon: "pi pi-fw pi-bars",
+//                             label: "List"
 //                         }
 //                     ]
 //                 }
 //             ]
 //         },
 //         {
-//             label: 'Events',
-//             icon: 'pi pi-fw pi-calendar',
+//             label: "Events",
+//             icon: "pi pi-fw pi-calendar",
 //             items: [
 //                 {
-//                     label: 'Edit',
-//                     icon: 'pi pi-fw pi-pencil',
+//                     label: "Edit",
+//                     icon: "pi pi-fw pi-pencil",
 //                     items: [
 //                         {
-//                             label: 'Save',
-//                             icon: 'pi pi-fw pi-calendar-plus'
+//                             label: "Save",
+//                             icon: "pi pi-fw pi-calendar-plus"
 //                         },
 //                         {
-//                             label: 'Delete',
-//                             icon: 'pi pi-fw pi-calendar-minus'
+//                             label: "Delete",
+//                             icon: "pi pi-fw pi-calendar-minus"
 //                         }
 //                     ]
 //                 },
 //                 {
-//                     label: 'Archieve',
-//                     icon: 'pi pi-fw pi-calendar-times',
+//                     label: "Archieve",
+//                     icon: "pi pi-fw pi-calendar-times",
 //                     items: [
 //                         {
-//                             label: 'Remove',
-//                             icon: 'pi pi-fw pi-calendar-minus'
+//                             label: "Remove",
+//                             icon: "pi pi-fw pi-calendar-minus"
 //                         }
 //                     ]
 //                 }
 //             ]
 //         },
 //         {
-//             label: 'Quit',
-//             icon: 'pi pi-fw pi-power-off'
+//             label: "Quit",
+//             icon: "pi pi-fw pi-power-off"
 //         }
 //     ];
 
-//     const start = <img alt="logo" src="showcase/images/logo.png" onError={(e) => e.target.src='https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'} height="40" className="mr-2"></img>;
+//     const start = <img alt="logo" src="showcase/images/logo.png" onError={(e) => e.target.src="https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png"} height="40" className="mr-2"></img>;
 //     const end = <InputText placeholder="Search" type="text" />;
 
 //     return (
