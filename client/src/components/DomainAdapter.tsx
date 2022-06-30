@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { ProgressSpinner } from 'primereact/progressspinner';
 
 import { useWebsocketContext } from "../lib/@react/useWebsocket";
 import Message from "../lib/@relay/Message";
