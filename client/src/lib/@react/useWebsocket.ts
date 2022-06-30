@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 
 import Message from "../@relay/Message";
 
@@ -60,24 +60,27 @@ export class WebsocketBroker {
 	}
 };
 
+// export const WebSocketContext = React.createContext<any>(new WebsocketBroker());
+
 export function useWebsocket(callback: any) {
+	// const websocket = React.useContext(WebSocketContext);
 	const broker = useRef<any>(null);
 	const [ connected, setConnected ] = useState(false);
+
+	// websocket.connect();
+	// console.log(websocket)
 
 	useEffect(() => {
 		broker.current = new WebsocketBroker();
 		const ws = broker.current;
 		
 		ws.onOpen = () => {
-			console.log(`Websocket opened`);
 			setConnected(true);
 		};
 		ws.onClose = () => {
-			console.log(`Websocket closed`);
 			setConnected(false);
 		};
 		ws.onMessage = (message: Message) => {
-			console.log(`Websocket message`, message);
 			callback(message);
 		};
 

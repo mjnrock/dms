@@ -36,6 +36,7 @@ function ActionButton({ icon, onClick, color }: { icon: string, onClick: Functio
 
 export function CrudTable({ name, data, columns }: { name: string, data: any, columns: any }) {
 	const [ globalFilter, setGlobalFilter ] = useState(null);
+	const [ selectedProducts, setSelectedProducts ] = useState([]);
 	const dt: any = useRef(null);
 
 
@@ -110,13 +111,13 @@ export function CrudTable({ name, data, columns }: { name: string, data: any, co
 				dataKey="id"
 				value={ data }
 				removableSort
-				// selection={ selectedProducts }
-				// onSelectionChange={ (e) => setSelectedProducts(e.value) }
+				selection={ selectedProducts }
+				onSelectionChange={ (e) => setSelectedProducts(e.value) }
 				paginator
 				rows={ 25 }
 				rowsPerPageOptions={ [ 5, 10, 25, 50, 100 ] }
 				paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-				currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+				currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
 				globalFilter={ globalFilter }
 				header={ tableHeader }
 				responsiveLayout="scroll"

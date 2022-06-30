@@ -33,7 +33,7 @@ BEGIN
 
     IF @Operation = 'read'
 		BEGIN
-			IF @JSON = '["*"]'
+			IF (@JSON = '["*"]' OR @JSON = '[ "*" ]' OR @JSON = '"*"' OR @JSON = '*')
 				BEGIN
 					SET @SQL = CONCAT('SELECT * FROM ', @FQN);
 				END

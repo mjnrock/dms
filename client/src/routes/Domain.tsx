@@ -32,12 +32,11 @@ export function Domain() {
 		{ field: "UUID", header: "UUID" }
 	];
 
-	const onMessage = (message: Message) => {
+	const [ websocket, isConnected ] = useWebsocket((message: Message) => {
 		if(message.type === "CRUD") {
 			setData(message.data);
 		}
-	};
-	const [ websocket, isConnected ] = useWebsocket(onMessage);
+	});
 
 	useEffect(() => {
 		if(websocket) {
