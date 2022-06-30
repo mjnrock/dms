@@ -1,6 +1,8 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Button, Navbar, ButtonGroup } from "@blueprintjs/core";
+
+import { useWebsocketContext, WebsocketBroker } from "./lib/@react/useWebsocket";
 
 /**
  * Contains the @imports for Blueprint CSS
@@ -10,6 +12,7 @@ import "./assets/css/main.css";
 import "primereact/resources/themes/tailwind-light/theme.css";  //theme
 import "primereact/resources/primereact.min.css";                  //core css
 import "primeicons/primeicons.css";                                //icons
+import Loading from "./components/Loading";
 
 
 const sideBarLinks = [
@@ -104,10 +107,34 @@ const sideBarLinks = [
 	},
 ];
 
+export const WebSocketContext = React.createContext(new WebsocketBroker());
+
 //NOTE: App (via ReactRouter6) acts as the wrapper (via Outlet) here, and as such, only logic that should span the entire app should be placed here.
 export function App() {
+	const webSocketBroker = useWebsocketContext(WebSocketContext);
+	const [ isWebSocketConnected, setIsWebSocketConnected ] = useState(false);
 	const [ isSidebarCollapsed, setIsSideCollapsed ] = useState(false);
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		const current = webSocketBroker;
+
+		current.onOpen = () => {
+			setIsWebSocketConnected(true);
+		};
+
+		current.connect();
+		
+		return () => {
+			current.close();
+		};
+	}, [ webSocketBroker ]);
+
+	if(!isWebSocketConnected) {
+		return (
+			<Loading />
+		)
+	}
 
 	return (
 		<div className="w-full h-screen">
