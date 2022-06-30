@@ -66,15 +66,8 @@ wss.on("connection", client => {
 
 	client.on("message", async input => {
 		try {
-			//TODO Formalize the handling here with a type router for a command bus
-			// const data = JSON.parse(input);
-			// console.log(`Message received`, data);
-
-			// let [ op, table, json, where ] = data;
-			// json = JSON.stringify(json);
-			
+			//TODO Formalize the handling here with a type router for a command bus			
 			const msg = Message.FromJson(input);
-			console.log(msg);
 
 			let [ op, table, json, where ] = msg.data;
 
