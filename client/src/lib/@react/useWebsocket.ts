@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
+
 import Message from "../@relay/Message";
-import { useRef } from "react";
 
 export class WebsocketBroker {
 	public static Host = `buddha.com`;

@@ -28,6 +28,10 @@ export class Message {
 		};
 	}
 
+	get type() {
+		return this.meta.type;
+	}
+
 	toObject() {
 		const obj = {
 			...this,

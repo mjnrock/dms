@@ -21,12 +21,7 @@ export class API {
 	}
 };
 
-const onMessage = (message: Message) => {
-	console.log(message);
-};
-
 export function Domain() {
-
 	const [ data, setData ] = useState();
 	const columns = [
 		{ field: "DomainID", header: "ID" },
@@ -36,7 +31,12 @@ export function Domain() {
 		{ field: "Path", header: "Path" },
 		{ field: "UUID", header: "UUID" }
 	];
-	
+
+	const onMessage = (message: Message) => {
+		if(message.type === "CRUD") {
+			setData(message.data);
+		}
+	};
 	const [ websocket, isConnected ] = useWebsocket(onMessage);
 
 	useEffect(() => {
@@ -46,7 +46,7 @@ export function Domain() {
 				data: [
 					"read",
 					"vwDomain",
-					[ "*" ],
+					'["*"]',
 				],
 			}));
 		}

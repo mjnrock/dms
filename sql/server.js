@@ -73,18 +73,19 @@ wss.on("connection", client => {
 			// let [ op, table, json, where ] = data;
 			// json = JSON.stringify(json);
 			
-			const message = Message.FromJson(input);
-			console.log(message);
+			const msg = Message.FromJson(input);
+			console.log(msg);
 
-			// let [ op, table, json, where ] = data;
-			// // * Request version
-			// // const results = await DMS.execute(`[Core].[spCRUD]`, {
-			// const results = await DMS.CRUD({
-			// 	Operation: [ DMS.Driver.VarChar(255), op ],
-			// 	Table: [ DMS.Driver.VarChar(255), table ],
-			// 	JSON: [ DMS.Driver.VarChar(4000), json ],
-			// 	Where: !!where ? [ DMS.Driver.NVarChar(DMS.Driver.MAX), where ] : false
-			// });
+			let [ op, table, json, where ] = msg.data;
+
+			// * Request version
+			// const results = await DMS.execute(`[Core].[spCRUD]`, {
+			const results = await DMS.CRUD({
+				Operation: [ DMS.Driver.VarChar(255), op ],
+				Table: [ DMS.Driver.VarChar(255), table ],
+				JSON: [ DMS.Driver.VarChar(4000), json ],
+				Where: !!where ? [ DMS.Driver.NVarChar(DMS.Driver.MAX), where ] : false
+			});
 
 			// console.log(results.length ? "Results" : "No results");
 
