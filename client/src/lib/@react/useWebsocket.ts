@@ -2,6 +2,8 @@ import { useContext, useRef, useEffect, useState } from "react";
 
 import Message from "../@relay/Message";
 
+const isDebuggingMode = false;
+
 export class WebsocketBroker {
 	public static Host = `buddha.com`;
 	public static Port = `3001`;
@@ -14,15 +16,21 @@ export class WebsocketBroker {
 	}
 
 	public onOpen = (): void => {
-		console.log(`Websocket opened`);
+		if(isDebuggingMode) {
+			console.log(`Websocket opened`);
+		}
 	}
 
 	public onClose = (): void => {
-		console.log(`Websocket closed`);
+		if(isDebuggingMode) {
+			console.log(`Websocket closed`);
+		}
 	}
 
 	public onMessage = (message: Message): void => {
-		console.log(`Websocket message`, message);
+		if(isDebuggingMode) {
+			console.log(`Websocket message`, message);
+		}
 	}
 
 	public connect = (url: string = WebsocketBroker.URL) => {
