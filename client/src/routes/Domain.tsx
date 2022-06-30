@@ -1,9 +1,9 @@
 // @ts-nocheck
-import { Menubar } from "primereact/menubar";
+// import { Menubar } from "primereact/menubar";
 import { useEffect, useState } from "react";
 import Message from "../lib/@relay/Message";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
+
+import CrudTable from "../components/CrudTable";
 
 //TODO Make this more robust, move to a more centralized context with hooks, and add an onopen handler to kick things off
 export class API {
@@ -52,178 +52,15 @@ export function Domain() {
 		return <div>Loading...</div>;
 	}
 
-	/**
-	 * TODO: Setup a template version for the data table and abstract into a reusable component
-	 * ? Use the PrimeReact DataTable CRUD example (https://www.primefaces.org/primereact/datatable/crud/)
-	 */
 	return (
 		<div>
-			<Menubar />
-
-			<DataTable
-				value={ Object.values(json) }
-				size="small"
-				removableSort
-				selectionMode="single"
-				onSelectionChange={ e => console.log(e.value) }
-				responsiveLayout="scroll"
-			>
-				{
-					columns.map((col, i) => {
-						return <Column key={ col.field } field={ col.field } header={ col.header } sortable />;
-					})
-				}
-			</DataTable>
+			<CrudTable
+				name={ "Domain" }
+				data={ json }
+				columns={ columns }
+			/>
 		</div>
 	);
 };
 
 export default Domain;
-
-
-
-//? Prime React Menubar Example (https://www.primefaces.org/primereact/menubar/)
-// import React from "react";
-// import { Menubar } from "primereact/menubar";
-// import { InputText } from "primereact/inputtext";
-
-// const MenubarDemo = () => {
-//     const items = [
-//         {
-//             label: "File",
-//             icon: "pi pi-fw pi-file",
-//             items: [
-//                 {
-//                     label: "New",
-//                     icon: "pi pi-fw pi-plus",
-//                     items: [
-//                         {
-//                             label: "Bookmark",
-//                             icon: "pi pi-fw pi-bookmark"
-//                         },
-//                         {
-//                             label: "Video",
-//                             icon: "pi pi-fw pi-video"
-//                         },
-
-//                     ]
-//                 },
-//                 {
-//                     label: "Delete",
-//                     icon: "pi pi-fw pi-trash"
-//                 },
-//                 {
-//                     separator: true
-//                 },
-//                 {
-//                     label: "Export",
-//                     icon: "pi pi-fw pi-external-link"
-//                 }
-//             ]
-//         },
-//         {
-//             label: "Edit",
-//             icon: "pi pi-fw pi-pencil",
-//             items: [
-//                 {
-//                     label: "Left",
-//                     icon: "pi pi-fw pi-align-left"
-//                 },
-//                 {
-//                     label: "Right",
-//                     icon: "pi pi-fw pi-align-right"
-//                 },
-//                 {
-//                     label: "Center",
-//                     icon: "pi pi-fw pi-align-center"
-//                 },
-//                 {
-//                     label: "Justify",
-//                     icon: "pi pi-fw pi-align-justify"
-//                 },
-
-//             ]
-//         },
-//         {
-//             label: "Users",
-//             icon: "pi pi-fw pi-user",
-//             items: [
-//                 {
-//                     label: "New",
-//                     icon: "pi pi-fw pi-user-plus",
-
-//                 },
-//                 {
-//                     label: "Delete",
-//                     icon: "pi pi-fw pi-user-minus",
-
-//                 },
-//                 {
-//                     label: "Search",
-//                     icon: "pi pi-fw pi-users",
-//                     items: [
-//                         {
-//                             label: "Filter",
-//                             icon: "pi pi-fw pi-filter",
-//                             items: [
-//                                 {
-//                                     label: "Print",
-//                                     icon: "pi pi-fw pi-print"
-//                                 }
-//                             ]
-//                         },
-//                         {
-//                             icon: "pi pi-fw pi-bars",
-//                             label: "List"
-//                         }
-//                     ]
-//                 }
-//             ]
-//         },
-//         {
-//             label: "Events",
-//             icon: "pi pi-fw pi-calendar",
-//             items: [
-//                 {
-//                     label: "Edit",
-//                     icon: "pi pi-fw pi-pencil",
-//                     items: [
-//                         {
-//                             label: "Save",
-//                             icon: "pi pi-fw pi-calendar-plus"
-//                         },
-//                         {
-//                             label: "Delete",
-//                             icon: "pi pi-fw pi-calendar-minus"
-//                         }
-//                     ]
-//                 },
-//                 {
-//                     label: "Archieve",
-//                     icon: "pi pi-fw pi-calendar-times",
-//                     items: [
-//                         {
-//                             label: "Remove",
-//                             icon: "pi pi-fw pi-calendar-minus"
-//                         }
-//                     ]
-//                 }
-//             ]
-//         },
-//         {
-//             label: "Quit",
-//             icon: "pi pi-fw pi-power-off"
-//         }
-//     ];
-
-//     const start = <img alt="logo" src="showcase/images/logo.png" onError={(e) => e.target.src="https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png"} height="40" className="mr-2"></img>;
-//     const end = <InputText placeholder="Search" type="text" />;
-
-//     return (
-//         <div>
-//             <div className="card">
-//                 <Menubar model={items} start={start} end={end} />
-//             </div>
-//         </div>
-//     );
-// }
