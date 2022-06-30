@@ -67,22 +67,26 @@ wss.on("connection", client => {
 	client.on("message", async input => {
 		try {
 			//TODO Formalize the handling here with a type router for a command bus
-			const data = JSON.parse(input);
-			console.log(`Message received`, data);
+			// const data = JSON.parse(input);
+			// console.log(`Message received`, data);
 
-			let [ op, table, json, where ] = data;
-			json = JSON.stringify(json);
+			// let [ op, table, json, where ] = data;
+			// json = JSON.stringify(json);
+			
+			const message = Message.FromJson(input);
+			console.log(message);
 
-			// * Request version
-			// const results = await DMS.execute(`[Core].[spCRUD]`, {
-			const results = await DMS.CRUD({
-				Operation: [ DMS.Driver.VarChar(255), op ],
-				Table: [ DMS.Driver.VarChar(255), table ],
-				JSON: [ DMS.Driver.VarChar(4000), json ],
-				Where: !!where ? [ DMS.Driver.NVarChar(DMS.Driver.MAX), where ] : false
-			});
+			// let [ op, table, json, where ] = data;
+			// // * Request version
+			// // const results = await DMS.execute(`[Core].[spCRUD]`, {
+			// const results = await DMS.CRUD({
+			// 	Operation: [ DMS.Driver.VarChar(255), op ],
+			// 	Table: [ DMS.Driver.VarChar(255), table ],
+			// 	JSON: [ DMS.Driver.VarChar(4000), json ],
+			// 	Where: !!where ? [ DMS.Driver.NVarChar(DMS.Driver.MAX), where ] : false
+			// });
 
-			console.log(results.length ? "Results" : "No results");
+			// console.log(results.length ? "Results" : "No results");
 
 			//* Query version
 			// const results = await DMS.query(`EXEC [Core].[spCRUD] @Operation = '${ op }', @Table = '${ table }', @JSON = '${ json }'${ !!where ? `, @Where = '${ where }'` : "" }`);

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Message from "../lib/@relay/Message";
 
 import CrudTable from "../components/CrudTable";
+import useWebsocket from "../lib/@react/useWebsocket";
 
 //TODO Make this more robust, move to a more centralized context with hooks, and add an onopen handler to kick things off
 export class API {
@@ -20,8 +21,13 @@ export class API {
 	}
 };
 
+const onMessage = (message: Message) => {
+	console.log(message);
+};
+
 export function Domain() {
-	const [ json, setJson ] = useState();
+
+	const [ data, setData ] = useState();
 	const columns = [
 		{ field: "DomainID", header: "ID" },
 		{ field: "ParentDomainID", header: "Parent" },
@@ -30,25 +36,23 @@ export function Domain() {
 		{ field: "Path", header: "Path" },
 		{ field: "UUID", header: "UUID" }
 	];
+	
+	const [ websocket, isConnected ] = useWebsocket(onMessage);
 
 	useEffect(() => {
-		API.WebSocket.addEventListener("message", e => {
-			const msg = Message.FromJson(e.data);
+		if(websocket) {
+			websocket.send(Message.From({
+				type: "Domain.GetAll",
+				data: [
+					"read",
+					"vwDomain",
+					[ "*" ],
+				],
+			}));
+		}
+	}, [ isConnected ]);
 
-			setJson(msg.data);
-		});
-
-		setTimeout(() => {
-			API.WebSocket.send(JSON.stringify([
-				"read",
-				"vwDomain",
-				[ "*" ],
-				// "ParentDomainID=4",
-			]))
-		}, 1000);
-	}, []);
-
-	if(!json) {
+	if(!data) {
 		return <div>Loading...</div>;
 	}
 
@@ -56,7 +60,7 @@ export function Domain() {
 		<div>
 			<CrudTable
 				name={ "Domain" }
-				data={ json }
+				data={ data }
 				columns={ columns }
 			/>
 		</div>

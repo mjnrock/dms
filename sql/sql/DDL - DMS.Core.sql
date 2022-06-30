@@ -188,7 +188,7 @@ WITH CTE (UUID, [Name], DomainID, ParentDomainID, [Level], [Path], CreatedDateTi
 		d.DomainID,
 		d.ParentDomainID,
 		[Level] + 1,
-		CAST(CONCAT([Path], '.', Utility.RegexReplace(d.[Name], '^a-z0-9\._')) AS VARCHAR(255)),
+		CAST(CONCAT([Path], ' / ', Utility.RegexReplace(d.[Name], '^a-z0-9\._')) AS VARCHAR(255)),
 		d.CreatedDateTimeUTC,
 		d.ModifiedDateTimeUTC,
 		d.DeactivatedDateTimeUTC
