@@ -1,6 +1,6 @@
 import { useContext, useRef, useEffect, useState } from "react";
 
-import Message from "../@relay/Message";
+import Message from "../Message";
 
 const isDebuggingMode = false;
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Button, Navbar, ButtonGroup } from "@blueprintjs/core";
 
-import { useWebsocketContext, WebsocketBroker } from "./lib/@react/useWebsocket";
+import { useWebsocketContext, WebsocketBroker } from "./lib/@relay/react/useWebsocket";
 
 /**
  * Contains the @imports for Blueprint CSS

@@ -28,16 +28,14 @@ export function Entity({ data, columns, onEdit, onDelete }: { data: any, columns
 	};
 
 	return (
-		<>
-			<CrudTable
-				name={ "Entity" }
-				data={ data }
-				columns={ columns }
-				cellTemplate={ cellTemplate }
-				onEdit={ onEdit }
-				onDelete={ onDelete }
-			/>
-		</>
+		<CrudTable
+			name={ "Entity" }
+			data={ data }
+			columns={ columns }
+			cellTemplate={ cellTemplate }
+			onEdit={ onEdit }
+			onDelete={ onDelete }
+		/>
 	);
 };
 

@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { WebsocketBroker } from "./useWebsocket";
-import { Message } from "./../@relay/Message";
+import { Message } from "../Message";
 
 export function useCRUDAdapter({ webSocketBroker, setter }: { webSocketBroker: WebsocketBroker, setter: Function }) {
 	const toast: any = useRef(null);
