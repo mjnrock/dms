@@ -22,7 +22,10 @@ export function DomainAdapter() {
 	const webSocketBroker = useWebsocketContext(WebSocketContext);
 	useEffect(() => {
 		webSocketBroker.onMessage = (message: Message) => {
+			console.log(111111)
 			if(message.type === "CRUD") {
+				console.log(222222)
+				console.log(message.data)
 				setData(message.data);
 			}
 		};
@@ -47,6 +50,32 @@ export function DomainAdapter() {
 		<Domain
 			data={ data }
 			columns={ columns }
+			onEdit={ (rowData: any) => {
+				console.log(rowData);
+			} }
+			onDelete={ (rowData: any) => {
+				webSocketBroker.send(Message.From({
+					type: "Domain.GetAll",
+					data: [
+						"delete",
+						"Domain",
+						'["*"]',
+						`DomainID=${ rowData.DomainID }`
+					],
+				}));
+
+				//TODO: Have C-UD operations return a success/failure message and await that before updating the table
+				setTimeout(() => {
+					webSocketBroker.send(Message.From({
+						type: "Domain.GetAll",
+						data: [
+							"read",
+							"vwDomain",
+							'["*"]',
+						],
+					}));
+				}, 250);
+			} }
 		/>
 	);
 };

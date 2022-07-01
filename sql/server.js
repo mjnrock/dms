@@ -88,11 +88,14 @@ wss.on("connection", client => {
 			// console.log(results);
 
 			//TODO Use the full Relay package here, rather than an ad-hoc tsc compiled version
-			client.send(Message.From({
-				data: results,
-				emitter: client.uuid,
-				type: `CRUD`,
-			}).toJson());
+			if(op === "read") {
+				console.log(234324)
+				client.send(Message.From({
+					data: results,
+					emitter: client.uuid,
+					type: `CRUD`,
+				}).toJson());
+			}
 		} catch(e) { }
 	});
 });

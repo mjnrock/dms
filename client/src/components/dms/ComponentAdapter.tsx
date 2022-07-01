@@ -46,6 +46,8 @@ export function ComponentAdapter() {
 		<Component
 			data={ data }
 			columns={ columns }
+			onEdit={ () => {} }
+			onDelete={ () => {} }
 		/>
 	);
 };

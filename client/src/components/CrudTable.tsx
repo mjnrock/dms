@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import { Toolbar } from "primereact/toolbar";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
@@ -30,15 +29,14 @@ function onFilter(e: any, setter: Function) {
 
 function ActionButton({ icon, onClick, color }: { icon: string, onClick: Function, color?: string }) {
 	return (
-		<Button icon={ `pi pi-${ icon }` } className={ `mb-2 mr-2 p-button p-component p-button-rounded p-button-${ color } p-button-text p-button-icon-only` } onClick={ () => onClick() } />
+		<Button icon={ `pi pi-${ icon }` } className={ `mb-2 mr-2 p-button p-component p-button-rounded p-button-${ color } p-button-text p-button-icon-only` } onClick={ (...args) => onClick(...args) } />
 	);
 }
 
-export function CrudTable({ name, data, columns }: { name: string, data: any, columns: any }) {
+export function CrudTable({ name, data, columns, cellTemplate, onEdit, onDelete }: { name: string, data: any, columns: any, cellTemplate?: any, onEdit: Function, onDelete: Function }) {
 	const [ globalFilter, setGlobalFilter ] = useState(null);
-	const [ selectedProducts, setSelectedProducts ] = useState([]);
+	const [ selectedRows, setSelectedRows ] = useState([]);
 	const dt: any = useRef(null);
-
 
 	const exportXLSX = () => {
 		import("xlsx").then(xlsx => {
@@ -50,28 +48,12 @@ export function CrudTable({ name, data, columns }: { name: string, data: any, co
 		});
 	};
 
-	const leftToolbarTemplate = () => {
-		return (
-			<>
-				{/* <Button label="New" icon="pi pi-plus" className="mr-2 p-button-success" onClick={ openNew } /> */ }
-				{/* <Button label="Delete" icon="pi pi-trash" className="p-button-danger" onClick={ confirmDeleteSelected } disabled={ !selectedProducts || !selectedProducts.length } /> */ }
-			</>
-		)
-	}
-
-	const rightToolbarTemplate = () => {
-		return (
-			<>
-				<ActionButton icon="upload" onClick={ exportXLSX } color="help" />
-			</>
-		)
-	}
-
 	/**
 	 * This populates the header and the global filter
 	 */
 	const tableHeader = (
 		<div className="flex table-header">
+			<ActionButton icon="upload" onClick={ exportXLSX } color="help" />
 			<span className="flex-1 mt-2 text-2xl">{ name }</span>
 			
 			<span className="p-input-icon-left">
@@ -81,14 +63,16 @@ export function CrudTable({ name, data, columns }: { name: string, data: any, co
 		</div>
 	);
 
-	/**
-	 * Use this to create the actual data that will be displayed in the table cell.
-	 *? See (https://www.primefaces.org/primereact/datatable/crud/) for examples.
-	 */
-	const cellTemplate = (colData: any) => (rowData: any) => {
-		//* Perform any custom logic here, such as filtering, element wrapping, etc.
-		return rowData[ colData.field ];
-	};
+	if(!cellTemplate) {
+		/**
+		 * Use this to create the actual data that will be displayed in the table cell.
+		 *? See (https://www.primefaces.org/primereact/datatable/crud/) for examples.
+		 */
+		cellTemplate = (colData: any) => (rowData: any) => {
+			//* Perform any custom logic here, such as filtering, element wrapping, etc.
+			return rowData[ colData.field ];
+		};
+	}
 
 	/**
 	 * The template for the the row-level action buttons
@@ -96,42 +80,38 @@ export function CrudTable({ name, data, columns }: { name: string, data: any, co
 	const actionTemplate = (rowData: any) => {
 		return (
 			<>
-				<ActionButton icon="pencil" onClick={ () => { } } color="success" />
-				<ActionButton icon="trash" onClick={ () => { } } color="danger" />
+				<ActionButton icon="pencil" onClick={ () => onEdit(rowData) } color="success" />
+				<ActionButton icon="trash" onClick={ () => onDelete(rowData) } color="danger" />
 			</>
 		);
 	};
 
 	return (
-		<div className="card">
-			<Toolbar className="mb-4" left={ leftToolbarTemplate } right={ rightToolbarTemplate } />
-
-			<DataTable
-				ref={ dt }
-				dataKey="id"
-				value={ data }
-				removableSort
-				selection={ selectedProducts }
-				onSelectionChange={ (e) => setSelectedProducts(e.value) }
-				paginator
-				rows={ 25 }
-				rowsPerPageOptions={ [ 5, 10, 25, 50, 100 ] }
-				paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-				currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
-				globalFilter={ globalFilter }
-				header={ tableHeader }
-				responsiveLayout="scroll"
-			>
-				{
-					columns.map((col: any, i: number) => {
-						return (
-							<Column key={ i } field={ col.field } header={ col.header } sortable body={ cellTemplate(col) } />
-						);
-					})
-				}
-				<Column body={ actionTemplate } exportable={ false } style={ { minWidth: "8rem" } } header={ `Actions` } />
-			</DataTable>
-		</div>
+		<DataTable
+			ref={ dt }
+			dataKey="id"
+			value={ data }
+			removableSort
+			selection={ selectedRows }
+			onSelectionChange={ (e) => setSelectedRows(e.value) }
+			paginator
+			rows={ 25 }
+			rowsPerPageOptions={ [ 5, 10, 25, 50, 100 ] }
+			paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+			currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+			globalFilter={ globalFilter }
+			header={ tableHeader }
+			responsiveLayout="scroll"
+		>
+			{
+				columns.map((col: any, i: number) => {
+					return (
+						<Column key={ i } field={ col.field } header={ col.header } sortable body={ cellTemplate(col) } />
+					);
+				})
+			}
+			<Column body={ actionTemplate } exportable={ false } style={ { minWidth: "8rem" } } header={ `Actions` } />
+		</DataTable>
 	);
 };
 

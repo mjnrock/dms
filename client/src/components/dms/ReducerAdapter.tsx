@@ -46,6 +46,8 @@ export function ReducerAdapter() {
 		<Reducer
 			data={ data }
 			columns={ columns }
+			onEdit={ () => {} }
+			onDelete={ () => {} }
 		/>
 	);
 };

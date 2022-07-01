@@ -15,7 +15,22 @@ VALUES
 	(NULL, 'Fuzzy Knuts'),
 	(3, 'Sandbox'),
 	(3, 'Development'),
-	(3, 'Production');
+	(3, 'Production'),
+	(NULL, 'TEST'),
+	(NULL, 'TEST'),
+	(NULL, 'TEST'),
+	(NULL, 'TEST'),
+	(NULL, 'TEST'),
+	(NULL, 'TEST'),
+	(NULL, 'TEST'),
+	(NULL, 'TEST'),
+	(NULL, 'TEST'),
+	(NULL, 'TEST'),
+	(NULL, 'TEST'),
+	(NULL, 'TEST'),
+	(NULL, 'TEST'),
+	(NULL, 'TEST'),
+	(NULL, 'TEST');
 
 
 INSERT INTO Core.Component (

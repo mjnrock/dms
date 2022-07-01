@@ -15,7 +15,6 @@ export function EntityAdapter() {
 		{ field: "DomainID", header: "Domain" },
 		{ field: "Name", header: "Name" },
 		{ field: "Type", header: "Type" },
-		{ field: "Component", header: "Components" },
 		{ field: "UUID", header: "UUID" }
 	];
 
@@ -31,7 +30,7 @@ export function EntityAdapter() {
 			type: "Entity.GetAll",
 			data: [
 				"read",
-				"vwEntity",
+				"Entity",
 				'["*"]',
 			],
 		}));
@@ -47,6 +46,8 @@ export function EntityAdapter() {
 		<Entity
 			data={ data }
 			columns={ columns }
+			onEdit={ () => {} }
+			onDelete={ () => {} }
 		/>
 	);
 };
