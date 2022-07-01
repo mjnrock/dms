@@ -38,10 +38,6 @@ export function CrudAdapter({ comp, columns, readTable, deleteTable, pk }: any) 
 			<Comp
 				data={ data }
 				columns={ columns }
-				onEdit={ (rowData: any) => {
-					console.log(rowData);
-					//TODO Open an edit Modal or redirect to a edit page
-				} }
 				onDelete={ (rowData: any) => {
 					crud({
 						op: "delete",
