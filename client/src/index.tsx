@@ -16,10 +16,10 @@ root.render(
 			<Routes>
 				<Route path="/" element={ <App /> }>
 					<Route path="main" element={ <AppRoutes.Main /> } />
-					<Route path="domain" element={ <AppRoutes.Domain /> } />
-					<Route path="component" element={ <AppRoutes.Component /> } />
-					<Route path="reducer" element={ <AppRoutes.Reducer /> } />
-					<Route path="entity" element={ <AppRoutes.Entity /> } />
+					<Route path="domains" element={ <AppRoutes.Domain /> } />
+					<Route path="components" element={ <AppRoutes.Component /> } />
+					<Route path="reducers" element={ <AppRoutes.Reducer /> } />
+					<Route path="entities" element={ <AppRoutes.Entity /> } />
 					<Route
 						path="*"
 						element={

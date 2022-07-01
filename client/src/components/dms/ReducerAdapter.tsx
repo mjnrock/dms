@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
+import { Toast } from "primereact/toast";
 
 import { useWebsocketContext } from "../../lib/@react/useWebsocket";
-import Message from "../../lib/@relay/Message";
-
-import Reducer from "./Reducer";
+import { useCRUDAdapter } from "../../lib/@react/useCRUDAdapter";
 
 import { WebSocketContext } from "../../App";
+
+import Reducer from "./Reducer";
 import Loading from "../Loading";
 
 export function ReducerAdapter() {
+	const webSocketBroker = useWebsocketContext(WebSocketContext);
 	const [ data, setData ] = useState();
 	const columns = [
 		{ field: "ReducerID", header: "ID" },
@@ -17,23 +19,17 @@ export function ReducerAdapter() {
 		{ field: "Scope", header: "Scope" },
 		{ field: "UUID", header: "UUID" }
 	];
+	const { toast, onMessage, crud } = useCRUDAdapter({ webSocketBroker, setter: setData });
 
-	const webSocketBroker = useWebsocketContext(WebSocketContext);
 	useEffect(() => {
-		webSocketBroker.onMessage = (message: Message) => {
-			if(message.type === "CRUD") {
-				setData(message.data);
-			}
-		};
+		webSocketBroker.onMessage = onMessage;
 
-		webSocketBroker.send(Message.From({
-			type: "Reducer.GetAll",
-			data: [
-				"read",
-				"Reducer",
-				'["*"]',
-			],
-		}));
+		crud({
+			op: "read",
+			table: "Reducer",
+			json: "*",
+			where: false,
+		});
 	}, []);
 
 	if(!data) {
@@ -43,12 +39,26 @@ export function ReducerAdapter() {
 	}
 
 	return (
-		<Reducer
-			data={ data }
-			columns={ columns }
-			onEdit={ () => {} }
-			onDelete={ () => {} }
-		/>
+		<>
+			<Toast ref={ toast } />
+
+			<Reducer
+				data={ data }
+				columns={ columns }
+				onEdit={ (rowData: any) => {
+					console.log(rowData);
+					//TODO Open an edit Modal or redirect to a edit page
+				} }
+				onDelete={ (rowData: any) => {
+					crud({
+						op: "delete",
+						table: "Reducer",
+						json: "*",
+						where: `ReducerID=${ rowData.ReducerID }`,
+					});
+				} }
+			/>
+		</>
 	);
 };
 

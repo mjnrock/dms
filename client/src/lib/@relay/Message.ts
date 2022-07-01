@@ -31,6 +31,9 @@ export class Message {
 	get type() {
 		return this.meta.type;
 	}
+	get tags() {
+		return this.meta.tags;
+	}
 
 	toObject() {
 		const obj = {

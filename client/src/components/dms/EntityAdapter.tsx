@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
+import { Toast } from "primereact/toast";
 
 import { useWebsocketContext } from "../../lib/@react/useWebsocket";
-import Message from "../../lib/@relay/Message";
-
-import Entity from "./Entity";
+import { useCRUDAdapter } from "../../lib/@react/useCRUDAdapter";
 
 import { WebSocketContext } from "../../App";
+
+import Entity from "./Entity";
 import Loading from "../Loading";
 
 export function EntityAdapter() {
+	const webSocketBroker = useWebsocketContext(WebSocketContext);
 	const [ data, setData ] = useState();
 	const columns = [
 		{ field: "EntityID", header: "ID" },
@@ -17,23 +19,17 @@ export function EntityAdapter() {
 		{ field: "Type", header: "Type" },
 		{ field: "UUID", header: "UUID" }
 	];
+	const { toast, onMessage, crud } = useCRUDAdapter({ webSocketBroker, setter: setData });
 
-	const webSocketBroker = useWebsocketContext(WebSocketContext);
 	useEffect(() => {
-		webSocketBroker.onMessage = (message: Message) => {
-			if(message.type === "CRUD") {
-				setData(message.data);
-			}
-		};
+		webSocketBroker.onMessage = onMessage;
 
-		webSocketBroker.send(Message.From({
-			type: "Entity.GetAll",
-			data: [
-				"read",
-				"Entity",
-				'["*"]',
-			],
-		}));
+		crud({
+			op: "read",
+			table: "Entity",
+			json: "*",
+			where: false,
+		});
 	}, []);
 
 	if(!data) {
@@ -43,12 +39,26 @@ export function EntityAdapter() {
 	}
 
 	return (
-		<Entity
-			data={ data }
-			columns={ columns }
-			onEdit={ () => {} }
-			onDelete={ () => {} }
-		/>
+		<>
+			<Toast ref={ toast } />
+
+			<Entity
+				data={ data }
+				columns={ columns }
+				onEdit={ (rowData: any) => {
+					console.log(rowData);
+					//TODO Open an edit Modal or redirect to a edit page
+				} }
+				onDelete={ (rowData: any) => {
+					crud({
+						op: "delete",
+						table: "Entity",
+						json: "*",
+						where: `EntityID=${ rowData.EntityID }`,
+					});
+				} }
+			/>
+		</>
 	);
 };
 

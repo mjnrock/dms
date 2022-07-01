@@ -23,19 +23,19 @@ const sideBarLinks = [
 	},
 	{
 		type: "button",
-		url: "/domain",
+		url: "/domains",
 		text: "Domains",
 		icon: "applications",
 	},
 	{
 		type: "button",
-		url: "/component",
+		url: "/components",
 		text: "Components",
 		icon: "cube-add",
 	},
 	{
 		type: "button",
-		url: "/reducer",
+		url: "/reducers",
 		text: "Reducers",
 		icon: "function",
 	},
@@ -53,7 +53,7 @@ const sideBarLinks = [
 	},
 	{
 		type: "button",
-		url: "/entity",
+		url: "/entities",
 		text: "Entities",
 		icon: "new-grid-item",
 	},

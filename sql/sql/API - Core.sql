@@ -26,7 +26,7 @@ ALTER PROCEDURE Core.spCRUD
 	@Where NVARCHAR(MAX) = ''
 AS
 BEGIN
-	SET NOCOUNT ON;
+	SET NOCOUNT OFF;
 	DECLARE @Schema VARCHAR(255) = 'Core';
 	DECLARE @SQL NVARCHAR(MAX) = '';
 	DECLARE @FQN VARCHAR(255) = CONCAT('[', @Schema, '].[', @Table, ']');	-- Expect entries to NOT be quoted (make more robust later)
@@ -159,8 +159,16 @@ BEGIN
 			SET @SQL = REPLACE(CONCAT(@SQL, ' WHERE ', @Where), '"', '''');
 		END
 		
-	--SELECT @SQL;
-	EXEC (@SQL);
+	EXEC sp_executesql @SQL;	
+
+	IF @Operation != 'read'
+		BEGIN
+			/* Store the number of rows affected for use, if needed */
+			DECLARE @RowsAffected INT = 0;
+			SELECT @RowsAffected = @@ROWCOUNT;
+			
+			SELECT @RowsAffected AS RowsAffected;
+		END
 
 	RETURN;
 END

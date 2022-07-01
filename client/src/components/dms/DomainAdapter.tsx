@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
+import { Toast } from "primereact/toast";
 
 import { useWebsocketContext } from "../../lib/@react/useWebsocket";
-import Message from "../../lib/@relay/Message";
-
-import Domain from "./Domain";
+import { useCRUDAdapter } from "../../lib/@react/useCRUDAdapter";
 
 import { WebSocketContext } from "../../App";
+
+import Domain from "./Domain";
 import Loading from "../Loading";
 
 export function DomainAdapter() {
+	const webSocketBroker = useWebsocketContext(WebSocketContext);
 	const [ data, setData ] = useState();
 	const columns = [
 		{ field: "DomainID", header: "ID" },
@@ -18,26 +20,17 @@ export function DomainAdapter() {
 		{ field: "Path", header: "Path" },
 		{ field: "UUID", header: "UUID" }
 	];
+	const { toast, onMessage, crud } = useCRUDAdapter({ webSocketBroker, setter: setData });
 
-	const webSocketBroker = useWebsocketContext(WebSocketContext);
 	useEffect(() => {
-		webSocketBroker.onMessage = (message: Message) => {
-			console.log(111111)
-			if(message.type === "CRUD") {
-				console.log(222222)
-				console.log(message.data)
-				setData(message.data);
-			}
-		};
+		webSocketBroker.onMessage = onMessage;
 
-		webSocketBroker.send(Message.From({
-			type: "Domain.GetAll",
-			data: [
-				"read",
-				"vwDomain",
-				'["*"]',
-			],
-		}));
+		crud({
+			op: "read",
+			table: "vwDomain",
+			json: "*",
+			where: false,
+		});
 	}, []);
 
 	if(!data) {
@@ -47,36 +40,26 @@ export function DomainAdapter() {
 	}
 
 	return (
-		<Domain
-			data={ data }
-			columns={ columns }
-			onEdit={ (rowData: any) => {
-				console.log(rowData);
-			} }
-			onDelete={ (rowData: any) => {
-				webSocketBroker.send(Message.From({
-					type: "Domain.GetAll",
-					data: [
-						"delete",
-						"Domain",
-						'["*"]',
-						`DomainID=${ rowData.DomainID }`
-					],
-				}));
+		<>
+			<Toast ref={ toast } />
 
-				//TODO: Have C-UD operations return a success/failure message and await that before updating the table
-				setTimeout(() => {
-					webSocketBroker.send(Message.From({
-						type: "Domain.GetAll",
-						data: [
-							"read",
-							"vwDomain",
-							'["*"]',
-						],
-					}));
-				}, 250);
-			} }
-		/>
+			<Domain
+				data={ data }
+				columns={ columns }
+				onEdit={ (rowData: any) => {
+					console.log(rowData);
+					//TODO Open an edit Modal or redirect to a edit page
+				} }
+				onDelete={ (rowData: any) => {
+					crud({
+						op: "delete",
+						table: "Domain",
+						json: "*",
+						where: `DomainID=${ rowData.DomainID }`,
+					});
+				} }
+			/>
+		</>
 	);
 };
 

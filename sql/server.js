@@ -88,17 +88,51 @@ wss.on("connection", client => {
 			// console.log(results);
 
 			//TODO Use the full Relay package here, rather than an ad-hoc tsc compiled version
+			let obj;
 			if(op === "read") {
-				console.log(234324)
-				client.send(Message.From({
+				obj =  {
 					data: results,
 					emitter: client.uuid,
-					type: `CRUD`,
-				}).toJson());
+					type: `CRUD:${ op }`,
+				};
+			} else {
+				obj =  {
+					data: results[ 0 ].RowsAffected,
+					emitter: client.uuid,
+					type: `CRUD:${ op }`,
+				};
 			}
-		} catch(e) { }
+
+			client.send(Message.From(obj).toJson());
+		} catch(e) {
+			client.send(Message.From({
+				data: void 0,
+				emitter: client.uuid,
+				type: `error`,
+			}).toJson());
+		}
 	});
 });
+
+
+// let op = "read";
+// const results = DMS.CRUD({
+// 	Operation: [ DMS.Driver.VarChar(255), op ],
+// 	Table: [ DMS.Driver.VarChar(255), "Domain" ],
+// 	JSON: [ DMS.Driver.VarChar(4000), "*" ],
+// 	// JSON: [ DMS.Driver.VarChar(4000), '{"Name":"TeSt"}' ],
+// 	// Where: !!where ? [ DMS.Driver.NVarChar(DMS.Driver.MAX), where ] : false
+// });
+
+// results.then(results => {
+// 	if(results.length) {
+// 		if(op === "read") {
+// 			console.log(results);
+// 		} else {
+// 			console.log(results[ 0 ].RowsAffected);
+// 		}
+// 	}
+// });
 
 server.listen(config.port, err => {
 	if(err) {
