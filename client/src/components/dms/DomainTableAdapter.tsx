@@ -1,10 +1,10 @@
 import CrudAdapter from "../CrudAdapter";
-import Domain from "./Domain";
+import DomainTable from "./DomainTable";
 
-export function DomainAdapter() {
+export function DomainTableAdapter() {
 	return (
 		<CrudAdapter
-			comp={ Domain }
+			comp={ DomainTable }
 			columns={ [
 				{ field: "DomainID", header: "ID" },
 				{ field: "ParentDomainID", header: "Parent" },
@@ -20,4 +20,4 @@ export function DomainAdapter() {
 	)
 };
 
-export default DomainAdapter;
+export default DomainTableAdapter;

@@ -1,9 +1,9 @@
-import DomainAdapter from "../components/dms/DomainAdapter";
+import DomainTableAdapter from "../components/dms/DomainTableAdapter";
 
 export function Domain() {
 	return (
 		<>
-			<DomainAdapter />
+			<DomainTableAdapter />
 		</>
 	);
 };

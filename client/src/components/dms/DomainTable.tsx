@@ -1,6 +1,6 @@
 import CrudTable from "../CrudTable";
 
-export function Domain({ data, columns, onEdit, onDelete }: { data: any, columns: any, onEdit: Function, onDelete: Function }) {
+export function DomainTable({ data, columns, onEdit, onDelete }: { data: any, columns: any, onEdit: Function, onDelete: Function }) {
 	return (
 		<CrudTable
 			name={ "Domain" }
@@ -12,4 +12,4 @@ export function Domain({ data, columns, onEdit, onDelete }: { data: any, columns
 	);
 };
 
-export default Domain;
+export default DomainTable;

@@ -1,10 +1,10 @@
 import CrudAdapter from "../CrudAdapter";
-import Component from "./Component";
+import ComponentTable from "./ComponentTable";
 
-export function ComponentAdapter() {
+export function ComponentTableAdapter() {
 	return (
 		<CrudAdapter
-			comp={ Component }
+			comp={ ComponentTable }
 			columns={ [
 				{ field: "ComponentID", header: "ID" },
 				{ field: "ComponentID", header: "Component" },
@@ -19,4 +19,4 @@ export function ComponentAdapter() {
 	)
 };
 
-export default ComponentAdapter;
+export default ComponentTableAdapter;

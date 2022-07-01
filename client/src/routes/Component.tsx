@@ -1,9 +1,9 @@
-import ComponentAdapter from "../components/dms/ComponentAdapter";
+import ComponentTableAdapter from "../components/dms/ComponentTableAdapter";
 
 export function Component() {
 	return (
 		<>
-			<ComponentAdapter />
+			<ComponentTableAdapter />
 		</>
 	);
 };

@@ -1,9 +1,9 @@
-import EntityAdapter from "../components/dms/EntityAdapter";
+import EntityTableAdapter from "../components/dms/EntityTableAdapter";
 
 export function Entity() {
 	return (
 		<>
-			<EntityAdapter />
+			<EntityTableAdapter />
 		</>
 	);
 };

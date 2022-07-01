@@ -1,6 +1,6 @@
 import CrudTable from "../CrudTable";
 
-export function Reducer({ data, columns, onEdit, onDelete }: { data: any, columns: any, onEdit: Function, onDelete: Function }) {
+export function ReducerTable({ data, columns, onEdit, onDelete }: { data: any, columns: any, onEdit: Function, onDelete: Function }) {
 	return (
 		<CrudTable
 			name={ "Reducer" }
@@ -12,4 +12,4 @@ export function Reducer({ data, columns, onEdit, onDelete }: { data: any, column
 	);
 };
 
-export default Reducer;
+export default ReducerTable;

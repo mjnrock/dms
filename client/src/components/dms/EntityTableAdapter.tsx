@@ -1,10 +1,10 @@
 import CrudAdapter from "../CrudAdapter";
-import Entity from "./Entity";
+import EntityTable from "./EntityTable";
 
-export function EntityAdapter() {
+export function EntityTableAdapter() {
 	return (
 		<CrudAdapter
-			comp={ Entity }
+			comp={ EntityTable }
 			columns={ [
 				{ field: "EntityID", header: "ID" },
 				{ field: "DomainID", header: "Domain" },
@@ -19,4 +19,4 @@ export function EntityAdapter() {
 	)
 };
 
-export default EntityAdapter;
+export default EntityTableAdapter;

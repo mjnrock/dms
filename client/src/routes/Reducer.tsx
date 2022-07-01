@@ -1,9 +1,9 @@
-import ReducerAdapter from "../components/dms/ReducerAdapter";
+import ReducerTableAdapter from "../components/dms/ReducerTableAdapter";
 
 export function Reducer() {
 	return (
 		<>
-			<ReducerAdapter />
+			<ReducerTableAdapter />
 		</>
 	);
 };

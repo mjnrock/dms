@@ -2,7 +2,7 @@ import { Tag } from "primereact/tag";
 
 import CrudTable from "../CrudTable";
 
-export function Entity({ data, columns, onEdit, onDelete }: { data: any, columns: any, onEdit: Function, onDelete: Function }) {
+export function EntityTable({ data, columns, onEdit, onDelete }: { data: any, columns: any, onEdit: Function, onDelete: Function }) {
 	const cellTemplate = (colData: any) => (rowData: any) => {
 		if(colData.field === "Type") {
 			const tags = JSON.parse(rowData[ colData.field ]) || [];
@@ -39,4 +39,4 @@ export function Entity({ data, columns, onEdit, onDelete }: { data: any, columns
 	);
 };
 
-export default Entity;
+export default EntityTable;

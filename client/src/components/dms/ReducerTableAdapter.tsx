@@ -1,10 +1,10 @@
 import CrudAdapter from "../CrudAdapter";
-import Reducer from "./Reducer";
+import ReducerTable from "./ReducerTable";
 
-export function ReducerAdapter() {
+export function ReducerTableAdapter() {
 	return (
 		<CrudAdapter
-			comp={ Reducer }
+			comp={ ReducerTable }
 			columns={ [
 				{ field: "ReducerID", header: "ID" },
 				{ field: "DomainID", header: "Domain" },
@@ -19,4 +19,4 @@ export function ReducerAdapter() {
 	)
 };
 
-export default ReducerAdapter;
+export default ReducerTableAdapter;

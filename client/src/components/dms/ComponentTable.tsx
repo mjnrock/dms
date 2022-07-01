@@ -1,6 +1,6 @@
 import CrudTable from "../CrudTable";
 
-export function Component({ data, columns, onEdit, onDelete }: { data: any, columns: any, onEdit: Function, onDelete: Function }) {
+export function ComponentTable({ data, columns, onEdit, onDelete }: { data: any, columns: any, onEdit: Function, onDelete: Function }) {
 	return (
 		<CrudTable
 			name={ "Component" }
@@ -12,4 +12,4 @@ export function Component({ data, columns, onEdit, onDelete }: { data: any, colu
 	);
 };
 
-export default Component;
+export default ComponentTable;
