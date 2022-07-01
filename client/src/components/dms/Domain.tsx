@@ -1,4 +1,4 @@
-import CrudTable from "./CrudTable";
+import CrudTable from "../CrudTable";
 
 export function Domain({ data, columns }: { data: any, columns: any }) {
 	return (

@@ -1,8 +1,10 @@
+import ReducerAdapter from "../components/dms/ReducerAdapter";
+
 export function Reducer() {
 	return (
-		<div>
-			Reducer
-		</div>
+		<>
+			<ReducerAdapter />
+		</>
 	);
 };
 

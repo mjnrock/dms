@@ -19,7 +19,7 @@ root.render(
 					<Route path="domain" element={ <AppRoutes.Domain /> } />
 					<Route path="component" element={ <AppRoutes.Component /> } />
 					<Route path="reducer" element={ <AppRoutes.Reducer /> } />
-					<Route path="method" element={ <AppRoutes.Method /> } />
+					<Route path="entity" element={ <AppRoutes.Entity /> } />
 					<Route
 						path="*"
 						element={

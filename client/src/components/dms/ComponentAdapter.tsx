@@ -1,21 +1,20 @@
 import { useEffect, useState } from "react";
 
-import { useWebsocketContext } from "../lib/@react/useWebsocket";
-import Message from "../lib/@relay/Message";
+import { useWebsocketContext } from "../../lib/@react/useWebsocket";
+import Message from "../../lib/@relay/Message";
 
-import Domain from "./Domain";
+import Component from "./Component";
 
-import { WebSocketContext } from "../App";
-import Loading from "./Loading";
+import { WebSocketContext } from "../../App";
+import Loading from "../Loading";
 
-export function DomainAdapter() {
+export function ComponentAdapter() {
 	const [ data, setData ] = useState();
 	const columns = [
-		{ field: "DomainID", header: "ID" },
-		{ field: "ParentDomainID", header: "Parent" },
-		{ field: "Level", header: "Depth" },
+		{ field: "ComponentID", header: "ID" },
+		{ field: "DomainID", header: "Domain" },
 		{ field: "Name", header: "Name" },
-		{ field: "Path", header: "Path" },
+		{ field: "Data", header: "Data" },
 		{ field: "UUID", header: "UUID" }
 	];
 
@@ -28,10 +27,10 @@ export function DomainAdapter() {
 		};
 
 		webSocketBroker.send(Message.From({
-			type: "Domain.GetAll",
+			type: "Component.GetAll",
 			data: [
 				"read",
-				"vwDomain",
+				"Component",
 				'["*"]',
 			],
 		}));
@@ -44,11 +43,11 @@ export function DomainAdapter() {
 	}
 
 	return (
-		<Domain
+		<Component
 			data={ data }
 			columns={ columns }
 		/>
 	);
 };
 
-export default DomainAdapter;
+export default ComponentAdapter;

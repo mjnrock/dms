@@ -62,12 +62,14 @@ const sideBarLinks = [
 		url: "/module",
 		text: "Modules",
 		icon: "search-around",
+		disabled: true,
 	},
 	{
 		type: "button",
 		url: "/collection",
 		text: "Collections",
 		icon: "layout-hierarchy",
+		disabled: true,
 	},
 
 	//* Instances
@@ -80,12 +82,14 @@ const sideBarLinks = [
 		url: "/record",
 		text: "Records",
 		icon: "new-layer",
+		disabled: true,
 	},
 	{
 		type: "button",
 		url: "/pool",
 		text: "Pools",
 		icon: "new-layers",
+		disabled: true,
 	},
 
 	//* Other
@@ -98,12 +102,14 @@ const sideBarLinks = [
 		url: "/metadata",
 		text: "Metadata",
 		icon: "id-number",
+		disabled: true,
 	},
 	{
 		type: "button",
 		url: "/documentation",
 		text: "Documentation",
 		icon: "document",
+		disabled: true,
 	},
 ];
 
@@ -136,6 +142,33 @@ export function App() {
 		)
 	}
 
+	function renderSideBar() {
+		if(isSidebarCollapsed) {
+			return sideBarLinks.reduce((a: any, obj: any, i) => {
+				if(obj.type === "divider") {
+					return a;
+				}
+
+				return [
+					...a,
+					<Button key={ i } className="h-[35px]" icon={ obj.icon } title={ obj.text } onClick={ e => navigate(obj.url) } disabled={ obj.disabled } />
+				];
+			}, []);
+		} else {
+			return sideBarLinks.map((obj: any, i) => {
+				if(obj.type === "divider") {
+					return (
+						<div key={ i } className="text-xs">{ obj.text }</div>
+					);
+				} else {
+					return (
+						<Button key={ i } icon={ obj.icon } title={ obj.text } onClick={ e => navigate(obj.url) } disabled={ obj.disabled }>{ obj.text }</Button>
+					);
+				}
+			});
+		}
+	};
+
 	return (
 		<div className="w-full h-screen">
 			<Navbar className="bg-gray-300">
@@ -151,28 +184,7 @@ export function App() {
 				<div className={ `flex-none h-full ${ isSidebarCollapsed ? "w-[50px]" : "w-[165px]" }` }>
 					<ButtonGroup alignText="left" className="flex flex-col justify-between h-full gap-2 p-2 overflow-auto bg-gray-200 flex-nowrap">
 						{
-							isSidebarCollapsed
-								? sideBarLinks.reduce((a: any, obj: any, i) => {
-									if(obj.type === "divider") {
-										return a;
-									}
-
-									return [
-										...a,
-										<Button key={ i } className="h-[35px]" icon={ obj.icon } title={ obj.text } onClick={ e => navigate(obj.url) } />
-									];
-								}, [])
-								: sideBarLinks.map((obj: any, i) => {
-									if(obj.type === "divider") {
-										return (
-											<div key={ i } className="text-xs">{ obj.text }</div>
-										);
-									} else {
-										return (
-											<Button key={ i } icon={ obj.icon } title={ obj.text } onClick={ e => navigate(obj.url) }>{ obj.text }</Button>
-										);
-									}
-								})
+							renderSideBar()
 						}
 						<div className="flex-1" />
 

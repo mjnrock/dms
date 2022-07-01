@@ -1,4 +1,4 @@
-import DomainAdapter from "../components/DomainAdapter";
+import DomainAdapter from "../components/dms/DomainAdapter";
 
 export function Domain() {
 	return (
