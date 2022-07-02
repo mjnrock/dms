@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
@@ -12,10 +12,37 @@ function Label({ text }: any) {
 	);
 }
 
-export function DomainEdit({ visible = true, onHide, data, onEdit, parentOptions }: { visible: boolean, onHide: Function, data: any, onEdit: Function, parentOptions: Array<number> }) {
-	const [ parentDomainID, setParentDomainID ] = useState(data.ParentDomainID || false);
+export function DomainEdit({ visible = true, onHide, data, onEdit, parentOptions }: { visible: boolean, onHide: Function, data: any, onEdit: Function, parentOptions: Array<any> }) {
+	const [ parentDomainID, setParentDomainID ] = useState<any>(data.ParentDomainID || false);
 	const [ name, setName ] = useState(data.Name);
+	const [ modParentOptions, setModParentOptions ] = useState([]);
 	// const [ isActive, setIsActive ] = useState(!data.DeactivatedDateTimeUTC);
+
+	useEffect(() => {
+		const label = (id: any, value: any) => `${ id }: ${ value }`;
+
+		let nextParentOptions: any = parentOptions.reduce((acc: any, [ id, value ]: any) => {
+			if (id !== data.DomainID) {
+				acc.push(label(id, value));
+			}
+	
+			return acc;
+		}, []);
+		nextParentOptions.unshift("None");
+
+		setModParentOptions(nextParentOptions);
+
+		if(data.ParentDomainID) {
+			for(let parents of parentOptions) {
+				const [ id, value ] = parents;
+
+				if(data.ParentDomainID == id) {
+					setParentDomainID(label(id, value));
+					break;
+				}
+			}
+		}
+	}, [ parentOptions ]);
 
 	const header = () => (
 		<div>
@@ -23,9 +50,6 @@ export function DomainEdit({ visible = true, onHide, data, onEdit, parentOptions
 			<span className="font-bold text-gray-600">Edit Row</span>
 		</div>
 	);
-
-	const modParentOptions: any = parentOptions.filter((id: any) => id !== data.DomainID);
-	modParentOptions.unshift("None");
 
 	return (
 		<Dialog header={ header } visible={ visible } maximizable modal style={ { width: '50vw' } } onHide={ () => onHide() }>
@@ -57,13 +81,15 @@ export function DomainEdit({ visible = true, onHide, data, onEdit, parentOptions
 				</div> */}
 
 				<div className="flex w-full mt-6">
-					<Button className="w-full p-button-outlined" label="Save" onClick={ (e) => {
+					<Button className="w-full p-button-success p-button-outlined" label="Save" onClick={ (e) => {
 						const obj: any = {};
 
 						if(parentDomainID === "None") {
 							obj[ `ParentDomainID` ] = "null";
-						} else if(parentOptions.includes(+parentDomainID)) {
-							obj[ `ParentDomainID` ] = +parentDomainID;
+						} else if(parentDomainID) {
+							const [ id ] = parentDomainID.split(": ");
+
+							obj[ `ParentDomainID` ] = +id;
 						}
 
 						if(name !== data.Name) {

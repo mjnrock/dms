@@ -8,13 +8,13 @@ export function DomainTable({ data, columns, onEdit, onDelete }: { data: any, co
 	const [ parentOptions, setParentOptions ] = useState<any>([]);
 
 	useEffect(() => {
-		let parents: any = Object.values(data).reduce((acc: Set<number>, curr: any) => {
-			acc.add(+curr.DomainID);
+		let parents: any = Object.values(data).reduce((acc: Set<any>, curr: any) => {
+			acc.add([ +curr.DomainID, curr.Name ]);
 	
 			return acc;
 		}, new Set<number>());
 
-		parents = Array.from<any>(parents).sort((a, b) => a - b);
+		parents = Array.from<any>(parents).sort((a, b) => a[ 0 ] - b[ 0 ]);
 
 		setParentOptions(parents);
 	}, [ data ]);

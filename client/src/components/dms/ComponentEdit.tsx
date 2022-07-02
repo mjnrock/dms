@@ -2,7 +2,6 @@ import { useState } from "react";
 
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import { Dropdown } from "primereact/dropdown";
 // import { InputSwitch } from "primereact/inputswitch";
 import { Button } from "primereact/button";
 
@@ -12,8 +11,33 @@ function Label({ text }: any) {
 	);
 }
 
-export function ComponentEdit({ visible = true, onHide, data, onEdit, parentOptions }: { visible: boolean, onHide: Function, data: any, onEdit: Function, parentOptions: Array<number> }) {
-	const [ parentComponentID, setParentComponentID ] = useState(data.ParentComponentID || false);
+export function ComponentData({ data }: any) {
+	const rowData = JSON.parse(data.Data);
+
+	return (
+		<div className="flex flex-wrap w-full">
+			<span className="w-full mr-4 font-bold text-gray-500">Data:</span>
+			<div className="w-full mt-3">
+				{
+					Object.entries(rowData).map(([ key, value ]: any) => (
+						<div className="flex w-full gap-4 mt-3" key={ key }>
+							<i className="pt-4 text-gray-400 pi pi-bars" />
+							<InputText className="w-3/12" value={ key } />
+							<InputText className="w-8/12" value={ value } />
+							<Button className="w-1/12 p-button-secondary p-button-rounded p-button-text" icon="pi pi-ellipsis-h" />
+						</div>
+					))
+				}
+			</div>
+
+			<div className="w-full mt-4">
+				<Button className="w-1/5 h-10 p-button-secondary p-button-outlined p-button-raised" label="Add" icon="pi pi-plus" />
+			</div>
+		</div>
+	);
+}
+
+export function ComponentEdit({ visible = true, onHide, data, onEdit }: { visible: boolean, onHide: Function, data: any, onEdit: Function }) {
 	const [ name, setName ] = useState(data.Name);
 	// const [ isActive, setIsActive ] = useState(!data.DeactivatedDateTimeUTC);
 
@@ -24,8 +48,7 @@ export function ComponentEdit({ visible = true, onHide, data, onEdit, parentOpti
 		</div>
 	);
 
-	const modParentOptions: any = parentOptions.filter((id: any) => id !== data.ComponentID);
-	modParentOptions.unshift("None");
+	console.log(JSON.parse(data.Data))
 
 	return (
 		<Dialog header={ header } visible={ visible } maximizable modal style={ { width: '50vw' } } onHide={ () => onHide() }>
@@ -34,19 +57,15 @@ export function ComponentEdit({ visible = true, onHide, data, onEdit, parentOpti
 					<Label text="ID" />
 					<InputText className="w-10/12 text-gray-900" value={ data.ComponentID } disabled />
 				</div>
-				<div className="flex w-full mt-3">
-					<Label text="Parent" />
-					{/* <InputText className="w-10/12 text-gray-900" value={ parentComponentID } onChange={ (e) => setParentComponentID(e.target.value) } /> */}
-
-					<Dropdown className="w-10/12 text-gray-900" value={ parentComponentID } options={ modParentOptions } onChange={ (e) => setParentComponentID(e.target.value) } placeholder="Select a Parent" />
-				</div>
 
 				<div className="flex w-full mt-3">
 					<Label text="Name" />
 					<InputText className="w-10/12 text-gray-900" value={ name } onChange={ (e) => setName(e.target.value) } />
 				</div>
 
-				<div className="flex w-full mt-3 p-input-filled">
+				<ComponentData data={ data } />
+
+				<div className="flex w-full mt-8 p-input-filled">
 					<Label text="UUID" />
 					<InputText className="w-10/12 text-gray-900" value={ data.UUID } disabled />
 				</div>
@@ -57,14 +76,8 @@ export function ComponentEdit({ visible = true, onHide, data, onEdit, parentOpti
 				</div> */}
 
 				<div className="flex w-full mt-6">
-					<Button className="w-full p-button-outlined" label="Save" onClick={ (e) => {
+					<Button className="w-full p-button-success p-button-raised" label="Save" onClick={ (e) => {
 						const obj: any = {};
-
-						if(parentComponentID === "None") {
-							obj[ `ParentComponentID` ] = "null";
-						} else if(parentOptions.includes(+parentComponentID)) {
-							obj[ `ParentComponentID` ] = +parentComponentID;
-						}
 
 						if(name !== data.Name) {
 							obj[ `Name` ] = name;
