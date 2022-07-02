@@ -48,8 +48,6 @@ export function ComponentEdit({ visible = true, onHide, data, onEdit }: { visibl
 		</div>
 	);
 
-	console.log(JSON.parse(data.Data))
-
 	return (
 		<Dialog header={ header } visible={ visible } maximizable modal style={ { width: '50vw' } } onHide={ () => onHide() }>
 			<div className="flex flex-wrap">
