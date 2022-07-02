@@ -13,7 +13,7 @@ export function EntityTableAdapter() {
 				{ field: "UUID", header: "UUID" }
 			] }
 			readTable="Entity"
-			deleteTable="Entity"
+			crudTable="Entity"
 			pk="EntityID"
 		/>
 	)

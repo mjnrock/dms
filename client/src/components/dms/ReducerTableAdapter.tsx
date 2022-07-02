@@ -13,7 +13,7 @@ export function ReducerTableAdapter() {
 				{ field: "UUID", header: "UUID" }
 			] }
 			readTable="Reducer"
-			deleteTable="Reducer"
+			crudTable="Reducer"
 			pk="ReducerID"
 		/>
 	)

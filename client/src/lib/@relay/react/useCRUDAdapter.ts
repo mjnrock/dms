@@ -10,7 +10,7 @@ export function useCRUDAdapter({ webSocketBroker, setter }: { webSocketBroker: W
 		}
 	};
 
-	const onMessage = (message: Message) => {
+	const onMessage = ({ op = "read", table, json = "*", where }: { op?: string, table: string, json?: string, where?: string | boolean }) => (message: Message) => {
 		if(message.type.startsWith("CRUD")) {
 			if(message.type === "CRUD:read") {
 				setter(message.data);
@@ -23,9 +23,10 @@ export function useCRUDAdapter({ webSocketBroker, setter }: { webSocketBroker: W
 					webSocketBroker.send(Message.From({
 						type: "CRUD",
 						data: [
-							"read",
-							"vwDomain",
-							'["*"]',
+							op,
+							table,
+							json,
+							where,
 						],
 					}));
 				} else {

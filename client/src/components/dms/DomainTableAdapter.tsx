@@ -14,7 +14,7 @@ export function DomainTableAdapter() {
 				{ field: "UUID", header: "UUID" }
 			] }
 			readTable="vwDomain"
-			deleteTable="Domain"
+			crudTable="Domain"
 			pk="DomainID"
 		/>
 	)

@@ -70,6 +70,7 @@ wss.on("connection", client => {
 			const msg = Message.FromJson(input);
 
 			let [ op, table, json, where ] = msg.data;
+			console.log(7777, msg.data);
 
 			// * Request version
 			// const results = await DMS.execute(`[Core].[spCRUD]`, {
@@ -80,7 +81,8 @@ wss.on("connection", client => {
 				Where: !!where ? [ DMS.Driver.NVarChar(DMS.Driver.MAX), where ] : false
 			});
 
-			// console.log(results.length ? "Results" : "No results");
+			console.log(msg.data);
+			console.log(results.length ? "Results" : "No results");
 
 			//* Query version
 			// const results = await DMS.query(`EXEC [Core].[spCRUD] @Operation = '${ op }', @Table = '${ table }', @JSON = '${ json }'${ !!where ? `, @Where = '${ where }'` : "" }`);

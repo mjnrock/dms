@@ -15,7 +15,8 @@ EXEC Core.spCRUD
 EXEC Core.spCRUD
 	'insert',
 	'Domain',
-	'{"Name":"API", "ParentDomainID":2}'
+	--'{"Name":"API", "ParentDomainID":2}',
+	'{"Name":"TeSt"}'
 
 EXEC Core.spCRUD
 	'update',

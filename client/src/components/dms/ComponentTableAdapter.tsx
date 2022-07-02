@@ -13,7 +13,7 @@ export function ComponentTableAdapter() {
 				{ field: "UUID", header: "UUID" }
 			] }
 			readTable="Component"
-			deleteTable="Component"
+			crudTable="Component"
 			pk="ComponentID"
 		/>
 	)
