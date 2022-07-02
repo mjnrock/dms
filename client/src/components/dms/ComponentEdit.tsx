@@ -12,8 +12,8 @@ function Label({ text }: any) {
 	);
 }
 
-export function DomainEdit({ visible = true, onHide, data, onEdit, parentOptions }: { visible: boolean, onHide: Function, data: any, onEdit: Function, parentOptions: Array<number> }) {
-	const [ parentDomainID, setParentDomainID ] = useState(data.ParentDomainID || false);
+export function ComponentEdit({ visible = true, onHide, data, onEdit, parentOptions }: { visible: boolean, onHide: Function, data: any, onEdit: Function, parentOptions: Array<number> }) {
+	const [ parentComponentID, setParentComponentID ] = useState(data.ParentComponentID || false);
 	const [ name, setName ] = useState(data.Name);
 	// const [ isActive, setIsActive ] = useState(!data.DeactivatedDateTimeUTC);
 
@@ -24,7 +24,7 @@ export function DomainEdit({ visible = true, onHide, data, onEdit, parentOptions
 		</div>
 	);
 
-	const modParentOptions: any = parentOptions.filter((id: any) => id !== data.DomainID);
+	const modParentOptions: any = parentOptions.filter((id: any) => id !== data.ComponentID);
 	modParentOptions.unshift("None");
 
 	return (
@@ -32,13 +32,13 @@ export function DomainEdit({ visible = true, onHide, data, onEdit, parentOptions
 			<div className="flex flex-wrap">
 				<div className="flex w-full mt-3 p-input-filled">
 					<Label text="ID" />
-					<InputText className="w-10/12 text-gray-900" value={ data.DomainID } disabled />
+					<InputText className="w-10/12 text-gray-900" value={ data.ComponentID } disabled />
 				</div>
 				<div className="flex w-full mt-3">
 					<Label text="Parent" />
-					{/* <InputText className="w-10/12 text-gray-900" value={ parentDomainID } onChange={ (e) => setParentDomainID(e.target.value) } /> */}
+					{/* <InputText className="w-10/12 text-gray-900" value={ parentComponentID } onChange={ (e) => setParentComponentID(e.target.value) } /> */}
 
-					<Dropdown className="w-10/12 text-gray-900" value={ parentDomainID } options={ modParentOptions } onChange={ (e) => setParentDomainID(e.target.value) } placeholder="Select a Parent" />
+					<Dropdown className="w-10/12 text-gray-900" value={ parentComponentID } options={ modParentOptions } onChange={ (e) => setParentComponentID(e.target.value) } placeholder="Select a Parent" />
 				</div>
 
 				<div className="flex w-full mt-3">
@@ -60,10 +60,10 @@ export function DomainEdit({ visible = true, onHide, data, onEdit, parentOptions
 					<Button className="w-full p-button-outlined" label="Save" onClick={ (e) => {
 						const obj: any = {};
 
-						if(parentDomainID === "None") {
-							obj[ `ParentDomainID` ] = "null";
-						} else if(parentOptions.includes(+parentDomainID)) {
-							obj[ `ParentDomainID` ] = +parentDomainID;
+						if(parentComponentID === "None") {
+							obj[ `ParentComponentID` ] = "null";
+						} else if(parentOptions.includes(+parentComponentID)) {
+							obj[ `ParentComponentID` ] = +parentComponentID;
 						}
 
 						if(name !== data.Name) {
@@ -74,7 +74,7 @@ export function DomainEdit({ visible = true, onHide, data, onEdit, parentOptions
 						 * Only invoke an update if something has changed.
 						 */
 						if(Object.keys(obj).length > 0) {
-							onEdit(data.DomainID, obj);
+							onEdit(data.ComponentID, obj);
 							onHide();
 						} else {
 							onHide();
@@ -86,4 +86,4 @@ export function DomainEdit({ visible = true, onHide, data, onEdit, parentOptions
 	);
 };
 
-export default DomainEdit;
+export default ComponentEdit;

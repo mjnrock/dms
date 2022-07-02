@@ -71,7 +71,11 @@ BEGIN
 			SELECT
 				@SQL = CONCAT(@SQL,
 					CASE j.[type]
-						WHEN 1 THEN CONCAT('''', j.[value], '''')
+						WHEN 1 THEN
+							CASE
+								WHEN j.[value] = 'NULL' OR j.[value] = 'null' THEN 'NULL'
+								ELSE CONCAT('''', j.[value], '''')
+							END
 						ELSE j.[value]
 					END,
 					', ')
@@ -87,7 +91,11 @@ BEGIN
 			SELECT
 				@SQL = CONCAT(@SQL, '[', j.[key], '] = ',
 					CASE j.[type]
-						WHEN 1 THEN CONCAT('''', j.[value], '''')
+						WHEN 1 THEN
+							CASE
+								WHEN j.[value] = 'NULL' OR j.[value] = 'null' THEN 'NULL'
+								ELSE CONCAT('''', j.[value], '''')
+							END
 						ELSE j.[value]
 					END,
 					', ')

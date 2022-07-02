@@ -34,3 +34,25 @@ EXEC Core.spCRUD
 	'read',
 	'vwDomain',
 	'["DomainID", "ParentDomainID", "Name", "UUID", "Level", "Path"]'
+
+
+
+
+
+
+	
+EXEC Core.spCRUD
+	'read',
+	'Domain',
+	'*'
+	
+EXEC Core.spCRUD
+	'update',
+	'Domain',
+	'{"ParentDomainID":"null"}',
+	'DomainID=8'
+	
+EXEC Core.spCRUD
+	'read',
+	'Domain',
+	'*'
