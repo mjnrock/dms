@@ -5,11 +5,10 @@ GO
 --	==============================================
 --		SEED
 --	==============================================
-INSERT INTO Core.EnumComponentDataType (
+INSERT INTO Core.EnumDataType (
 	[Value]
 )
 VALUES
-	('component'),
 	('boolean'),
 	('character'),
 	('string'),
@@ -29,6 +28,11 @@ VALUES
 	('date'),
 	('time'),
 	('datetime'),
+	
+	('domain'),
+	('component'),
+	('entity'),
+	('reducer'),
 	
 	('any'),
 	('class'),
@@ -77,12 +81,12 @@ VALUES
 	(3, 'Velocity');
 
 	
-DECLARE @EnumInt8 INT = (SELECT EnumComponentDataTypeID FROM Core.EnumComponentDataType WHERE [Value] = 'int8');
-DECLARE @EnumUint8 INT = (SELECT EnumComponentDataTypeID FROM Core.EnumComponentDataType WHERE [Value] = 'uint8');
+DECLARE @EnumInt8 INT = (SELECT EnumDataTypeID FROM Core.EnumDataType WHERE [Value] = 'int8');
+DECLARE @EnumUint8 INT = (SELECT EnumDataTypeID FROM Core.EnumDataType WHERE [Value] = 'uint8');
 INSERT INTO Core.ComponentData (
 	ComponentID,
 	[Key],
-	EnumComponentDataTypeID,
+	EnumDataTypeID,
 	[Value]
 )
 VALUES

@@ -18,7 +18,7 @@ FROM
 SELECT
 	*
 FROM
-	Core.EnumComponentDataType;
+	Core.EnumDataType;
 
 SELECT
 	*

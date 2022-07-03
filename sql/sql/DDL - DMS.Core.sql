@@ -81,8 +81,8 @@ GO
 --	==============================================
 --		Enumerators
 --	==============================================
-CREATE TABLE Core.EnumComponentDataType (
-	EnumComponentDataTypeID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+CREATE TABLE Core.EnumDataType (
+	EnumDataTypeID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
 	[Value] VARCHAR(255) NOT NULL,
 
 	UUID UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
@@ -92,7 +92,7 @@ CREATE TABLE Core.EnumComponentDataType (
 );
 GO
 CREATE OR ALTER TRIGGER UpperCaseValues
-	ON Core.EnumComponentDataType
+	ON Core.EnumDataType
 	AFTER INSERT, UPDATE
 AS
 BEGIN
@@ -102,9 +102,9 @@ BEGIN
 	SET
 		[Value] = UPPER(Utility.RegexReplace(t.[Value], '^a-z0-9\._'))
 	FROM
-		Core.EnumComponentDataType t
+		Core.EnumDataType t
 		INNER JOIN INSERTED i
-			ON t.EnumComponentDataTypeID = i.EnumComponentDataTypeID
+			ON t.EnumDataTypeID = i.EnumDataTypeID
 END
 GO
 
@@ -137,7 +137,7 @@ CREATE TABLE Core.Component (
 CREATE TABLE Core.ComponentData (
 	ComponentDataID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
 	ComponentID INT NOT NULL FOREIGN KEY REFERENCES Core.Component (ComponentID),
-	EnumComponentDataTypeID INT NOT NULL FOREIGN KEY REFERENCES Core.EnumComponentDataType (EnumComponentDataTypeID),
+	EnumDataTypeID INT NOT NULL FOREIGN KEY REFERENCES Core.EnumDataType (EnumDataTypeID),
 	
 	[Key] VARCHAR(255) NOT NULL,
 	[Value] NVARCHAR(MAX) NULL,	-- This would be popuplated only under situations where the type alone is not sufficient to describe the data (e.g. nested Components -- FK ref here)
@@ -302,8 +302,8 @@ FROM
 		ON ec.ComponentID = c.ComponentID
 	LEFT JOIN Core.ComponentData cd
 		ON c.ComponentID = cd.ComponentID
-	LEFT JOIN Core.EnumComponentDataType ecdt
-		ON cd.EnumComponentDataTypeID = ecdt.EnumComponentDataTypeID
+	LEFT JOIN Core.EnumDataType ecdt
+		ON cd.EnumDataTypeID = ecdt.EnumDataTypeID
 GO
 
 
@@ -387,8 +387,8 @@ RETURN
 			ON ec.ComponentID = c.ComponentID
 		LEFT JOIN Core.ComponentData cd
 			ON c.ComponentID = cd.ComponentID
-		LEFT JOIN Core.EnumComponentDataType ecdt
-			ON cd.EnumComponentDataTypeID = ecdt.EnumComponentDataTypeID
+		LEFT JOIN Core.EnumDataType ecdt
+			ON cd.EnumDataTypeID = ecdt.EnumDataTypeID
 	WHERE
 		(
 			@InputFlag = 'name'
