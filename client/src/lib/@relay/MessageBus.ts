@@ -1,3 +1,4 @@
+import Channel from "./Channel";
 import Message from "./Message";
 import MessageCollection from "./MessageCollection";
 
@@ -59,8 +60,12 @@ export class MessageBus {
 		return this.handlers.get(name);
 	}
 
-	public receive(message: Message | MessageCollection) {
-		if(message instanceof MessageCollection) {
+	public receive(message: Message | MessageCollection | Channel) {
+		if(message instanceof Channel) {
+			this.receive(message.messages);
+
+			return this;
+		} else if(message instanceof MessageCollection) {
 			message.each((msg) => {
 				this.receive(msg);
 			});

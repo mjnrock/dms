@@ -15,8 +15,8 @@ export class Channel {
 
 	public id: string;
 	public tags: string[];
+	public messages: MessageCollection;
 
-	protected messages: MessageCollection;
 	protected subscriptions: Map<string, Subscription>;
 	protected config: any;
 

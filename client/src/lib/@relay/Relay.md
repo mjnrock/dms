@@ -4,6 +4,7 @@ Below is an index of of the **Relay** assets.
 |-|-|
 |[Message](#message)|`Class`|
 |[MessageCollection](#messagecollection)|`Class`|
+|[MessageBus](#messagebus)|`Class`|
 |[Subscription](#subscription)|`Class`|
 |[Channel](#channel)|`Class`|
 |[Network](#network)|`Class`|
@@ -33,7 +34,7 @@ The **Message** is used to package a payload and attach relevant metadata, such 
 
 ## MessageCollection [^](#relay)
 
-The **MessageCollection** is a `Registry` of `Messages`.  As such, it maintains an ordered record of inserted messages that can be iterated over or retrieved.  It is used under the hood by `Channel` to maintain a historical record of sent messages.
+The **MessageCollection** is a registry of `Messages`.  As such, it maintains an ordered record of inserted messages that can be iterated over or retrieved.  It is used under the hood by `Channel` to maintain a historical record of sent messages.
 
 #### Example
 	const messageCollection = new MessageCollection([
@@ -41,6 +42,21 @@ The **MessageCollection** is a `Registry` of `Messages`.  As such, it maintains 
 		message2,
 		message3,
 	]);
+
+---
+
+## MessageBus [^](#relay)
+
+The **MessageBus** is a handler object that can invoke handlers based on `Message.type`.  If a `MessageCollection` is passed to the receiver, the `MessageBus` will recurse through the collection and receive each message individually, exactly as though those messages were originally sent serially to the `MessageBus`.
+
+> A `MessageCollection` will invoke the universal handlers *on each message* and can therefore short-circuit at any point in the collection, if a filter is invoked.
+
+#### Example
+	const bus = new MessageBus({
+		test: (message) => {
+			console.log(message)
+		},
+	});
 
 ---
 
