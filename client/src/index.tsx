@@ -1,3 +1,5 @@
-import AppDMS from "./modules/dms/index";
+// import AppDMS from "./modules/dms/index";
+import AppGame from "./modules/game/index";
 
-AppDMS;
+// AppDMS;
+AppGame;
