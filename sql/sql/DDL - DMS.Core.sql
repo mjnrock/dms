@@ -77,6 +77,38 @@ EXEC(@SQL);
 
 
 GO
+
+--	==============================================
+--		Enumerators
+--	==============================================
+CREATE TABLE Core.EnumComponentDataType (
+	EnumComponentDataTypeID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	[Value] VARCHAR(255) NOT NULL,
+
+	UUID UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
+	CreatedDateTimeUTC DATETIME2(3) NOT NULL DEFAULT SYSUTCDATETIME(),
+	ModifiedDateTimeUTC DATETIME2(3) NOT NULL DEFAULT SYSUTCDATETIME(),
+	DeactivatedDateTimeUTC DATETIME2(3) NULL
+);
+GO
+CREATE OR ALTER TRIGGER UpperCaseValues
+	ON Core.EnumComponentDataType
+	AFTER INSERT, UPDATE
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	UPDATE t
+	SET
+		[Value] = UPPER(Utility.RegexReplace(t.[Value], '^a-z0-9\._'))
+	FROM
+		Core.EnumComponentDataType t
+		INNER JOIN INSERTED i
+			ON t.EnumComponentDataTypeID = i.EnumComponentDataTypeID
+END
+GO
+
+
 --	==============================================
 --		TABLES
 --	==============================================
@@ -95,15 +127,28 @@ CREATE TABLE Core.Component (
 	ComponentID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
 	DomainID INT NOT NULL FOREIGN KEY REFERENCES Core.Domain (DomainID),
 	[Name] VARCHAR(255) NOT NULL,			-- string
-	[Data] NVARCHAR(MAX) NOT NULL,			-- json
 
 	UUID UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
 	CreatedDateTimeUTC DATETIME2(3) NOT NULL DEFAULT SYSUTCDATETIME(),
 	ModifiedDateTimeUTC DATETIME2(3) NOT NULL DEFAULT SYSUTCDATETIME(),
 	DeactivatedDateTimeUTC DATETIME2(3) NULL
 );
-ALTER TABLE Core.Component
-	ADD CONSTRAINT [Data as JSON] CHECK (ISJSON([Data])=1);
+
+CREATE TABLE Core.ComponentData (
+	ComponentDataID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	ComponentID INT NOT NULL FOREIGN KEY REFERENCES Core.Component (ComponentID),
+	EnumComponentDataTypeID INT NOT NULL FOREIGN KEY REFERENCES Core.EnumComponentDataType (EnumComponentDataTypeID),
+	
+	[Key] VARCHAR(255) NOT NULL,
+	[Value] NVARCHAR(MAX) NULL,	-- This would be popuplated only under situations where the type alone is not sufficient to describe the data (e.g. nested Components -- FK ref here)
+	Getter NVARCHAR(MAX) NULL,	-- An optional accessor function
+	Setter NVARCHAR(MAX) NULL,	-- An optional reducer function
+
+	UUID UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
+	CreatedDateTimeUTC DATETIME2(3) NOT NULL DEFAULT SYSUTCDATETIME(),
+	ModifiedDateTimeUTC DATETIME2(3) NOT NULL DEFAULT SYSUTCDATETIME(),
+	DeactivatedDateTimeUTC DATETIME2(3) NULL
+);
 
 CREATE TABLE Core.Reducer (
 	ReducerID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
@@ -244,13 +289,21 @@ SELECT
 	c.UUID AS ComponentUUID,
 	ec.[Order] AS ComponentOrder,
 	c.[Name] AS Component,
-	c.[Data] AS ComponentData
+	cd.[Key] AS ComponentDataKey,
+	ecdt.[Value] AS ComponentDataType,
+	cd.[Value] AS ComponentDataValue,
+	cd.[Getter] AS ComponentDataGetter,
+	cd.[Setter] AS ComponentDataSetter
 FROM
 	Core.Entity e
 	LEFT JOIN Core.EntityComponent ec
 		ON e.EntityID = ec.EntityID
 	LEFT JOIN Core.Component c
 		ON ec.ComponentID = c.ComponentID
+	LEFT JOIN Core.ComponentData cd
+		ON c.ComponentID = cd.ComponentID
+	LEFT JOIN Core.EnumComponentDataType ecdt
+		ON cd.EnumComponentDataTypeID = ecdt.EnumComponentDataTypeID
 GO
 
 
@@ -321,13 +374,21 @@ RETURN
 		c.UUID AS ComponentUUID,
 		ec.[Order] AS ComponentOrder,
 		c.[Name] AS Component,
-		c.[Data] AS ComponentData
+		cd.[Key] AS ComponentDataKey,
+		ecdt.[Value] AS ComponentDataType,
+		cd.[Value] AS ComponentDataValue,
+		cd.[Getter] AS ComponentDataGetter,
+		cd.[Setter] AS ComponentDataSetter
 	FROM
 		Core.Entity e
 		LEFT JOIN Core.EntityComponent ec
 			ON e.EntityID = ec.EntityID
 		LEFT JOIN Core.Component c
 			ON ec.ComponentID = c.ComponentID
+		LEFT JOIN Core.ComponentData cd
+			ON c.ComponentID = cd.ComponentID
+		LEFT JOIN Core.EnumComponentDataType ecdt
+			ON cd.EnumComponentDataTypeID = ecdt.EnumComponentDataTypeID
 	WHERE
 		(
 			@InputFlag = 'name'
@@ -341,3 +402,42 @@ RETURN
 		)
 )
 GO
+
+
+
+--	==============================================
+--		Meta
+--	==============================================
+CREATE VIEW Core.vwInformationSchema AS
+SELECT
+	c.TABLE_NAME AS [Table],
+	c.COLUMN_NAME AS [Column],
+	c.DATA_TYPE AS DataType,
+	c.ORDINAL_POSITION AS [Order],
+	COALESCE(
+		c.CHARACTER_MAXIMUM_LENGTH,
+		c.NUMERIC_PRECISION,
+		c.DATETIME_PRECISION
+	) AS [Precision],
+	c.COLUMN_DEFAULT AS [Default],
+	CASE 
+		WHEN c.COLUMN_DEFAULT IS NOT NULL THEN 1
+		ELSE 0
+	END AS HasDefault,
+	CASE c.IS_NULLABLE 
+		WHEN 'YES' THEN 1
+		ELSE 0
+	END AS IsNullable,
+	CASE c.CHARACTER_SET_NAME
+		WHEN 'UNICODE' THEN 1
+		WHEN 'iso_1' THEN 0
+		ELSE NULL
+	END AS IsUnicode
+FROM
+	INFORMATION_SCHEMA.COLUMNS c
+	INNER JOIN INFORMATION_SCHEMA.TABLES t
+		ON c.TABLE_SCHEMA = t.TABLE_SCHEMA
+		AND c.TABLE_NAME = t.TABLE_NAME
+WHERE
+	c.TABLE_SCHEMA = 'Core'
+	AND t.TABLE_TYPE = 'BASE TABLE'

@@ -1,7 +1,7 @@
 import { v4 as uuid } from "uuid";
 
 export enum EnumTagType {
-	GENERIC = "generic",
+	ANY = "any",
 
 	COMPOUND = "comp",
 	LIST = "list",
@@ -13,14 +13,31 @@ export enum EnumTagType {
 	UUID = "uuid",
 
 	NUMBER = "number",
-	UINT8 = "uint8",
 	INT8 = "int8",
-	UINT16 = "uint16",
 	INT16 = "int16",
-	UINT32 = "uint32",
 	INT32 = "int32",
-	UINT64 = "uint64",
 	INT64 = "int64",
+	UINT8 = "uint8",
+	UINT16 = "uint16",
+	UINT32 = "uint32",
+	UINT64 = "uint64",
+
+	FLOAT32 = "float32",
+	FLOAT64 = "float64",
+
+	DATE = "date",
+	TIME = "time",
+	DATETIME = "datetime",
+
+	//? TBD:
+	// OBJECT = "object",
+	// ARRAY = "array",
+	// MAP = "map",
+	// SET = "set",
+
+	// FUNCTION = "function",
+	// CLASS = "class",
+	// ENUM = "enum",
 };
 
 export interface ITag {
@@ -71,7 +88,7 @@ export class ATag implements ITag {
 		name: string;
 		value: any;
 	}) {
-		this.type = EnumTagType.GENERIC;
+		this.type = EnumTagType.ANY;
 		this.logicalType = null;
 		this.name = this.id.toString();
 		this.value = null;

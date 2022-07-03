@@ -5,6 +5,38 @@ GO
 --	==============================================
 --		SEED
 --	==============================================
+INSERT INTO Core.EnumComponentDataType (
+	[Value]
+)
+VALUES
+	('any'),
+	('component'),
+	('class'),
+	('function'),
+	('set'),
+	('map'),
+	('object'),
+	('array'),
+	('boolean'),
+	('character'),
+	('string'),
+	('uuid'),
+	('markdown'),
+	('number'),
+	('uint8'),
+	('uint16'),
+	('uint32'),
+	('uint64'),
+	('int8'),
+	('int16'),
+	('int32'),
+	('int64'),
+	('float32'),
+	('float64'),
+	('date'),
+	('time'),
+	('datetime');
+
 INSERT INTO Core.Domain (
 	ParentDomainID,
 	[Name]
@@ -35,13 +67,30 @@ VALUES
 
 INSERT INTO Core.Component (
 	DomainID,
-	[Name],
-	[Data]
+	[Name]
 )
 VALUES
-	(3, 'Position', '{"x":"uint8", "y":"uint8"}'),
-	(3, 'Position3', '{"x":"uint8", "y":"uint8", "z":"uint8"}'),
-	(3, 'Velocity', '{"vx":"int8", "vy":"int8", "vz":"int8"}');
+	(3, 'Position'),
+	(3, 'Position3'),
+	(3, 'Velocity');
+
+	
+DECLARE @EnumInt8 INT = (SELECT EnumComponentDataTypeID FROM Core.EnumComponentDataType WHERE [Value] = 'int8');
+DECLARE @EnumUint8 INT = (SELECT EnumComponentDataTypeID FROM Core.EnumComponentDataType WHERE [Value] = 'uint8');
+INSERT INTO Core.ComponentData (
+	ComponentID,
+	[Key],
+	EnumComponentDataTypeID,
+	[Value]
+)
+VALUES
+	(1, 'x', @EnumUint8, NULL),
+	(1, 'y', @EnumUint8, NULL),
+	(2, 'x', @EnumUint8, NULL),
+	(2, 'y', @EnumUint8, NULL),
+	(2, 'y', @EnumUint8, NULL),
+	(3, 'vx', @EnumInt8, NULL),
+	(3, 'vy', @EnumInt8, NULL);
 
 
 INSERT INTO Core.Entity (

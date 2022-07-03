@@ -18,7 +18,17 @@ FROM
 SELECT
 	*
 FROM
+	Core.EnumComponentDataType;
+
+SELECT
+	*
+FROM
 	Core.Component;
+
+SELECT
+	*
+FROM
+	Core.ComponentData;
 
 SELECT
 	*
@@ -67,6 +77,11 @@ FROM
 --	==============================================
 --		INFORMATION SCHEMA
 --	==============================================
+SELECT
+	*
+FROM
+	Core.vwInformationSchema
+
 --SELECT
 --	*
 --FROM
