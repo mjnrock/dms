@@ -81,6 +81,15 @@ GO
 --	==============================================
 --		Enumerators
 --	==============================================
+CREATE TABLE Core.EnumRefType (
+	EnumRefTypeID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	[Value] VARCHAR(255) NOT NULL,
+
+	UUID UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
+	CreatedDateTimeUTC DATETIME2(3) NOT NULL DEFAULT SYSUTCDATETIME(),
+	ModifiedDateTimeUTC DATETIME2(3) NOT NULL DEFAULT SYSUTCDATETIME(),
+	DeactivatedDateTimeUTC DATETIME2(3) NULL
+);
 CREATE TABLE Core.EnumDataType (
 	EnumDataTypeID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
 	[Value] VARCHAR(255) NOT NULL,
@@ -90,23 +99,6 @@ CREATE TABLE Core.EnumDataType (
 	ModifiedDateTimeUTC DATETIME2(3) NOT NULL DEFAULT SYSUTCDATETIME(),
 	DeactivatedDateTimeUTC DATETIME2(3) NULL
 );
-GO
-CREATE OR ALTER TRIGGER UpperCaseValues
-	ON Core.EnumDataType
-	AFTER INSERT, UPDATE
-AS
-BEGIN
-	SET NOCOUNT ON;
-
-	UPDATE t
-	SET
-		[Value] = UPPER(Utility.RegexReplace(t.[Value], '^a-z0-9\._'))
-	FROM
-		Core.EnumDataType t
-		INNER JOIN INSERTED i
-			ON t.EnumDataTypeID = i.EnumDataTypeID
-END
-GO
 
 
 --	==============================================
@@ -143,18 +135,47 @@ CREATE TABLE Core.ComponentData (
 	[Value] NVARCHAR(MAX) NULL,	-- This would be popuplated only under situations where the type alone is not sufficient to describe the data (e.g. nested Components -- FK ref here)
 	Getter NVARCHAR(MAX) NULL,	-- An optional accessor function
 	Setter NVARCHAR(MAX) NULL,	-- An optional reducer function
+	[Order] INT NULL,
 
 	UUID UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
 	CreatedDateTimeUTC DATETIME2(3) NOT NULL DEFAULT SYSUTCDATETIME(),
 	ModifiedDateTimeUTC DATETIME2(3) NOT NULL DEFAULT SYSUTCDATETIME(),
 	DeactivatedDateTimeUTC DATETIME2(3) NULL
 );
+GO
+CREATE OR ALTER TRIGGER IncrementalOrder
+	ON Core.ComponentData
+	AFTER INSERT
+AS
+BEGIN
+	UPDATE t
+	SET [Order] = CASE
+		WHEN t.[Order] IS NOT NULL THEN t.[Order]
+		WHEN p.MaxOrder IS NOT NULL THEN p.MaxOrder + 1
+		ELSE 1
+	END
+	FROM
+		Core.ComponentData t
+		INNER JOIN INSERTED i
+			ON t.ComponentDataID = i.ComponentDataID
+		LEFT JOIN (
+			SELECT
+				p.ComponentID,
+				MAX([Order]) AS MaxOrder
+			FROM
+				Core.ComponentData p
+			GROUP BY
+				p.ComponentID
+		) p
+			ON t.ComponentID = p.ComponentID
+END
+GO
 
 CREATE TABLE Core.Reducer (
 	ReducerID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
 	DomainID INT NOT NULL FOREIGN KEY REFERENCES Core.Domain (DomainID),
 	Fn NVARCHAR(MAX) NOT NULL,				-- fn
-	Scope VARCHAR(4000) NULL,				-- string[]
+	Scope VARCHAR(4000) NULL,				-- string[] -- If populated, this would translate into a wrapper function, with "self" *always* being the first argument (self, ...@Scope) => @Fn(...args)
 
 	UUID UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
 	CreatedDateTimeUTC DATETIME2(3) NOT NULL DEFAULT SYSUTCDATETIME(),
@@ -188,8 +209,8 @@ CREATE TABLE Core.EntityComponent (
 
 CREATE TABLE Core.Metadata (
 	MetadataID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	EnumRefTypeID INT NOT NULL FOREIGN KEY REFERENCES Core.EnumRefType (EnumRefTypeID),
 	Ref UNIQUEIDENTIFIER NOT NULL,			-- @uuid
-	RefType VARCHAR(255) NOT NULL,			-- enum<table_names>
 	[Namespace] VARCHAR(255) NULL,			-- string
 	Tags VARCHAR(4000) NULL,				-- string[]
 	[Description] NVARCHAR(MAX) NULL,		-- markdown
@@ -256,6 +277,31 @@ FROM
 	CTE;
 GO
 
+CREATE VIEW Core.vwComponent AS
+SELECT
+	c.ComponentID,
+	c.DomainID,
+	c.UUID AS ComponentUUID,
+	c.[Name] AS Component,
+	cd.ComponentDataID,
+	cd.UUID AS ComponentDataUUID,
+	cd.[Key] AS DataKey,
+	edt.[Value] AS DataType,
+	cd.[Value] AS DataValue,
+	cd.[Getter] AS DataGetter,
+	cd.[Setter] AS DataSetter,
+	cd.[Order] AS DataOrder,
+	c.CreatedDateTimeUTC,
+	c.ModifiedDateTimeUTC,
+	c.DeactivatedDateTimeUTC
+FROM
+	Core.Component c
+	INNER JOIN Core.ComponentData cd
+		ON c.ComponentID = cd.ComponentID
+	INNER JOIN Core.EnumDataType edt
+		ON cd.EnumDataTypeID = edt.EnumDataTypeID
+GO
+
 CREATE VIEW Core.vwComponentTags AS
 SELECT
 	c.ComponentID,
@@ -267,8 +313,10 @@ SELECT
 	j.[value] AS Tag
 FROM
 	Core.Metadata m
+	INNER JOIN Core.EnumRefType ert
+		ON m.EnumRefTypeID = ert.EnumRefTypeID
 	INNER JOIN Core.Component c
-		ON m.RefType = 'Component'
+		ON ert.[Value] = 'Component'
 		AND m.Ref = c.UUID
 	CROSS APPLY OPENJSON(m.Tags, '$') j
 GO
@@ -330,8 +378,10 @@ RETURN
 		j.[value] AS Tag
 	FROM
 		Core.Metadata m
+		INNER JOIN Core.EnumRefType ert
+			ON m.EnumRefTypeID = ert.EnumRefTypeID
 		INNER JOIN Core.Component c
-			ON m.RefType = 'Component'
+			ON ert.[Value] = 'Component'
 			AND m.Ref = c.UUID
 		CROSS APPLY OPENJSON(m.Tags, '$') j
 	WHERE
@@ -412,14 +462,14 @@ CREATE VIEW Core.vwInformationSchema AS
 SELECT
 	c.TABLE_NAME AS [Table],
 	c.COLUMN_NAME AS [Column],
-	c.DATA_TYPE AS DataType,
+	UPPER(c.DATA_TYPE) AS DataType,
 	c.ORDINAL_POSITION AS [Order],
 	COALESCE(
 		c.CHARACTER_MAXIMUM_LENGTH,
 		c.NUMERIC_PRECISION,
 		c.DATETIME_PRECISION
 	) AS [Precision],
-	c.COLUMN_DEFAULT AS [Default],
+	UPPER(c.COLUMN_DEFAULT) AS [Default],
 	CASE 
 		WHEN c.COLUMN_DEFAULT IS NOT NULL THEN 1
 		ELSE 0

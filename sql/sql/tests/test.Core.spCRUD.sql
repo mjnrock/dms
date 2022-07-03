@@ -49,7 +49,7 @@ EXEC Core.spCRUD
 EXEC Core.spCRUD
 	'update',
 	'Domain',
-	'{"ParentDomainID":"null"}',
+	'OFF',
 	'DomainID=8'
 	
 EXEC Core.spCRUD

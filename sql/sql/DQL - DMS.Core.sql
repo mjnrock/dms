@@ -8,6 +8,16 @@ GO
 SELECT
 	*
 FROM
+	Core.EnumRefType;
+
+SELECT
+	*
+FROM
+	Core.EnumDataType;
+	
+SELECT
+	*
+FROM
 	Core.Domain;
 
 SELECT
@@ -18,17 +28,17 @@ FROM
 SELECT
 	*
 FROM
-	Core.EnumDataType;
-
-SELECT
-	*
-FROM
 	Core.Component;
 
 SELECT
 	*
 FROM
 	Core.ComponentData;
+
+SELECT
+	*
+FROM
+	Core.vwComponent;
 
 SELECT
 	*

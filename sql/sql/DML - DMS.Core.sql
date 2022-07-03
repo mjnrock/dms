@@ -5,6 +5,16 @@ GO
 --	==============================================
 --		SEED
 --	==============================================
+INSERT INTO Core.EnumRefType (
+	[Value]
+)
+SELECT DISTINCT
+	[Table]
+FROM
+	Core.vwInformationSchema
+ORDER BY
+	[Table];
+
 INSERT INTO Core.EnumDataType (
 	[Value]
 )
@@ -29,7 +39,6 @@ VALUES
 	('time'),
 	('datetime'),
 	
-	('domain'),
 	('component'),
 	('entity'),
 	('reducer'),
@@ -87,16 +96,17 @@ INSERT INTO Core.ComponentData (
 	ComponentID,
 	[Key],
 	EnumDataTypeID,
-	[Value]
+	[Value],
+	[Order]
 )
 VALUES
-	(1, 'x', @EnumUint8, NULL),
-	(1, 'y', @EnumUint8, NULL),
-	(2, 'x', @EnumUint8, NULL),
-	(2, 'y', @EnumUint8, NULL),
-	(2, 'y', @EnumUint8, NULL),
-	(3, 'vx', @EnumInt8, NULL),
-	(3, 'vy', @EnumInt8, NULL);
+	(1, 'x', @EnumUint8, NULL, 1),
+	(1, 'y', @EnumUint8, NULL, 2),
+	(2, 'x', @EnumUint8, NULL, 1),
+	(2, 'y', @EnumUint8, NULL, 2),
+	(2, 'y', @EnumUint8, NULL, 3),
+	(3, 'vx', @EnumInt8, NULL, 1),
+	(3, 'vy', @EnumInt8, NULL, 2);
 
 
 INSERT INTO Core.Entity (
@@ -116,12 +126,13 @@ VALUES
 	(1, 1),
 	(1, 3);
 
-	
+
+DECLARE @EnumRefTypeID INT = (SELECT EnumRefTypeID FROM Core.EnumRefType WHERE [Value] = 'Component');
 DECLARE @Ref VARCHAR(255) = (SELECT UUID FROM Core.Component WHERE [Name] = 'Position');
 DECLARE @Ref2 VARCHAR(255) = (SELECT UUID FROM Core.Component WHERE [Name] = 'Position3');
 INSERT INTO Core.Metadata (
 	Ref,
-	RefType,
+	EnumRefTypeID,
 	Tags
 )
 VALUES
