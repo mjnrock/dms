@@ -9,14 +9,7 @@ INSERT INTO Core.EnumComponentDataType (
 	[Value]
 )
 VALUES
-	('any'),
 	('component'),
-	('class'),
-	('function'),
-	('set'),
-	('map'),
-	('object'),
-	('array'),
 	('boolean'),
 	('character'),
 	('string'),
@@ -35,7 +28,16 @@ VALUES
 	('float64'),
 	('date'),
 	('time'),
-	('datetime');
+	('datetime'),
+	
+	('any'),
+	('class'),
+	('function'),
+	('enum'),
+	('set'),
+	('map'),
+	('object'),
+	('array');
 
 INSERT INTO Core.Domain (
 	ParentDomainID,
