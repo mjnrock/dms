@@ -1,4 +1,4 @@
-import CrudTable from "../CrudTable";
+import CrudTable from "../../../components/crud/CrudTable";
 
 export function ReducerTable({ data, columns, onEdit, onDelete }: { data: any, columns: any, onEdit: Function, onDelete: Function }) {
 	return (

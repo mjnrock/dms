@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Toast } from "primereact/toast";
 
-import { useWebsocketContext } from "../lib/@relay/react/useWebsocket";
-import { useCRUDAdapter } from "../lib/@relay/react/useCRUDAdapter";
+import { useWebsocketContext } from "../../lib/@relay/react/useWebsocket";
+import { useCRUDAdapter } from "../../lib/@relay/react/useCRUDAdapter";
 
-import { WebSocketContext } from "../App";
+import { WebSocketContext } from "../../modules/dms/App";
 
-import Loading from "./Loading";
+import Loading from "../Loading";
 
 export function CrudAdapter({ comp, columns, readTable, crudTable, pk }: any) {
 	const webSocketBroker = useWebsocketContext(WebSocketContext);

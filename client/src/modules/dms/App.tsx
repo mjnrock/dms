@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Button, Navbar, ButtonGroup } from "@blueprintjs/core";
 
-import { useWebsocketContext, WebsocketBroker } from "./lib/@relay/react/useWebsocket";
+import { useWebsocketContext, WebsocketBroker } from "../../lib/@relay/react/useWebsocket";
 
 /**
  * Contains the @imports for Blueprint CSS
@@ -12,7 +12,7 @@ import "./assets/css/main.css";
 import "primereact/resources/themes/tailwind-light/theme.css";  //theme
 import "primereact/resources/primereact.min.css";                  //core css
 import "primeicons/primeicons.css";                                //icons
-import Loading from "./components/Loading";
+import Loading from "../../components/Loading";
 
 
 const sideBarLinks = [

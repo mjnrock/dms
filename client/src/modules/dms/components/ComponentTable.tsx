@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import CrudTable from "../CrudTable";
+import CrudTable from "../../../components/crud/CrudTable";
 import ComponentEdit from "./ComponentEdit";
 
 export function ComponentTable({ data, columns, onEdit, onDelete }: { data: any, columns: any, onEdit: Function, onDelete: Function }) {

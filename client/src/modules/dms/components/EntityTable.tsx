@@ -1,6 +1,6 @@
 import { Tag } from "primereact/tag";
 
-import CrudTable from "../CrudTable";
+import CrudTable from "../../../components/crud/CrudTable";
 
 export function EntityTable({ data, columns, onEdit, onDelete }: { data: any, columns: any, onEdit: Function, onDelete: Function }) {
 	const cellTemplate = (colData: any) => (rowData: any) => {

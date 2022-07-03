@@ -1,4 +1,4 @@
-import CrudAdapter from "../CrudAdapter";
+import CrudAdapter from "../../../components/crud/CrudAdapter";
 import ReducerTable from "./ReducerTable";
 
 export function ReducerTableAdapter() {

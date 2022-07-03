@@ -1,4 +1,4 @@
-import DomainTableAdapter from "../components/dms/DomainTableAdapter";
+import DomainTableAdapter from "../components/DomainTableAdapter";
 
 export function Domain() {
 	return (

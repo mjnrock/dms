@@ -1,4 +1,4 @@
-import ComponentTableAdapter from "../components/dms/ComponentTableAdapter";
+import ComponentTableAdapter from "../components/ComponentTableAdapter";
 
 export function Component() {
 	return (
