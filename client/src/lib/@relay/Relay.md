@@ -1,5 +1,5 @@
 # **`Relay`**
-Below is an index of of the **Relay** [ `@agency/core/relay` ] assets.
+Below is an index of of the **Relay** assets.
 |Object|Type|
 |-|-|
 |[Message](#message)|`Class`|
@@ -11,7 +11,6 @@ Below is an index of of the **Relay** [ `@agency/core/relay` ] assets.
 ---
 
 ## Message [^](#relay)
-extends **AgencyBase**
 
 The **Message** is used to package a payload and attach relevant metadata, such as `tags` or message `type`.  The *first (1st)* tag in the set acts as the `type`.
 
@@ -19,18 +18,20 @@ The **Message** is used to package a payload and attach relevant metadata, such 
 |Property|Type|Optional|
 |-|-|-|
 |`data`|`any`|❌|
+|`emitter`|`UUID`|❌|
+|`type`|`string`|✅|
+|`tags`|`string[]`|✅|
 |`meta`|`Object`|✅|
 
 #### Example
 	const message = new Message({
 		data: Date.now(),
-		tags: `date`,
+		emitter: `4c28504e-735a-418e-a597-f46544ee48c8`,
 	});
 
 ---
 
 ## MessageCollection [^](#relay)
-extends **Registry**
 
 The **MessageCollection** is a `Registry` of `Messages`.  As such, it maintains an ordered record of inserted messages that can be iterated over or retrieved.  It is used under the hood by `Channel` to maintain a historical record of sent messages.
 
@@ -44,7 +45,6 @@ The **MessageCollection** is a `Registry` of `Messages`.  As such, it maintains 
 ---
 
 ## Subscription [^](#relay)
-extends **AgencyBase**
 
 A **Subscription** is a wrapper-class that holds a *subscribor* (the object that is subscribing) and a *subscribee* (the object to which the subscribor is subscribing) and a *callback* function that can be executed on-demand via `.send`.  If a `callback` is an `Agent`, `.send` will instead invoke `.emit(...args)` on the agent.
 
@@ -54,7 +54,7 @@ A **Subscription** is a wrapper-class that holds a *subscribor* (the object that
 |`subscribor`|`UUID`|❌|
 |`subscribee`|`UUID`|❌|
 |`callback`|`fn`|❌|
-|`mutator`|`fn`|✅|
+|`tags`|`string[]`|✅|
 
 #### Example
 	const subscribor = new Agent();		// Example only, not required to be an `Agent`
@@ -72,13 +72,14 @@ Optionally, a `mutator` function be passed that can alter the arguments that wil
 ---
 
 ## Channel [^](#relay)
-extends **AgencyBase**
 
 A **Channel** maintains a list of `Subscriptions` to itself as the `subscribee`, and accordingly creates *aliases* to each `subscribor` (the `UUID`) -- this allows for a subscription to be retrieved more easily.
 
 ### Class Properties
 |Property|Type|Optional|
 |-|-|-|
+|`id`|`UUID`|✅|
+|`tags`|`string[]`|✅|
 |`config`|`Object`|✅|
 
 #### `.config` Options
@@ -100,7 +101,6 @@ A **Channel** maintains a list of `Subscriptions` to itself as the `subscribee`,
 ---
 
 ## Network [^](#relay)
-extends **Registry**
 
 The **Network** is simply a collection of `Channels`, that additionally adds some channel-specific targeting functions to facilitate messaging to a specific channel.  Optionally, a network can broadcast to all registered channels via `.broadcast`.
 
@@ -111,8 +111,8 @@ The **Network** is simply a collection of `Channels`, that additionally adds som
 
 #### Example
 	const network = new Network([
-		channel1,
-		channel2,
+		[ "alias1", channel1 ],
+		[ "alias2", channel2 ],
 	]);
 
 ---

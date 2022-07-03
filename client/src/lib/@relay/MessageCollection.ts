@@ -5,9 +5,11 @@ export class MessageCollection {
 	public id: string;
 	public messages: Map<number, Set<Message>>;
 
-	constructor() {
+	constructor(messages: Message[] = []) {
 		this.id = uuid();
 		this.messages = new Map();
+
+		this.addMany(messages);
 	}
 
 	public add(message: Message) {
@@ -50,6 +52,18 @@ export class MessageCollection {
 
 	get size() {
 		return Array.from(this.messages).reduce((acc, [, messages]) => acc + messages.size, 0);
+	}
+
+	public values(): Message[] {
+		const messages: Message[] = [];
+
+		this.messages.forEach((entry: Set<Message>) => {
+			entry.forEach((message: Message) => {
+				messages.push(message);
+			});
+		});
+
+		return messages;
 	}
 
 	public get(ts: number): Message[] {
@@ -117,13 +131,12 @@ export class MessageCollection {
 
 
 	public toObject() {
-		const obj = {
+		const obj: any = {
 			id: this.id,
 			messages: {},
 		};
 
 		this.messages.forEach((messages, key) => {
-			// @ts-ignore
 			obj.messages[ key ] = Array.from(messages).map(message => message.toObject());
 		});
 
@@ -139,9 +152,8 @@ export class MessageCollection {
 	public static From(obj: any): MessageCollection {
 		const collection = new MessageCollection();
 
-		obj.messages.forEach((messages: {}, key: number) => {
-			// @ts-ignore
-			collection.messages.set(key, new Set(messages.map(message => {
+		obj.messages.forEach((messages: any, key: number) => {
+			collection.messages.set(key, new Set(messages.map((message: any) => {
 				const msg = Message.From(message);
 				msg.id = message.id;
 

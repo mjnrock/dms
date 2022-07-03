@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid";
-import Message from "./Message";
+import { Message } from "./Message";
 
 export type SubscriptionCallback = (message: Message, signed: SubscriptionSignature) => void;
 export type SubscriptionTags = string | string[] | Set<string>;
@@ -17,7 +17,7 @@ export class Subscription {
 
 	public tags: Set<string>;
 
-	constructor (subscribor: string, subscribee: string, callback: SubscriptionCallback, { tags = [] }: { tags?: SubscriptionTags }) {
+	constructor (subscribor: string, subscribee: string, callback: SubscriptionCallback, tags?: SubscriptionTags) {
 		this.id = uuid();
 		this.subscribor = subscribor;	// The one that is subscribing
 		this.subscribee = subscribee;	// The one to whom the subscription is being made
@@ -42,8 +42,7 @@ export class Subscription {
 	/**
 	 * You can either send a Message, or pass an object with the initialization properties to create a Message.
 	 */
-	public send(message: Message | object) {
-		//@ts-ignore
+	public send(message: Message) {
 		message.emitter = this.subscribor;
 
 		if(message instanceof Message) {
