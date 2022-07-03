@@ -5,14 +5,14 @@ import MessageCollection from "./MessageCollection";
 export type HandlerEntries = Map<string, Function> | Array<[ string, Function ]> | Object;
 
 /**
- * The MessageBus is a handler registry that allows for the handling of messages
+ * The Service is a handler registry that allows for the handling of messages
  * when they are sent to the bus and have a corresponding handler registered via
  * the Message.type property.
  * 
  * A generic handler can be registered under the "default" key, which will be called
  * for all messages that will *only be called if no handler exists* for that Message.type.
  */
-export class MessageBus {
+export class Service {
 	public handlers: Map<string, Function>;
 
 	constructor (handlers: HandlerEntries = []) {
@@ -120,4 +120,4 @@ export class MessageBus {
 	}
 }
 
-export default MessageBus;
+export default Service;
