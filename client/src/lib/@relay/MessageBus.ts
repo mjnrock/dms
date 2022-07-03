@@ -1,4 +1,5 @@
 import Message from "./Message";
+import MessageCollection from "./MessageCollection";
 
 export type HandlerEntries = Map<string, Function> | Array<[ string, Function ]> | Object;
 
@@ -58,7 +59,15 @@ export class MessageBus {
 		return this.handlers.get(name);
 	}
 
-	public receive(message: Message) {
+	public receive(message: Message | MessageCollection) {
+		if(message instanceof MessageCollection) {
+			message.each((msg) => {
+				this.receive(msg);
+			});
+
+			return this;
+		}
+
 		/**
 		 * A universal pre-handler that can be used to short-circuit evaluation
 		 * if the handler returns true.
