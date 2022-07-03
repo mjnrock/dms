@@ -58,8 +58,8 @@ export class Subscription {
 	 * This creates a any subscription that can be invoked at any time.  Because the signature is included,
 	 * the callback function will receive the relevant information about the subscription to be handled as needed.
 	 */
-	static CreateAnonymous(callback: SubscriptionCallback, { tags = [] }: { tags?: SubscriptionTags }) {
-		return new Subscription(uuid(), uuid(), callback, { tags });
+	static CreateAnonymous(callback: SubscriptionCallback, tags?: SubscriptionTags) {
+		return new Subscription(uuid(), uuid(), callback, tags);
 	}
 };
 
