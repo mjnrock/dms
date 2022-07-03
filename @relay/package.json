@@ -1,14 +1,14 @@
 {
 	"name": "@lespantsfancy/relay",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "A messaging system and support network.",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"begin": "tsc --watch",
 		"start": "node dist/index.js",
-        "prepublish": "tsc",
-        "deploy": "yarn version --patch && yarn publish --access=public"
+		"prepublish": "tsc",
+		"deploy": "yarn version --patch && yarn publish --access=public"
 	},
 	"author": "Matt Nawrocki",
 	"license": "ISC",
