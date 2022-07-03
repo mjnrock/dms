@@ -6,8 +6,8 @@ import { SubscriptionCallback } from "./Subscription";
 
 export type ChannelConfig = {
 	retainHistory?: boolean;
-	maxHistory?: number;
-	atMaxReplace?: boolean;
+	maxHistorySize?: number;
+	isSoftMax?: boolean;
 };
 
 export class Channel {
@@ -21,16 +21,46 @@ export class Channel {
 	protected config: any;
 
 	constructor ({ config = {}, id, tags = [] }: { config?: ChannelConfig; id?: string; tags?: string[] }) {
+		/**
+		 * The unique identifier for this channel
+		 */
 		this.id = id || uuid();
+
+		/**
+		 * Any tags that are associated with this channel
+		 */
 		this.tags = tags;
 
+		/**
+		 * The messages collection is the primary storage for messages
+		 * sent to this channel, abiding by the configuration settings below.
+		 */
 		this.messages = new MessageCollection();
-		this.subscriptions = new Map();
+
+		/**
+		 * A map that stores [ Subscription.id, Subscription ] pairs
+		 */
+		this.subscriptions = new Map<string, Subscription>();
 
 		this.config = {
+			/**
+			 * A boolean flag to indicate if the channel should retain message history
+			 */
 			retainHistory: false,
-			maxHistory: 100,
-			atMaxReplace: true,
+
+			/**
+			 * The maximum number of messages to retain in the channel
+			 */
+			maxHistorySize: 100,
+
+			/**
+			 * A boolean flag to determine if the maxHistorySize should be treated as a soft limit
+			 * or a hard limit.  If true, the maxHistorySize will be treated as a soft limit,
+			 * and the channel will remove the oldest message and append the newest one.  If
+			 * false, the maxHistorySize will be treated as a hard limit, and the channel
+			 * will not append any new messages.
+			 */
+			isSoftMax: true,
 
 			...config,
 		};
@@ -71,12 +101,12 @@ export class Channel {
 	}
 	addMessage(message: Message) {
 		if(this.config.retainHistory) {
-			if(this.messages.size < this.config.maxHistory) {
+			if(this.messages.size < this.config.maxHistorySize) {
 				this.messages.add(message);
 
 				return true;
 			} else {
-				if(this.config.atMaxReplace) {
+				if(this.config.isSoftMax) {
 					const array = [
 						...this.messages.values(),
 						message,
@@ -133,7 +163,7 @@ export class Channel {
 
 		return false;
 	}
-	
+
 	sendMessage(message: Message) {
 		if(message instanceof Message) {
 			/**
