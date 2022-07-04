@@ -1,8 +1,8 @@
 {
 	"name": "@lespantsfancy/relay",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"description": "A messaging system and support network.",
-    "main": "dist/lib/index.js",
+	"main": "dist/lib/index.js",
 	"scripts": {
 		"test": "npx jest --verbose",
 		"begin": "tsc --watch",
