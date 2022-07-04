@@ -5,7 +5,7 @@
 	"dependencies": {
 		"@blueprintjs/core": "^4.5.1",
 		"@blueprintjs/table": "^4.3.1",
-		"@lespantsfancy/relay": "^0.1.2",
+		"@lespantsfancy/relay": "^0.1.4",
 		"@testing-library/jest-dom": "^5.14.1",
 		"@testing-library/react": "^13.0.0",
 		"@testing-library/user-event": "^13.2.1",
