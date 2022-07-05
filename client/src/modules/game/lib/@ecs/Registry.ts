@@ -65,16 +65,17 @@ export class Registry extends Component {
 
 				return key;
 			} else {
+				// @ts-ignore
 				return this.Encoders.Default(self)(new RegistryEntry(entryOrValue, RegistryEntry.Type.VALUE, { id: validate(id) ? id : void 0, config }));
 			}
 		},
-		TypeOf: (primitive) => (self: Registry) => (entryOrValue, id, config) => {
+		TypeOf: (primitive: string) => (self: Registry) => (entryOrValue: any, id: string, config: any) => {
 			if(typeof entryOrValue === primitive) {
 				return this.Encoders.Default(self)(entryOrValue, id, config);
 			}
 		},
-		InstanceOf: (...classes) => (self: Registry) => (entryOrValue, id, config) => {
-			const isInstanceOf = classes.some(cls => entryOrValue instanceof cls);
+		InstanceOf: (...classes: any) => (self: Registry) => (entryOrValue: any, id: string, config: any) => {
+			const isInstanceOf = classes.some((cls: any) => entryOrValue instanceof cls);
 
 			if(isInstanceOf || entryOrValue instanceof RegistryEntry) {
 				return this.Encoders.Default(self)(entryOrValue, id, config);
@@ -82,7 +83,7 @@ export class Registry extends Component {
 		},
 	};
 	static Decoders = {
-		Default: (self: Registry) => (input) => {
+		Default: (self: Registry) => (input: any): any => {
 			if(self.has(input)) {
 				return this.Decoders.Default(self)(self._entries.get(input));
 			} else if(input instanceof RegistryEntry) {
@@ -107,40 +108,47 @@ export class Registry extends Component {
 		},
 	};
 	static Classifiers = {
-		Is: (thing) => function (key, value, entry) {
+		Is: (thing: any) => function (key: string, value: any, entry: RegistryEntry) {
 			if(value === thing) {
+				// @ts-ignore
 				this.addToPool(`@${ thing.toString() }`, key);
 			}
 		},
-		TypeOf: (primitive) => function (key, value, entry) {
+		TypeOf: (primitive: string) => function (key: string, value: any, entry: RegistryEntry) {
 			if(typeof value === primitive) {
+				// @ts-ignore
 				this.addToPool(`@${ primitive }`, key);
 			}
 		},
-		InstanceOf: (clazz) => function (key, value, entry) {
+		InstanceOf: (clazz: any) => function (key: string, value: any, entry: RegistryEntry) {
 			if(value instanceof clazz) {
+				// @ts-ignore
 				this.addToPool(`@${ clazz.name }`, key);
 			}
 		},
-		HasTag: (tag) => function (key, value, entry) {
+		HasTag: (tag: string) => function (key: string, value: any, entry: RegistryEntry) {
 			if(typeof value === "object" && value.tags instanceof Set && value.tags.has(tag)) {
+				// @ts-ignore
 				this.addToPool(`#${ tag }`, key);
 			}
 		},
 		/**
 		 * Classify the value into a Pool for *every* tag that it has
 		 */
-		Tagging: ({ typeTagging = false, nameTagging = false } = {}) => function (key, value, entry) {
+		Tagging: ({ typeTagging = false, nameTagging = false } = {}) => function (key: string, value: any, entry: RegistryEntry)  {
 			if(typeof value === "object" && value.tags instanceof Set) {
 				for(let tag of value.tags.values()) {
+					// @ts-ignore
 					this.addToPool(`#${ tag }`, key);
 				}
 
 				if(typeof value === "object") {
 					if(nameTagging && value.name) {
+						// @ts-ignore
 						this.addToPool(`#${ value.name.toString() }`, key);
 					}
 					if(typeTagging && value.type) {
+						// @ts-ignore
 						this.addToPool(`#${ value.type.toString() }`, key);
 					}
 				}
@@ -222,19 +230,19 @@ export class Registry extends Component {
 		return this.getConfig();
 	};
 
-	get(id) {
+	get(id: string) {
 		return this._config.decoder(this)(id);
 	}
-	has(id) {
+	has(id: string) {
 		return this._entries.has(id);
 	}
-	set(id, entry, encoderArgs = []) {
+	set(id: string, entry: RegistryEntry, encoderArgs = []) {
 		return this._config.encoder(this, ...encoderArgs)(entry, id);
 	}
-	add(value, id, config = {}, encoderArgs = []) {
+	add(value: any, id?: string, config: any = {}, encoderArgs = []) {
 		return this._config.encoder(this, ...encoderArgs)(value, id, config);
 	}
-	addMany(obj = {}) {
+	addMany(obj: any = {}) {
 		for(let alias in obj) {
 			const uuid = this.add(obj[ alias ]);
 
@@ -245,7 +253,7 @@ export class Registry extends Component {
 
 		return this;
 	}
-	remove(key) {
+	remove(key: string) {
 		const entry = this._entries.get(key);
 
 		if(entry) {
@@ -281,7 +289,7 @@ export class Registry extends Component {
 
 		return false;
 	}
-	find(regex, { ids = true, values = false, aliases = true, pools = true } = {}) {
+	find(regex: RegExp, { ids = true, values = false, aliases = true, pools = true } = {}) {
 		const results = [];
 		for(let [ id, entry ] of this._entries) {
 			if(pools && entry.isPoolType) {
@@ -306,7 +314,7 @@ export class Registry extends Component {
 
 		return results;
 	}
-	search(selector, ...args) {
+	search(selector: Function, ...args: any[]) {
 		for(let [ id, entry ] of this) {
 			if(selector(entry, id, ...args) === true) {
 				return entry;
@@ -316,7 +324,7 @@ export class Registry extends Component {
 		return null;
 	}
 	
-	replaceValue(key, value) {
+	replaceValue(key: string, value: any) {
 		const entry = this._entries.get(key);
 
 		if(entry) {
@@ -330,14 +338,14 @@ export class Registry extends Component {
 		return this;
 	}
 	
-	setEncoder(encoder) {
+	setEncoder(encoder: Function) {
 		if(typeof encoder === "function") {
 			this._config.encoder = encoder;
 		}
 
 		return this;
 	}
-	setDecoder(decoder) {
+	setDecoder(decoder: Function) {
 		if(typeof decoder === "function") {
 			this._config.decoder = decoder;
 		}
@@ -345,28 +353,24 @@ export class Registry extends Component {
 		return this;
 	}
 
-	addClassifier(classifier) {
+	addClassifier(classifier: Function) {
 		if(typeof classifier === "function") {
 			this._config.classifiers.add(classifier.bind(this));
 		}
 
 		return this;
 	}
-	addClassifiers(...classifiers) {
-		classifiers = spreadFirstElementOrArray(classifiers);
-		
+	addClassifiers(...classifiers: Function[]) {		
 		for(let classifier of classifiers) {
 			this.addClassifier(classifier);
 		}
 
 		return this;
 	}
-	removeClassifier(classifier) {
+	removeClassifier(classifier: Function) {
 		return this._config.classifiers.delete(classifier);
 	}
-	removeClassifiers(...classifiers) {
-		classifiers = spreadFirstElementOrArray(classifiers);
-
+	removeClassifiers(...classifiers: Function[]) {
 		const removed = [];
 		for(let classifier of classifiers) {
 			if(this.removeClassifier(classifier)) {
@@ -377,7 +381,7 @@ export class Registry extends Component {
 		return removed;
 	}
 
-	addAlias(uuid, ...aliases) {
+	addAlias(uuid: string, ...aliases: string[]) {
 		if(this.has(uuid)) {
 			for(let alias of aliases) {
 				this.set(alias, new RegistryEntry(uuid, RegistryEntry.Type.ALIAS, { id: alias }));
@@ -399,6 +403,7 @@ export class Registry extends Component {
 
 		for(let [ alias, uuid ] of entries) {
 			if(Array.isArray(uuid)) {
+				// @ts-ignore
 				this.setPool(alias, uuid);
 			} else if(this.has(uuid)) {
 				this.addAlias(uuid, alias);
@@ -407,7 +412,7 @@ export class Registry extends Component {
 
 		return this;
 	}
-	removeAlias(uuid, ...aliases) {
+	removeAlias(uuid: string, ...aliases: string[]) {
 		if(this.has(uuid)) {
 			for(let alias of aliases) {
 				this.remove(alias);
@@ -417,7 +422,7 @@ export class Registry extends Component {
 		return this;
 	}
 
-	getPool(name, asRegistry = false) {
+	getPool(name: string, asRegistry: boolean = false) {
 		const pool = this.get(name);
 
 		if(pool) {
@@ -433,20 +438,20 @@ export class Registry extends Component {
 
 		return [];
 	}
-	setPool(name, ...uuids) {
+	setPool(name: string, ...uuids: string[]) {
 		const poolEntry = this._entries.get(name);
 		const cleanedUuids = uuids.filter(uuid => validate(uuid) && this.has(uuid));
 
 		if(poolEntry && poolEntry.isPoolType) {
 			poolEntry.value = new Set(cleanedUuids);
 		} else if(!this.has(name)) {
-
+			// @ts-ignore
 			this.set(name, new RegistryEntry(new Set(cleanedUuids), RegistryEntry.Type.POOL));
 		}
 
 		return this;
 	}
-	addToPool(name, ...uuids) {
+	addToPool(name: string, ...uuids: string[]) {
 		const poolEntry = this._entries.get(name);
 
 		if(poolEntry && poolEntry.isPoolType) {
@@ -461,7 +466,7 @@ export class Registry extends Component {
 
 		return this;
 	}
-	removeFromPool(name, ...uuids) {
+	removeFromPool(name: string, ...uuids: string[]) {
 		const poolEntry = this._entries.get(name);
 
 		if(poolEntry && poolEntry.isPoolType) {
@@ -480,7 +485,7 @@ export class Registry extends Component {
 	}
 
 	[ Symbol.iterator ]() {
-		const data = Array.from(this._entries.values()).reduce((a, e) => {
+		const data: any = Array.from(this._entries.values()).reduce((a: Array<any>, e: RegistryEntry) => {
 			if(e.isValueType) {
 				return [ ...a, [ e.id, e.value ] ];
 			}
@@ -491,12 +496,12 @@ export class Registry extends Component {
 		return data[ Symbol.iterator ]();
 	}
 
-	forEach(callback, ...args) {
+	forEach(callback: Function, ...args: any[]) {
 		for(let [ id, entry ] of this) {
 			callback(entry, id, ...args);
 		}
 	}
-	map(callback, ...args) {
+	map(callback: Function, ...args: any[]) {
 		const registry = new Registry();
 		for(let [ id, entry ] of this) {
 			registry.add(callback(entry, id, ...args), id);
@@ -504,7 +509,7 @@ export class Registry extends Component {
 
 		return registry;
 	}
-	reduce(callback, initialValue, ...args) {
+	reduce(callback: Function, initialValue: any, ...args: any[]) {
 		let value = initialValue;
 		for(let [ id, entry ] of this) {
 			value = callback(value, entry, id, ...args);
@@ -512,7 +517,7 @@ export class Registry extends Component {
 
 		return value;
 	}
-	filter(callback, ...args) {
+	filter(callback: Function, ...args: any[]) {
 		const registry = new Registry();
 		for(let [ id, entry ] of this) {
 			if(callback(entry, id, ...args) === true) {
@@ -523,7 +528,7 @@ export class Registry extends Component {
 		return registry;
 	}
 
-	union(...registries) {
+	union(...registries: Registry[]) {
 		const results = new Registry({ config: this._config });
 
 		for(let registry of registries) {
@@ -534,7 +539,7 @@ export class Registry extends Component {
 
 		return results;
 	}
-	intersection(...registries) {
+	intersection(...registries: Registry[]) {
 		const results = new Registry({ config: this._config });
 
 		for(let registry of registries) {
@@ -596,7 +601,7 @@ export class Registry extends Component {
 		return this._entries.size;
 	}
 
-	static MapRegistryEntries(entries = {}, baseMap) {
+	static MapRegistryEntries(entries: any = {}, baseMap?: any): any {
 		/**
 		 * Short-circuit if no entries are provided.
 		 */
