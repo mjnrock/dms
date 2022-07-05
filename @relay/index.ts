@@ -1,2 +1,3 @@
-require = require("esm")(module/*, options*/)
-module.exports = require("./main");
+import Relay from "./lib/package";
+
+export default Relay;

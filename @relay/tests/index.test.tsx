@@ -1,4 +1,4 @@
-const Relay = require("./../dist/main.js").default;
+const Relay = require("./../dist/index.js").default;
 
 describe("Relay", () => {
 	const msg = new Relay.Message({
