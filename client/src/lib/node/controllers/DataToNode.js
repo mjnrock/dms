@@ -9,7 +9,7 @@ export function ObjectToNode(obj = {}) {
 
 	for(let [ key, value ] of Object.entries(obj)) {
 		if(Array.isArray(value)) {
-			let [ type, value, ...rest ] = value;
+			let [ type, data, ...rest ] = value;
 
 			//TODO: Generate a Node from the @type and @value (...rest will contain, e.g., NumberNode-specific data "int8")
 		} else if(typeof value === "object") {
