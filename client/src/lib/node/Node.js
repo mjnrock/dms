@@ -80,7 +80,7 @@ export class Node extends Identity {
 		return value;
 	};
 
-	constructor ({ type, data, events = {}, id, tags, encoder = [], decoder = [], ...meta } = {}) {
+	constructor ({ type, data, events = {}, alias, id, tags, encoder = [], decoder = [], ...meta } = {}) {
 		super({ id, tags });
 
 		/**
@@ -101,6 +101,11 @@ export class Node extends Identity {
 		 */
 		this.meta = {
 			...meta,
+
+			/**
+			 * If a key or name is associated with the node, it is stored here.
+			 */
+			alias,
 
 			/**
 			 * The encoder is responsible for the "logical" encoding of the node's
@@ -169,6 +174,50 @@ export class Node extends Identity {
 	}
 	get dispatch() {
 		return this.emit;
+	}
+
+	toObject(verbose = false) {
+		let obj = {};
+
+		for(let [ key, value ] of Object.entries(this)) {
+			if(verbose) {
+				obj[ key ] = value;
+			} else {
+				if(!!value) {
+					obj[ key ] = value;
+				}
+			}
+		}
+
+		if(this.data instanceof Set) {
+			obj.data = Array.from(this.data).map(item => item instanceof Node ? item.toObject() : item);
+		}
+
+		return obj;
+	}
+	toString() {
+		return JSON.stringify(this.toObject());
+	}
+	toSchema(exclude = [ "id" ]) {
+		let obj = {};
+
+		for(let [ key, value ] of Object.entries(this)) {
+			if(!exclude.includes(key)) {
+				if(typeof value !== "object") {
+					obj[ key ] = value;
+				}
+			}
+		}
+
+		if(this.meta.alias) {
+			obj.alias = this.meta.alias;
+		}
+
+		if(this.data instanceof Set) {
+			obj.data = Array.from(this.data).map(item => item instanceof Node ? item.toSchema() : item);
+		}
+
+		return obj;
 	}
 };
 

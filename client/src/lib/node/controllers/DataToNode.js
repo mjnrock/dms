@@ -5,17 +5,37 @@ import Node from "./../package";
  */
 //TODO: Needs parsing logic and potentially memory management.
 export function ObjectToNode(obj = {}) {
-	let node;
+	let parent = new Node.GroupNode();
 
 	for(let [ key, value ] of Object.entries(obj)) {
+		let node;
+
+		
 		if(Array.isArray(value)) {
 			let [ type, data, ...rest ] = value;
-
-			//TODO: Generate a Node from the @type and @value (...rest will contain, e.g., NumberNode-specific data "int8")
+			
+			if(type === "text") {
+				node = new Node.TextNode({ data, alias: key });
+			} else if(type === "number") {
+				node = new Node.NumberNode({ data , alias: key});
+			}
 		} else if(typeof value === "object") {
-			//TODO: Consider it a GROUP and recurse
+			let sub = ObjectToNode(value);
+
+			node = new Node.GroupNode({
+				data: sub.data,
+				alias: key,
+			});
+		} else {
+			node = new Node.Node({ data: value, alias: key });
+		}
+
+		if(node) {
+			parent.addChild(node);
 		}
 	}
+
+	return parent;
 };
 
 export function ArrayToNode(arr = []) {

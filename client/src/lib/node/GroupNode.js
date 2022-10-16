@@ -5,9 +5,38 @@ export class GroupNode extends Node {
 		super({
 			...node,
 
-			type: Node.EnumType.TEXT,
-			encoder: data => new Set(data),
+			data: new Set(),
+			type: Node.EnumType.GROUP,
 		});
+
+		if(node.data) {
+			for(let child of node.data) {
+				this.addChild(child);
+			}
+		}
+	}
+
+	addChild(node) {
+		this.data.add(node);
+
+		return this;
+	}
+	addChildren(...nodes) {
+		for(let node of nodes) {
+			this.addChild(node);
+		}
+
+		return this;
+	}
+	removeChild(node) {
+		return this.data.delete(node);
+	}
+	removeChildren(...nodes) {
+		for(let node of nodes) {
+			this.removeChild(node);
+		}
+
+		return this;
 	}
 };
 
