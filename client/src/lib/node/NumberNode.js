@@ -7,12 +7,16 @@ export class NumberNode extends Node {
 		OutOfBounds: `B4B685D9-0AF3-4D89-92FF-394C696451A0`,
 	};
 
-	constructor ({ ...node } = {}) {
+	constructor ({ dtype, ...node } = {}) {
 		super({
 			...node,
 
 			type: Node.EnumType.NUMBER,
 		});
+
+		if(dtype) {
+			NumberNode[ dtype.toUpperCase() ].dtype(this);
+		}
 	}
 };
 
@@ -102,9 +106,15 @@ for(let [ key, obj ] of Object.entries(NumberTypes)) {
 				...coder,
 			});
 
-			node.meta.type = key.toLowerCase();
+			node.meta.dtype = key.toLowerCase();
 
 			return node;
+		},
+		dtype: (self) => {
+			self.encoder = coder.encoder;
+			self.decoder = coder.decoder;
+
+			self.meta.dtype = key.toLowerCase();
 		},
 		factory: (qty, args = {}) => {
 			return new Array(qty).fill(0).map(() => NumberNode[ key ].create(args));

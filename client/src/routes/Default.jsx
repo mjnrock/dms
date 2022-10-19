@@ -1,32 +1,23 @@
+import GroupNodeJSX from "../components/node/GroupNode";
 import { DataToNode } from "../lib/node/controllers/DataToNode";
-import Node from "./../lib/node/package";
 
 const node = DataToNode({
 	cat: [ "text", "meow" ],
 	meows: {
 		poof: [ "number", 1 ],
-		lemao: [ "number", 27, "int8" ],
+		lemiao: [ "number", 27, "int8" ],
 	},
 });
 
-console.log(node);
+node.meta.alias = "teststs";
+
+console.log(node.data);
 
 export function Default() {
 	return (
 		<div>
-			<pre>
-				{
-					JSON.stringify(node.toSchema(), null, 4)
-				}
-			</pre>
-
-			<hr />
-
-			<pre>
-				{
-					JSON.stringify(node.toObject(), null, 4)
-				}
-			</pre>
+			<span className="text-3xl font-bold underline">DMS</span>
+			<GroupNodeJSX node={ node } />
 		</div>
 	);
 };

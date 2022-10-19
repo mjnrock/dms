@@ -49,7 +49,7 @@ export class Node extends Identity {
 	/**
 	 * The terminal value is the result after all encoders have been serially applied.
 	 */
-	static Encoder = (self, value, ...args) => {
+	static Encoder = (self, value, old, ...args) => {
 		if(value !== void 0) {
 			let result = value;
 
@@ -57,6 +57,7 @@ export class Node extends Identity {
 				result = encoder(result, ...args);
 			}
 
+			self.emit("update", result, old);
 
 			return result;
 		}
@@ -211,6 +212,9 @@ export class Node extends Identity {
 
 		if(this.meta.alias) {
 			obj.alias = this.meta.alias;
+		}
+		if(this.meta.dtype) {
+			obj.dtype = this.meta.dtype;
 		}
 
 		if(this.data instanceof Set) {

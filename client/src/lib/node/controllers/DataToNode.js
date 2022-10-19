@@ -1,26 +1,31 @@
 import Node from "./../package";
 
 /**
- * Convert some generic data object into its representative Node tree.
+ * Convert some struct data object into its representative Node tree.
+ * 
+ * NOTE: This expects @obj to be a "Struct Object", NOT a "Schema Object".
  */
-//TODO: Needs parsing logic and potentially memory management.
-export function ObjectToNode(obj = {}) {
+export function StructToNode(obj = {}) {
 	let parent = new Node.GroupNode();
 
 	for(let [ key, value ] of Object.entries(obj)) {
 		let node;
 
-		
 		if(Array.isArray(value)) {
 			let [ type, data, ...rest ] = value;
-			
+
 			if(type === "text") {
 				node = new Node.TextNode({ data, alias: key });
 			} else if(type === "number") {
-				node = new Node.NumberNode({ data , alias: key});
+				let [ dtype ] = rest;
+
+				node = new Node.NumberNode({ data, alias: key, dtype });
+
+				node.events.add("update", (...args) => console.log(999, args))
+				node.data = 50;
 			}
 		} else if(typeof value === "object") {
-			let sub = ObjectToNode(value);
+			let sub = StructToNode(value);
 
 			node = new Node.GroupNode({
 				data: sub.data,
@@ -39,7 +44,7 @@ export function ObjectToNode(obj = {}) {
 };
 
 export function ArrayToNode(arr = []) {
-	return ObjectToNode(Object.fromEntries(arr));
+	return StructToNode(Object.fromEntries(arr));
 };
 
 export function JsonToNode(json = "") {
@@ -48,7 +53,7 @@ export function JsonToNode(json = "") {
 		obj = JSON.parse(obj);
 	}
 
-	return ObjectToNode(obj);
+	return StructToNode(obj);
 };
 
 /**
@@ -58,7 +63,7 @@ export function DataToNode(data) {
 	if(Array.isArray(data)) {
 		return ArrayToNode(data);
 	} else if(typeof data === "object") {
-		return ObjectToNode(data);
+		return StructToNode(data);
 	} else if(typeof data === "string") {
 		return JsonToNode(data);
 	}
@@ -67,7 +72,7 @@ export function DataToNode(data) {
 };
 
 export default {
-	ObjectToNode,
+	StructToNode,
 	ArrayToNode,
 	JsonToNode,
 
