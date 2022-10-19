@@ -1,5 +1,10 @@
-import Identity from "./../../util/Identity";
-import Events from "./../../util/relay/Events";
+/**
+ * Use the local, Node-module versions for tracking & configuration purposes.
+ * 
+ * NOTE: This is a temporary solution until a better overload system is implemented.
+ */
+import Identity from "./util/Identity";
+import Events from "./util/Events";
 
 export const EnumType = {
 	DATA: "data",

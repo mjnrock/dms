@@ -1,4 +1,3 @@
-import { Identity } from "./../util/Identity";
 import GroupNodeJSX from "../components/node/GroupNode";
 import { DataToNode } from "../lib/node/controllers/DataToNode";
 
