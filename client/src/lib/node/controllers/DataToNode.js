@@ -6,7 +6,9 @@ import Node from "./../package";
  * NOTE: This expects @obj to be a "Struct Object", NOT a "Schema Object".
  */
 export function StructToNode(obj = {}) {
-	let parent = new Node.GroupNode();
+	let parent = new Node.GroupNode({
+		tags: [ "test", "cat" ],
+	});
 
 	for(let [ key, value ] of Object.entries(obj)) {
 		let node;
@@ -20,9 +22,6 @@ export function StructToNode(obj = {}) {
 				let [ dtype ] = rest;
 
 				node = new Node.NumberNode({ data, alias: key, dtype });
-
-				node.events.add("update", (...args) => console.log(999, args))
-				node.data = 50;
 			}
 		} else if(typeof value === "object") {
 			let sub = StructToNode(value);

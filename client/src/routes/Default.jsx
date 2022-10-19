@@ -1,3 +1,4 @@
+import { Identity } from "./../util/Identity";
 import GroupNodeJSX from "../components/node/GroupNode";
 import { DataToNode } from "../lib/node/controllers/DataToNode";
 
@@ -18,6 +19,13 @@ export function Default() {
 		<div>
 			<span className="text-3xl font-bold underline">DMS</span>
 			<GroupNodeJSX node={ node } />
+
+			<hr />
+			<pre>
+				{
+					JSON.stringify(node.toObject(), null, 4)
+				}
+			</pre>
 		</div>
 	);
 };
