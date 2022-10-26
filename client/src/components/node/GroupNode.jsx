@@ -5,6 +5,7 @@ import Node from "./../../lib/node/package";
 import TextNode from "./TextNode";
 import NumberNode from "./NumberNode";
 
+//TODO: Either apply the concepts of position directly as a component prop (e.g. x, y), or extract metadata from node through standardized parlance (node.dms.position{x,y})
 export function GroupNode({ node } = {}) {
 	let data = Array.from(node.data);
 
