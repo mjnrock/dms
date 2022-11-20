@@ -97,6 +97,24 @@ export class Events extends Identity {
 	}
 
 	/**
+	 * Basically the same as << .emit >>, except that no filters/effects are processed.
+	 */
+	dispatch(event, ...args) {
+		let results = [];
+		
+		if(this.events.has(event)) {
+			/**
+			 * Evaluate the listeners for that @event
+			 */
+			this.events.get(event).forEach(listener => {
+				results.push(listener(...args));
+			});
+		}
+
+		return results.length ? results : false;
+	}
+
+	/**
 	 * Emit an event to any listeners and pass any arguments to them.
 	 */
 	emit(event, ...args) {

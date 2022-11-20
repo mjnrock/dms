@@ -1,81 +1,42 @@
-import * as PixiJS from "pixi.js";
-import Pixi from "./../pixi/Pixi";
-import { PixiCanvas } from "./../pixi/PixiCanvas";
-
-import GroupNodeJSX from "../components/node/GroupNode";
-import { DataToNode } from "../lib/node/controllers/DataToNode";
-import { useState } from "react";
-
-const node = DataToNode({
-	cat: [ "text", "meow" ],
-	meows: {
-		poof: [ "number", 1 ],
-		lemiao: [ "number", 27, "int8" ],
-	},
-});
-
-node.getByAlias("meows.poof").data = 65489;
-
-/**
- * IDEA: Consolidate this event initialization into something more succinct.
- */
-node.events.addObject({
-	update: (...args) => {
-		console.log("update", ...args);
-	},
-});
-node.getByAlias("cat").events.addObject({
-	change: (...args) => {
-		node.getByAlias("cat").data = args[ 0 ];
-
-		return node.getByAlias("cat").data;
-	},
-});
-node.getByAlias("meows.poof").events.addObject({
-	change: (...args) => {
-		console.log("update", ...args);
-	},
-});
-
-const app = {
-	mouse: {
-		x: 0,
-		y: 0,
-		buttons: 0,
-	},
-	viewport: {
-		offset: {
-			x: 0,
-			y: 0,
-		},
-		scale: 1.0,
-	},
-	pixi: new Pixi({
-		width: 500,
-		height: 500,
-	}),
-	state: node,
-};
-
-node.dms = {
-	position: {
-		x: 0,
-		y: 0,
-	},
-};
+import { TagBoolean } from "../lib/dms/tags/TagBoolean";
+import { TagString } from "../lib/dms/tags/TagString";
+import { TagGroup } from "../lib/dms/tags/TagGroup";
 
 export function Default() {
-	const [ state, setState ] = useState(app);
+	let tagBool = new TagBoolean(true, {
+		alias: "boolz",
+	});
+	let tagStr = new TagString(123456, {
+		alias: "strangs",
+	});
+	let tagGroup = new TagGroup([
+		tagBool,
+		tagStr
+	], {
+		alias: "gr00pz",
+	});
+
+	console.log(tagBool)
+	console.log(tagStr)
+	console.log(tagGroup)
 
 	return (
 		<div
 			className="absolute-root"
 		>
-			<GroupNodeJSX
-				node={ app.state }
-				position={ state.mouse }
-			/>
-			{/* <PixiCanvas view={ app.pixi.canvas } /> */ }
+			<div>{ tagBool.name }, { tagBool.value.toString() }</div>
+			<div>{ tagStr.name }, { tagStr.value }</div>
+			<div>
+				{ tagGroup.name }, {
+					tagGroup.value.map((tag, i) => {
+						return (
+							<div key={ i }>
+								{ tag.name }, { tag.value.toString() }
+							</div>
+						)
+					})
+				}
+			</div>
 		</div>
 	);
 };
