@@ -13,7 +13,7 @@ export class TagGroup extends Tag {
 
 	constructor (value = [], { ...rest } = {}) {
 		super({
-			type: Tag.Type.BOOLEAN,
+			type: Tag.Type.GROUP,
 			reducers: [ TagGroup.Encoder ],
 
 			...rest

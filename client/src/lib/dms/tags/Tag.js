@@ -4,7 +4,7 @@ export const EnumTagType = {
 	ANY: "any",
 	GROUP: "group",
 	BOOLEAN: "boolean",
-	// UINT8: "uint8",
+	UINT8: "uint8",
 	// UINT16: "uint16",
 	// UINT32: "uint32",
 	// UINT64: "uint64",

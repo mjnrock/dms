@@ -1,38 +1,31 @@
-import { Node } from "../Node.js";
+import { Tag } from "./Tag.js";
 
-export const EnumTagType = {
-	ANY: "any",
-	GROUP: "group",
-	BOOLEAN: "boolean",
-	// UINT8: "uint8",
-	// UINT16: "uint16",
-	// UINT32: "uint32",
-	// UINT64: "uint64",
-	INT8: "int8",
-	// INT16: "int16",
-	// INT32: "int32",
-	// INT64: "int64",
-	// FLOAT32: "float32",
-	// FLOAT64: "float64",
-	STRING: "string",
-	// ARRAY: "array",
-	// OBJECT: "object",
-	// DATE: "date",
-	// TIME: "time",
-	// DATETIME: "datetime",
-	// ENUM: "enum",
-	// LIST: "list",
-	// MAP: "map",
-	// REFERENCE: "reference",
-	// FUNCTION: "function",
-}
+export class TagInt8 extends Tag {
+	static MIN_VALUE = -128;
+	static MAX_VALUE = 127;
 
-export class Tag extends Node {
-	static Type = EnumTagType;
+	static Encoder = (prev, next, ...args) => {
+		let value = parseInt(next);
 
-	constructor ({ ...rest } = {}) {
-		super({ ...rest });
+		if(isNaN(value)) {
+			return prev;
+		} else if(value < TagInt8.MIN_VALUE) {
+			return TagInt8.MIN_VALUE;
+		} else if(value > TagInt8.MAX_VALUE) {
+			return TagInt8.MAX_VALUE;
+		}
+	};
+
+	constructor (value, { ...rest } = {}) {
+		super({
+			type: Tag.Type.INT8,
+			reducers: [ TagInt8.Encoder ],
+
+			...rest
+		});
+
+		this.state = value;
 	}
 }
 
-export default Tag;
+export default TagInt8;

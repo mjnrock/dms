@@ -1,5 +1,7 @@
 import { TagBoolean } from "../lib/dms/tags/TagBoolean";
 import { TagString } from "../lib/dms/tags/TagString";
+import { TagInt8 } from "../lib/dms/tags/TagInt8";
+import { TagUint8 } from "../lib/dms/tags/TagUint8";
 import { TagGroup } from "../lib/dms/tags/TagGroup";
 
 export function Default() {
@@ -9,9 +11,17 @@ export function Default() {
 	let tagStr = new TagString(123456, {
 		alias: "strangs",
 	});
+	let tagInt8 = new TagInt8(-654, {
+		alias: "signed",
+	});
+	let tagUint8 = new TagUint8(-5, {
+		alias: "unsigned",
+	});
 	let tagGroup = new TagGroup([
 		tagBool,
-		tagStr
+		tagStr,
+		tagInt8,
+		tagUint8,
 	], {
 		alias: "gr00pz",
 	});
@@ -24,8 +34,6 @@ export function Default() {
 		<div
 			className="absolute-root"
 		>
-			<div>{ tagBool.name }, { tagBool.value.toString() }</div>
-			<div>{ tagStr.name }, { tagStr.value }</div>
 			<div>
 				{ tagGroup.name }, {
 					tagGroup.value.map((tag, i) => {
