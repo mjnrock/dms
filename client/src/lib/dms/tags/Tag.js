@@ -85,6 +85,28 @@ export class Tag extends Node {
 	set value(value) {
 		this.state = value;
 	}
+
+	toObject(verbose = false) {
+		if(verbose) {
+			return {
+				id: this.id,
+				
+				...this.toObject(false),
+
+				events: [ this.events.size, ...this.events.keys ],
+				reducers: this.reducers.length,
+				meta: this.meta,
+			};
+		}
+
+		return {
+			type: this.type,
+			value: this.state,
+		};
+	}
+	toJson(verbose = false) {
+		return JSON.stringify(this.toObject(verbose));
+	}
 }
 
 export default Tag;

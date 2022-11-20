@@ -26,9 +26,7 @@ export function Default() {
 		alias: "gr00pz",
 	});
 
-	console.log(tagBool)
-	console.log(tagStr)
-	console.log(tagGroup)
+	console.log(tagBool.toObject(true))
 
 	return (
 		<div

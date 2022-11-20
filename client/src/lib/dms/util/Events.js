@@ -9,6 +9,14 @@ export class Events extends Identity {
 		this.addObject(events);
 	}
 
+	get size() {
+		return this.events.size;
+	}
+
+	get keys() {
+		return this.events.keys();
+	}
+
 	/**
 	 * Convenience variant of << .add >> that expects an array- or object-map, instead.
 	 */
