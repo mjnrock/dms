@@ -4,6 +4,7 @@ import { PixiCanvas } from "./../pixi/PixiCanvas";
 
 import GroupNodeJSX from "../components/node/GroupNode";
 import { DataToNode } from "../lib/node/controllers/DataToNode";
+import { useState } from "react";
 
 const node = DataToNode({
 	cat: [ "text", "meow" ],
@@ -13,7 +14,35 @@ const node = DataToNode({
 	},
 });
 
+node.getByAlias("meows.poof").data = 65489;
+
+/**
+ * IDEA: Consolidate this event initialization into something more succinct.
+ */
+node.events.addObject({
+	update: (...args) => {
+		console.log("update", ...args);
+	},
+});
+node.getByAlias("cat").events.addObject({
+	change: (...args) => {
+		node.getByAlias("cat").data = args[ 0 ];
+
+		return node.getByAlias("cat").data;
+	},
+});
+node.getByAlias("meows.poof").events.addObject({
+	change: (...args) => {
+		console.log("update", ...args);
+	},
+});
+
 const app = {
+	mouse: {
+		x: 0,
+		y: 0,
+		buttons: 0,
+	},
 	viewport: {
 		offset: {
 			x: 0,
@@ -28,13 +57,25 @@ const app = {
 	state: node,
 };
 
+node.dms = {
+	position: {
+		x: 0,
+		y: 0,
+	},
+};
+
 export function Default() {
+	const [ state, setState ] = useState(app);
+
 	return (
-		<div className="absolute-root">
-			<PixiCanvas view={ app.pixi.canvas } />
-			<div className="absolute-root">
-				<GroupNodeJSX node={ app.state } />
-			</div>
+		<div
+			className="absolute-root"
+		>
+			<GroupNodeJSX
+				node={ app.state }
+				position={ state.mouse }
+			/>
+			{/* <PixiCanvas view={ app.pixi.canvas } /> */ }
 		</div>
 	);
 };

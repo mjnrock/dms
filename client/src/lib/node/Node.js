@@ -141,16 +141,14 @@ export class Node extends Identity {
 		 */
 		const proxy = new Proxy(this, {
 			get: (target, key) => {
-				let value = target[ key ];
-
 				/**
 				 * If fetching data, invoke the decoder.
 				 */
 				if(key === "data") {
-					return target.constructor.Decoder(target, value);
+					return target.constructor.Decoder(target, target[ key ]);
 				}
 
-				return value;
+				return Reflect.get(target, key);
 			},
 			set: (target, key, value) => {
 				/**

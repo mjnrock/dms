@@ -16,6 +16,32 @@ export class GroupNode extends Node {
 		}
 	}
 
+	getByAlias(alias, nested = true) {
+		if(nested) {
+			let keys = alias.split(".");
+
+			if(keys.length > 1) {
+				let [ key, ...rest ] = keys;
+
+				let child = this.getByAlias(key);
+
+				if(child) {
+					return child.getByAlias(rest.join("."), nested);
+				}
+			}
+
+			return this.getByAlias(alias, false);
+		}
+
+		for(let child of this.data) {
+			if(child.meta.alias === alias) {
+				return child;
+			}
+		}
+
+		return false;
+	}
+
 	addChild(node) {
 		this.data.add(node);
 

@@ -4,6 +4,10 @@ import React from "react";
 
 export function NumberNode({ node, isEditing = false } = {}) {
 	if(isEditing) {
+		function onChange(e) {
+			node.emit("change", e.target.value);
+		}
+
 		return (
 			<div>
 				<div style={ { fontWeight: "bold" } }>
@@ -12,7 +16,8 @@ export function NumberNode({ node, isEditing = false } = {}) {
 					}
 				</div>
 				<div>
-					<input type="number" value={ node.data } />
+					{ /* TODO: Change the step based on meta type, and constrain by min/max */ }
+					<input type="number" value={ node.data } onChange={ onChange } />
 				</div>
 			</div>
 		);
