@@ -5,13 +5,15 @@ export class TagBoolean extends Tag {
 		return !!next;
 	};
 
-	constructor (value, { ...rest } = {}) {
+	constructor (value = [], { reducers = [], ...rest } = {}) {
 		super({
 			type: Tag.Type.BOOLEAN,
-			reducers: [ TagBoolean.Encoder ],
 
 			...rest
 		});
+
+		this.addReducer(TagBoolean.Encoder);
+		this.addReducers(...reducers);
 
 		this.state = value;
 	}

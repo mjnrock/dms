@@ -16,13 +16,15 @@ export class TagInt8 extends Tag {
 		}
 	};
 
-	constructor (value, { ...rest } = {}) {
+	constructor (value = [], { reducers = [], ...rest } = {}) {
 		super({
 			type: Tag.Type.INT8,
-			reducers: [ TagInt8.Encoder ],
 
 			...rest
 		});
+
+		this.addReducer(TagInt8.Encoder);
+		this.addReducers(...reducers);
 
 		this.state = value;
 	}

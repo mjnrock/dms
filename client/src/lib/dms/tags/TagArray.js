@@ -1,6 +1,6 @@
 import { Tag } from "./Tag.js";
 
-export class TagGroup extends Tag {
+export class TagArray extends Tag {
 	static Encoder = (prev, next, ...args) => {
 		if(next instanceof Tag) {
 			return [ next ];
@@ -18,11 +18,11 @@ export class TagGroup extends Tag {
 			...rest
 		});
 
-		this.addReducer(TagGroup.Encoder);
+		this.addReducer(TagArray.Encoder);
 		this.addReducers(...reducers);
 
 		this.state = value;
 	}
 }
 
-export default TagGroup;
+export default TagArray;

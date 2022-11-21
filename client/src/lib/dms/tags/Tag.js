@@ -50,6 +50,10 @@ export class Tag extends Node {
 	 */
 	static Encoder = (prev, next, ...args) => {
 		if(next !== void 0) {
+			if(next === null) {
+				return null;
+			}
+			
 			return next;
 		}
 
@@ -66,6 +70,11 @@ export class Tag extends Node {
 			...rest,
 		});
 
+		/**
+		 * Does not allow for assignment of `undefined`.
+		 */
+		this.addReducer(Tag.Encoder);
+
 		return new Proxy(this, {
 			set: (target, property, value, receiver) => {
 				if(property === "state") {
@@ -77,6 +86,33 @@ export class Tag extends Node {
 				return Reflect.set(target, property, value, receiver);
 			}
 		});
+	}
+
+	addReducer(reducer) {
+		if(typeof reducer === "function") {
+			this.reducers.push(reducer);
+
+			return true;
+		}
+
+		return false;
+	}
+	addReducers(...reducers) {
+		return reducers.map(reducer => this.addReducer(reducer));
+	}
+	removeReducer(reducer) {
+		let index = this.reducers.indexOf(reducer);
+
+		if(index !== -1) {
+			this.reducers.splice(index, 1);
+
+			return true;
+		}
+
+		return false;
+	}
+	removeReducers(...reducers) {
+		return reducers.map(reducer => this.removeReducer(reducer));
 	}
 
 	get value() {
