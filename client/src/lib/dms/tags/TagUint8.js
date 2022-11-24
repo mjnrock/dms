@@ -4,11 +4,11 @@ export class TagUint8 extends Tag {
 	static MIN_VALUE = 0;
 	static MAX_VALUE = 255;
 
-	static Encoder = (prev, next, ...args) => {
+	static Encoder = ({ current }, next) => {
 		let value = parseInt(next);
 
 		if(isNaN(value)) {
-			return prev;
+			return current;
 		} else if(value < TagUint8.MIN_VALUE) {
 			return TagUint8.MIN_VALUE;
 		} else if(value > TagUint8.MAX_VALUE) {

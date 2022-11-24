@@ -1,7 +1,7 @@
 import { Tag } from "./Tag.js";
 
 export class TagBoolean extends Tag {
-	static Encoder = (prev, next, ...args) => {
+	static Encoder = ({}, next) => {
 		return !!next;
 	};
 

@@ -1,7 +1,7 @@
 import { Tag } from "./Tag.js";
 
 export class TagArray extends Tag {
-	static Encoder = (prev, next, ...args) => {
+	static Encoder = ({}, next) => {
 		if(next instanceof Tag) {
 			return [ next ];
 		} else if(!Array.isArray(next)) {

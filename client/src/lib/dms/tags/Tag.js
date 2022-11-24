@@ -48,7 +48,7 @@ export class Tag extends Node {
 	 * the `reducers` array, as *all* Tag instances have a default reducer that
 	 * gets attach upon instantiation.
 	 */
-	static Encoder = (prev, next, ...args) => {
+	static Encoder = ({ current }, next) => {
 		if(next !== void 0) {
 			if(next === null) {
 				return null;
@@ -56,7 +56,7 @@ export class Tag extends Node {
 			return next;
 		}
 
-		return prev;
+		return current;
 	};
 
 	static Type = EnumTagType;

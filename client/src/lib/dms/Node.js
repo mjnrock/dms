@@ -12,7 +12,33 @@ export const EnumNodeType = {
 	FUNCTION: "function",
 };
 
+/**
+ * As a premise, a Node assumes that all module information (including its own state) should be publicly accessible via `.shared`.
+ * That being said, state-spoeific information is trapped via get/set hooks to make manipulating "state" a bit simpler, though it
+ * is still stored in the `.shared` object.
+ * 
+ * For a given module in `.shared`, you can either update its value by utilizing the reduction paradigm, or you can update it
+ * directly via the `.shared` object or through the set-overload for `.current`.
+ * 
+ * Because the reduction paradigm is generalized to the concept of a module, you should treat all methods that say "shared" in them
+ * as the main method (in its scope) vis-a-vis a similarly-named method without the word "shared" in it.  These are (by default)
+ * really just convenience methods to make "state" manipulation a bit easier.  In other words, "state" is a module as well, and because
+ * in practice it's a very common key-paradigm, "state" given a bit of special treatment.
+ */
 export class Node extends Identity {
+	/**
+	 ** An abstraction into a variable, in case a descendant should override this character for some use-case.
+	 */
+	static RPCCharacter = "@";
+
+	/**
+	 ** An abstraction into a variable, in case a descendant should override this character for some use-case.
+	*/
+	static UpdateEvent = "update";
+
+	/**
+	 * A convenience declaration so that you can invoke the enumerator directly from the Node class.
+	 */
 	static Type = EnumNodeType;
 
 	constructor ({ type, state, reducers = [], sharedReducers = {}, events = {}, alias, meta = {}, id, tags = [] } = {}) {
@@ -33,7 +59,7 @@ export class Node extends Identity {
 		 */
 		this.shared = new Map();
 		/**
-		 * Uses the set hook to assign this into .shared::"state"
+		 * Without being overridden, this is a get/set trap for this.shared.get("state")
 		 */
 		this.state = state;
 
@@ -53,10 +79,18 @@ export class Node extends Identity {
 		 * A common repository to store anything not covered by the other properties.
 		 */
 		this.meta = {
+			/**
+			 * By default, the timestamp will be the creation time, though it is meant to hold the most "relevant"
+			 * timestamp for that node, based on whatever the Node is being used for.
+			 */
+			timestamp: Date.now(),
+
 			...meta,
 
-			alias,
-			timestamp: Date.now(),
+			/**
+			 * An optional alias for the node
+			 */
+			alias: alias || meta.alias,
 		};
 
 		/**
@@ -65,18 +99,28 @@ export class Node extends Identity {
 		this.events.add("@update", (...args) => this.update(...args));
 	}
 
+	current(module, value) {
+		/**
+		 * SET
+		 */
+		if(value !== void 0) {
+			this.shared.set(module, value);
+		}
+
+		/**
+		 * GET
+		 */
+		return this.shared.get(module);
+	}
 	get state() {
 		return this.shared.get("state");
 	}
 	set state(state) {
 		this.shared.set("state", state);
 	}
-	current(module, value) {
-		if(value !== void 0) {
-			this.shared.set(module, value);
-		}
 
-		return this.shared.get(module);
+	get name() {
+		return this.meta.alias ? `${ this.meta.alias }-${ this.id }` : this.id;
 	}
 
 	addSharedReducer(module, reducer) {
@@ -148,7 +192,24 @@ export class Node extends Identity {
 			return true;
 		}
 
-		return this.reducers.delete(module);
+		if(this.reducers.has(module)) {
+			let size = this.reducers.get(module).length;
+
+			/**
+			 * Create a 2-stage deletion process:
+			 * 	1) If there are reducers, then set the value to an empty array.
+			 *  2) If there are no reducers, then delete the key.
+			 */
+			if(size) {
+				this.reducers.set(module, []);
+			} else {
+				this.reducers.delete(module);
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 
 	addReducer(reducer) {
@@ -167,9 +228,22 @@ export class Node extends Identity {
 	removeReducers(...reducers) {
 		return this.removeSharedReducers("state", ...reducers);
 	}
+	clearReducers() {
+		return this.clearSharedReducers("state");
+	}
 
-	get name() {
-		return this.meta.alias ? `${ this.meta.alias }-${ this.id }` : this.id;
+	/**
+	 * A generic wrapper function for use in the event and reduction systems.  This
+	 * allows for a standardized event-object to be passed, alongside any relevant
+	 * data for that specific invocation.
+	 */
+	payload(event, { ...rest } = {}) {
+		return {
+			type: event,
+			emitter: this,
+
+			...rest,
+		};
 	}
 
 	/**
@@ -177,31 +251,43 @@ export class Node extends Identity {
 	 * result of which will be returned.
 	 */
 	emit(event, ...args) {
-		if(event[ 0 ] === "@") {
+		/**
+		 * Allow a command character to evaluate specific pathways, instead
+		 * 
+		 * NOTE: Will use the descendent's prototypal value, if overridden.
+		 */
+		if(event[ 0 ] === this.constructor.RPCCharacter) {
 			return this.sharedUpdate(event.slice(1), ...args);
 		}
 
-		let eventObject = { node: this, type: event, args };
-
-		this.events.dispatch("*", eventObject);
-
+		this.events.dispatch("*", this.payload(event), ...args);
 		let result = this.events.dispatch(event, ...args);
-
-		this.events.dispatch("**", { data: result, ...eventObject });
+		this.events.dispatch("**", this.payload(event, { data: result }), ...args);
 
 		return result;
 	}
 
+	/**
+	 * For the sake of explication, this is the main reduction entry point for any module, including state.
+	 * As such, even `.update` calls this method.
+	 */
 	sharedUpdate(module, ...args) {
 		let reducers = this.reducers.get(module) || [];
 
-		let next = this.shared.get(module),
-			current = next;
+		let previous = this.state,
+			next = this.shared.get(module);
 		for(let reducer of reducers) {
-			next = reducer({ node: this, current, next }, ...args);
+			next = reducer(this.payload(module, { current: next }), ...args);
 		}
 
 		this.shared.set(module, next);
+
+		/**
+		 * Reserve the event "update" to broadcast changes to a module's state.
+		 * 
+		 * NOTE: Will use the descendent's prototypal value, if overridden.
+		 */
+		this.emit(this.constructor.UpdateEvent, { module, current: next, previous });
 
 		return next;
 	}

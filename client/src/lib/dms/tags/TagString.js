@@ -1,12 +1,12 @@
 import { Tag } from "./Tag.js";
 
 export class TagString extends Tag {
-	static Encoder = (prev, next, ...args) => {
+	static Encoder = ({ current }, next) => {
 		if(next != null) {
 			return next.toString();
 		}
 
-		return prev;
+		return current;
 	};
 
 	constructor (value = [], { reducers = [], ...rest } = {}) {
