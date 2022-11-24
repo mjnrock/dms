@@ -53,7 +53,6 @@ export class Tag extends Node {
 			if(next === null) {
 				return null;
 			}
-			
 			return next;
 		}
 
@@ -76,57 +75,34 @@ export class Tag extends Node {
 		this.addReducer(Tag.Encoder);
 
 		return new Proxy(this, {
-			set: (target, property, value, receiver) => {
-				if(property === "state") {
-					let result = target.run(value);
+			set: (target, prop, value, receiver) => {
+				if(prop === "state") {
+					let result = target.update(value);
 
-					return Reflect.set(target, property, result, receiver);
+					target[ prop ] = result;
+
+					return true;
 				}
 
-				return Reflect.set(target, property, value, receiver);
+				return Reflect.set(target, prop, value, receiver);
 			}
 		});
-	}
-
-	addReducer(reducer) {
-		if(typeof reducer === "function") {
-			this.reducers.push(reducer);
-
-			return true;
-		}
-
-		return false;
-	}
-	addReducers(...reducers) {
-		return reducers.map(reducer => this.addReducer(reducer));
-	}
-	removeReducer(reducer) {
-		let index = this.reducers.indexOf(reducer);
-
-		if(index !== -1) {
-			this.reducers.splice(index, 1);
-
-			return true;
-		}
-
-		return false;
-	}
-	removeReducers(...reducers) {
-		return reducers.map(reducer => this.removeReducer(reducer));
 	}
 
 	get value() {
 		return this.state;
 	}
 	set value(value) {
+		console.log(9998, value)
 		this.state = value;
+		console.log(9999, this.state)
 	}
 
 	toObject(verbose = false) {
 		if(verbose) {
 			return {
 				id: this.id,
-				
+
 				...this.toObject(false),
 
 				events: [ this.events.size, ...this.events.keys ],
