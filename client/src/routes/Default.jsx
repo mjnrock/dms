@@ -19,7 +19,11 @@ const tagStr = new TagString("meow", {
 	alias: "strang",
 	tags: [ "cat", "dog" ],
 });
-const tagArr = new TagArray([ tagStr ]);
+const tagStr2 = new TagString("meow", {
+	alias: "strang",
+	tags: [ "dog" ],
+});
+const tagArr = new TagArray([ tagStr, tagStr2 ]);
 
 // tagStr.events.on("update", ({ module, current, previous }) => {
 // 	console.log(`@UPDATE(${ module }):`, previous, "->", current);
@@ -33,10 +37,11 @@ const tagArr = new TagArray([ tagStr ]);
 // tagStr.sharedUpdate("farts", "fashes");
 // console.log(tagStr.current("farts"));
 
-console.log(tagStr)
-console.log(tagArr)
-console.log(tagArr.getByAlias("strang"))
+// console.log(tagStr)
+// console.log(tagArr)
+// console.log(tagArr.getByAlias("strang"))
 console.log(tagArr.getByTag("cat"))
+console.log(tagArr.getByTag("dog"))
 
 // const node = new Node({
 // 	state: 12354,
