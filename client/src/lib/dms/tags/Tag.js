@@ -15,7 +15,7 @@ export const EnumTagType = {
 	// FLOAT32: "float32",
 	// FLOAT64: "float64",
 	STRING: "string",
-	// ARRAY: "array",
+	ARRAY: "array",
 	// OBJECT: "object",
 	// DATE: "date",
 	// TIME: "time",

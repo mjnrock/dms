@@ -23,6 +23,32 @@ export class TagGroup extends Tag {
 
 		this.state = value;
 	}
+
+	getByIndex(index) {
+		return this.state[ index ];
+	}
+	getByProp(key, value) {
+		if(value !== void 0) {
+			return this.state.find(child => child[ key ] === value);
+		}
+
+		return this.state.find(child => child[ key ]);
+	}
+	getByAlias(alias) {
+		return this.state.find(child => child.meta.alias === alias);
+	}
+	getById(id) {
+		return this.getByProp("id", id);
+	}
+	getByTag(...tags) {
+		return this.state.filter(child => {
+			if(tags.some(t => child.tags.has(t))) {
+				return true;
+			}
+
+			return false;
+		});
+	}
 }
 
 export default TagGroup;

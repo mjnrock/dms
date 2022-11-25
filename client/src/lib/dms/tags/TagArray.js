@@ -1,7 +1,8 @@
 import { Tag } from "./Tag.js";
+import { TagGroup } from "./TagGroup.js";
 
-export class TagArray extends Tag {
-	static Encoder = ({}, next) => {
+export class TagArray extends TagGroup {
+	static Encoder = ({ }, next) => {
 		if(next instanceof Tag) {
 			return [ next ];
 		} else if(!Array.isArray(next)) {
@@ -13,7 +14,7 @@ export class TagArray extends Tag {
 
 	constructor (value = [], { reducers = [], ...rest } = {}) {
 		super({
-			type: Tag.Type.GROUP,
+			type: Tag.Type.ARRAY,
 
 			...rest
 		});

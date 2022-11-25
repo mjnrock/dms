@@ -2,6 +2,7 @@ import { Node } from "./../lib/dms/Node";
 // import { FormControlInput } from "./../components/form/FormControlInput";
 // import { FormControl } from "./../lib/dms/form/FormControl";
 import { TagString } from "./../lib/dms/tags/TagString";
+import { TagArray } from "./../lib/dms/tags/TagArray";
 // import { TagInt8 } from "./../lib/dms/tags/TagInt8";
 
 // const formControl = new FormControl(
@@ -14,16 +15,28 @@ import { TagString } from "./../lib/dms/tags/TagString";
 // 	},
 // );
 
-const tagStr = new TagString("meow");
-
-tagStr.events.on("update", ({ module, current, previous }) => {
-	console.log(`@UPDATE(${ module }):`, current, "->", previous);
+const tagStr = new TagString("meow", {
+	alias: "strang",
+	tags: [ "cat", "dog" ],
 });
+const tagArr = new TagArray([ tagStr ]);
 
-console.log(tagStr.value)
-tagStr.value = "woof";
-tagStr.update("fash");
-console.log(tagStr.value)
+// tagStr.events.on("update", ({ module, current, previous }) => {
+// 	console.log(`@UPDATE(${ module }):`, previous, "->", current);
+// });
+
+// console.log(tagStr.value)
+// tagStr.value = "woof";
+// tagStr.update("fash");
+// console.log(tagStr.value)
+// tagStr.addSharedReducer("farts", ({ }, next) => next);
+// tagStr.sharedUpdate("farts", "fashes");
+// console.log(tagStr.current("farts"));
+
+console.log(tagStr)
+console.log(tagArr)
+console.log(tagArr.getByAlias("strang"))
+console.log(tagArr.getByTag("cat"))
 
 // const node = new Node({
 // 	state: 12354,
