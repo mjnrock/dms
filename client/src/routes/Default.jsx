@@ -28,7 +28,7 @@ let tag = Builder.ArraySchema([
 		[ "string", "meow.cat2", { alias: "MeOw2" } ],
 		[ "array", [
 			[ "string", "meow.cat1.catzz1", { alias: "MeOw1.catzz1" } ],
-			[ "string", "meow.cat2.catzz2", { alias: "MeOw2.catzz2" } ],
+			[ "uint8", 230, { alias: "MeOw2.catzz2" } ],
 		], { alias: "ArRaYzzzz2z2z" } ],
 	], { alias: "ArRaYz" } ],
 ]);
