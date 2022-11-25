@@ -232,6 +232,14 @@ export class Node extends Identity {
 		return this.clearSharedReducers("state");
 	}
 
+	makeTrivial() {
+		this.reducers.set("state", [
+			({}, value) => value,
+		]);
+
+		return this;
+	}
+
 	/**
 	 * A generic wrapper function for use in the event and reduction systems.  This
 	 * allows for a standardized event-object to be passed, alongside any relevant
