@@ -232,6 +232,12 @@ export class Node extends Identity {
 		return this.clearSharedReducers("state");
 	}
 
+	/**
+	 * A quick convenience method to *remove all exisiting reducers* and add a trivial reducer that returns the value passed to it.
+	 * If you don't want the latter behavior, then use `clearReducers` instead.
+	 * 
+	 * This exists because if a Node has no reducers, it will *always* return the **current* state.
+	 */
 	makeTrivial() {
 		this.reducers.set("state", [
 			({}, value) => value,
