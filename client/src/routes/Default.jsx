@@ -26,26 +26,35 @@ let tag = Builder.ArraySchema([
 	[ "array", [
 		[ "string", "meow.cat1", { alias: "MeOw1" } ],
 		[ "string", "meow.cat2", { alias: "MeOw2" } ],
+		[ "array", [
+			[ "string", "meow.cat1.catzz1", { alias: "MeOw1.catzz1" } ],
+			[ "string", "meow.cat2.catzz2", { alias: "MeOw2.catzz2" } ],
+		], { alias: "ArRaYzzzz2z2z" } ],
 	], { alias: "ArRaYz" } ],
 ]);
-
-console.log(tag);
-console.log(tag.toObject());
 
 export function Default() {
 	return (
 		<>
+			<pre>
+				{ JSON.stringify(tag.toObject(false), null, 2) }
+				{/* { JSON.stringify(tag.toObject(true), null, 2) } */}
+			</pre>
+
 			<div>{ tag.meta.alias }</div>
-			{
-				tag.value.map((tag, i) => {
-					//FIXME: Need a recursive component to properly render this
-					return (
-						<div key={ i }>
-							{ tag.meta.alias }: { tag.toString() }
-						</div>
-					);
-				})
-			}
+			<div>
+				{
+					tag.value.map((tag, i) => {
+						//FIXME: Need a recursive component to properly render this
+						return (
+							<div key={ i }>
+								{ tag.meta.alias }: { tag.toString() }
+							</div>
+						);
+					})
+				}
+			</div>
+
 			{/* <button onClick={ e => console.log(formControl.state[ 0 ].value) }>Log</button>
 			<FormControlInput tag={ formControl } /> */}
 		</>

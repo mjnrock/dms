@@ -1,4 +1,4 @@
-import { Tag } from "./Tag.js";
+import { Tag } from "./Tag";
 
 export class TagArray extends Tag {
 	static Encoder = ({ emitter }, next) => {
@@ -27,22 +27,12 @@ export class TagArray extends Tag {
 		this.update(value);
 	}
 	toObject(verbose = false) {
-		if(verbose) {
-			return {
-				id: this.id,
-
-				...this.toObject(false),
-
-				events: [ this.events.size, ...this.events.keys ],
-				reducers: this.reducers.length,
-				meta: this.meta,
-			};
-		}
-
-		return {
-			type: this.type,
+		let obj = {
+			...super.toObject(verbose),
 			value: this.state.map(child => child.toObject(verbose)),
 		};
+
+		return obj;
 	}
 }
 

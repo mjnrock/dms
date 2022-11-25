@@ -101,22 +101,26 @@ export class Tag extends Node {
 	}
 
 	toObject(verbose = false) {
+		let obj = {
+			type: this.type,
+			value: this.state,
+		};
+
+		if(this.meta.alias) {
+			obj.alias = this.meta.alias;
+		}
+
 		if(verbose) {
-			return {
+			obj = {
 				id: this.id,
-
-				...this.toObject(false),
-
+				...obj,				
 				events: [ this.events.size, ...this.events.keys ],
 				reducers: this.reducers.length,
 				meta: this.meta,
 			};
 		}
 
-		return {
-			type: this.type,
-			value: this.state,
-		};
+		return obj;
 	}
 	toJson(verbose = false) {
 		return JSON.stringify(this.toObject(verbose));

@@ -20,7 +20,6 @@ export const TypeToClass = new Map([
 
 export const Builder = {
 	ArraySchema: (arr = [], asTagGroup = true) => {
-		console.log(9999, arr)
 		let root = [];
 
 		for(let [ type, value, ...args ] of arr) {
@@ -32,7 +31,6 @@ export const Builder = {
 
 					root.push(new clazz(children, ...args));
 				} else {
-					console.log(9999, type, clazz)
 					root.push(new clazz(value, ...args));
 				}
 			}
