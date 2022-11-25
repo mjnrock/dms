@@ -4,8 +4,11 @@ export class TagBoolean extends Tag {
 	static Encoder = ({}, next) => {
 		return !!next;
 	};
+	static RemoveEncoder = (tag) => {
+		tag.removeReducer(this.Encoder);
+	};
 
-	constructor (value = [], { reducers = [], ...rest } = {}) {
+	constructor (value, { reducers = [], ...rest } = {}) {
 		super({
 			type: Tag.Type.BOOLEAN,
 
@@ -15,7 +18,7 @@ export class TagBoolean extends Tag {
 		this.addReducer(TagBoolean.Encoder);
 		this.addReducers(...reducers);
 
-		this.state = value;
+		this.update(value);
 	}
 }
 

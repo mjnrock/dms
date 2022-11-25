@@ -1,29 +1,29 @@
-import { Tag } from "./Tag.js";
+import { Tag } from "./Tag";
 
-export class TagString extends Tag {
+export class TagCharacter extends Tag {
 	static Encoder = ({ current }, next) => {
 		if(next != null) {
-			return next.toString();
+			return next.toString()[ 0 ];
 		}
 
-		return current;
+		return current[ 0 ];
 	};
 	static RemoveEncoder = (tag) => {
 		tag.removeReducer(this.Encoder);
 	};
 
 	constructor (value, { reducers = [], ...rest } = {}) {
-		super({
-			type: Tag.Type.STRING,
+		super({			
+			type: Tag.Type.CHARACTER,
 
 			...rest
 		});
 
-		this.addReducer(TagString.Encoder);
+		this.addReducer(TagCharacter.Encoder);
 		this.addReducers(...reducers);
 
 		this.update(value);
 	}
 }
 
-export default TagString;
+export default TagCharacter;

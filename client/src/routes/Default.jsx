@@ -1,102 +1,51 @@
-import { Node } from "./../lib/dms/Node";
-// import { FormControlInput } from "./../components/form/FormControlInput";
-// import { FormControl } from "./../lib/dms/form/FormControl";
+import { Tag } from "./../lib/dms/tags/Tag";
 import { TagString } from "./../lib/dms/tags/TagString";
 import { TagArray } from "./../lib/dms/tags/TagArray";
-// import { TagInt8 } from "./../lib/dms/tags/TagInt8";
+import { TagInt8 } from "./../lib/dms/tags/TagInt8";
+import { TagUint8 } from "./../lib/dms/tags/TagUint8";
+import { TagCharacter } from "../lib/dms/tags/TagCharacter";
 
-// const formControl = new FormControl(
-// 	FormControl.EnumFormControlType.INPUT,
-// 	new TagString("meow"),
-// 	{
-// 		config: {
-// 			inputType: "text",
-// 		},
-// 	},
-// );
+import { ChildFinder } from "../lib/dms/tags/controller/ChildFinder";
+import { Builder } from "../lib/dms/tags/controller/Builder";
 
 const tagStr = new TagString("meow", {
 	alias: "strang",
 	tags: [ "cat", "dog" ],
 });
-const tagStr2 = new TagString("meow", {
-	alias: "strang",
-	tags: [ "dog" ],
+const tagInt8 = new TagInt8(69, {
+	alias: "nambs",
+	tags: [ "$$$", "cat" ],
 });
-const tagArr = new TagArray([ tagStr, tagStr2 ]);
+const tagArr = new TagArray([ tagStr, tagInt8 ], {
+	alias: "ARrAy"
+});
 
-// tagStr.events.on("update", ({ module, current, previous }) => {
-// 	console.log(`@UPDATE(${ module }):`, previous, "->", current);
-// });
+let tag = Builder.ArraySchema([
+	[ "string", "meow", { alias: "CaTz" } ],
+	[ "int8", 69, { alias: "InT8s" } ],
+	[ "array", [
+		[ "string", "meow.cat1", { alias: "MeOw1" } ],
+		[ "string", "meow.cat2", { alias: "MeOw2" } ],
+	], { alias: "ArRaYz" } ],
+]);
 
-// console.log(tagStr.value)
-// tagStr.value = "woof";
-// tagStr.update("fash");
-// console.log(tagStr.value)
-// tagStr.addSharedReducer("farts", ({ }, next) => next);
-// tagStr.sharedUpdate("farts", "fashes");
-// console.log(tagStr.current("farts"));
-
-// console.log(tagStr)
-// console.log(tagArr)
-// console.log(tagArr.getByAlias("strang"))
-console.log(tagArr.getByTag("cat"))
-console.log(tagArr.getByTag("dog"))
-
-// const node = new Node({
-// 	state: 12354,
-// 	reducers: [
-// 		({ node, current, next }, a1, ...rest) => {
-// 			console.log("REDUCED", next, current, a1);
-// 			return next + a1;
-// 		},
-// 		({ node, current, next }, a1, ...rest) => {
-// 			console.log("REDUCED", next, current, a1);
-// 			return next + a1;
-// 		},
-// 	],
-// 	sharedReducers: {
-// 		// //* Alternative way to add state reducers
-// 		// state: [
-// 		// 	({ node, current, next }, a1, ...rest) => {
-// 		// 		console.log("REDUCED", next, current, a1);
-// 		// 		return next + a1;
-// 		// 	},
-// 		// 	({ node, current, next }, a1, ...rest) => {
-// 		// 		console.log("REDUCED", next, current, a1);
-// 		// 		return next + a1;
-// 		// 	},
-// 		// ],
-// 		meow: [
-// 			({ node, current, next }, a1, ...rest) => {
-// 				console.log("MEOWED", next, current, a1);
-// 				return next * a1;
-// 			},
-// 			({ node, current, next }, a1, ...rest) => {
-// 				console.log("MEOWED", next, current, a1);
-// 				return next * a1;
-// 			},
-// 		],
-// 	}
-// });
-
-// console.log(node);
-
-// console.log(node.state);
-// node.update(123);
-// console.log(node.state);
-// node.emit("@state", 567);	// Verify that command events are handled correctly
-// console.log(node.state);
-
-// node.current("meow", 5);
-// console.log(node.current("meow"));
-// node.sharedUpdate("meow", 987);
-// console.log(node.current("meow"));
+console.log(tag);
+console.log(tag.toObject());
 
 export function Default() {
 	return (
 		<>
-			Meow
+			<div>{ tag.meta.alias }</div>
+			{
+				tag.value.map((tag, i) => {
+					//FIXME: Need a recursive component to properly render this
+					return (
+						<div key={ i }>
+							{ tag.meta.alias }: { tag.toString() }
+						</div>
+					);
+				})
+			}
 			{/* <button onClick={ e => console.log(formControl.state[ 0 ].value) }>Log</button>
 			<FormControlInput tag={ formControl } /> */}
 		</>

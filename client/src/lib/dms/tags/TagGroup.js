@@ -10,6 +10,9 @@ export class TagGroup extends Tag {
 
 		return next.filter(item => item instanceof Tag);
 	};
+	static RemoveEncoder = (tag) => {
+		tag.removeReducer(this.Encoder);
+	};
 
 	constructor (value = [], { reducers = [], ...rest } = {}) {
 		super({
@@ -21,33 +24,77 @@ export class TagGroup extends Tag {
 		this.addReducer(TagGroup.Encoder);
 		this.addReducers(...reducers);
 
-		this.state = value;
+		this.update(value);
 	}
 
-	getByIndex(index) {
-		return this.state[ index ];
-	}
-	getByProp(key, value) {
-		if(value !== void 0) {
-			return this.state.find(child => child[ key ] === value);
+	addChild(child) {
+		if(child instanceof Tag) {
+			this.update([ ...this.value, child ]);
+			
+			return true;
 		}
 
-		return this.state.find(child => child[ key ]);
+		return false;
 	}
-	getByAlias(alias) {
-		return this.state.find(child => child.meta.alias === alias);
-	}
-	getById(id) {
-		return this.getByProp("id", id);
-	}
-	getByTag(...tags) {
-		return this.state.filter(child => {
-			if(tags.some(t => child.tags.has(t))) {
+	addChildren(...children) {
+		let results = [];
+		this.update([ ...this.value, ...children.filter(child => {
+			if(child instanceof Tag) {
+				results.push(true);
+
 				return true;
 			}
 
+			results.push(false);
+
 			return false;
-		});
+		}) ]);
+
+		return results;
+	}
+	removeChild(child) {
+		if(child instanceof Tag) {
+			this.update(this.value.filter(item => item !== child));
+
+			return true;
+		}
+
+		return false;
+	}
+	removeChildren(...children) {
+		let results = [];
+		this.update(this.value.filter(item => {
+			if(children.includes(item)) {
+				results.push(true);
+
+				return false;
+			}
+
+			results.push(false);
+
+			return true;
+		}));
+
+		return results;
+	}
+
+	toObject(verbose = false) {
+		if(verbose) {
+			return {
+				id: this.id,
+
+				...this.toObject(false),
+
+				events: [ this.events.size, ...this.events.keys ],
+				reducers: this.reducers.length,
+				meta: this.meta,
+			};
+		}
+
+		return {
+			type: this.type,
+			value: this.state.map(child => child.toObject(verbose)),
+		};
 	}
 }
 

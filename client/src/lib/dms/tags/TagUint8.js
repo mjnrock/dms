@@ -14,9 +14,14 @@ export class TagUint8 extends Tag {
 		} else if(value > TagUint8.MAX_VALUE) {
 			return TagUint8.MAX_VALUE;
 		}
+
+		return value;
+	};
+	static RemoveEncoder = (tag) => {
+		tag.removeReducer(this.Encoder);
 	};
 
-	constructor (value = [], { reducers = [], ...rest } = {}) {
+	constructor (value, { reducers = [], ...rest } = {}) {
 		super({
 			type: Tag.Type.UINT8,
 
@@ -26,7 +31,7 @@ export class TagUint8 extends Tag {
 		this.addReducer(TagUint8.Encoder);
 		this.addReducers(...reducers);
 
-		this.state = value;
+		this.update(value);
 	}
 }
 

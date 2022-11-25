@@ -1,8 +1,7 @@
 import { Tag } from "./Tag.js";
-import { TagGroup } from "./TagGroup.js";
 
-export class TagArray extends TagGroup {
-	static Encoder = ({ }, next) => {
+export class TagArray extends Tag {
+	static Encoder = ({ emitter }, next) => {
 		if(next instanceof Tag) {
 			return [ next ];
 		} else if(!Array.isArray(next)) {
@@ -10,6 +9,9 @@ export class TagArray extends TagGroup {
 		}
 
 		return next.filter(item => item instanceof Tag);
+	};
+	static RemoveEncoder = (tag) => {
+		tag.removeReducer(this.Encoder);
 	};
 
 	constructor (value = [], { reducers = [], ...rest } = {}) {
@@ -22,7 +24,25 @@ export class TagArray extends TagGroup {
 		this.addReducer(TagArray.Encoder);
 		this.addReducers(...reducers);
 
-		this.state = value;
+		this.update(value);
+	}
+	toObject(verbose = false) {
+		if(verbose) {
+			return {
+				id: this.id,
+
+				...this.toObject(false),
+
+				events: [ this.events.size, ...this.events.keys ],
+				reducers: this.reducers.length,
+				meta: this.meta,
+			};
+		}
+
+		return {
+			type: this.type,
+			value: this.state.map(child => child.toObject(verbose)),
+		};
 	}
 }
 

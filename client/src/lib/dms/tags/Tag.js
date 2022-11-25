@@ -3,7 +3,7 @@ import { Node } from "./../Node.js";
 export const EnumTagType = {
 	ANY: "any",
 	GROUP: "group",
-	BOOLEAN: "boolean",
+	BOOLEAN: "bool",
 	UINT8: "uint8",
 	// UINT16: "uint16",
 	// UINT32: "uint32",
@@ -15,6 +15,7 @@ export const EnumTagType = {
 	// FLOAT32: "float32",
 	// FLOAT64: "float64",
 	STRING: "string",
+	CHARACTER: "char",
 	ARRAY: "array",
 	// OBJECT: "object",
 	// DATE: "date",
@@ -58,6 +59,9 @@ export class Tag extends Node {
 
 		return current;
 	};
+	static RemoveEncoder = (tag) => {
+		tag.removeReducer(this.Encoder);
+	};
 
 	static Type = EnumTagType;
 
@@ -93,9 +97,7 @@ export class Tag extends Node {
 		return this.state;
 	}
 	set value(value) {
-		console.log(9998, value)
 		this.state = value;
-		console.log(9999, this.state)
 	}
 
 	toObject(verbose = false) {
@@ -118,6 +120,9 @@ export class Tag extends Node {
 	}
 	toJson(verbose = false) {
 		return JSON.stringify(this.toObject(verbose));
+	}
+	toString(verbose = false) {
+		return this.toJson(verbose);
 	}
 }
 
