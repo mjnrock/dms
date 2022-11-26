@@ -19,7 +19,7 @@ export const TypeToClass = new Map([
 ]);
 
 export const Builder = {
-	ArraySchema: (arr = [], asTagGroup = true) => {
+	FromArrayObject: (arr = [], asTagGroup = true) => {
 		let root = [];
 
 		for(let [ type, value, ...args ] of arr) {
@@ -27,7 +27,7 @@ export const Builder = {
 
 			if(clazz) {
 				if([ TagArray, TagGroup ].includes(clazz)) {
-					let children = Builder.ArraySchema(value, false);
+					let children = Builder.FromArrayObject(value, false);
 
 					root.push(new clazz(children, ...args));
 				} else {
@@ -37,11 +37,58 @@ export const Builder = {
 		}
 
 		if(asTagGroup) {
-			return new TagGroup(root);
+			return new TagGroup(root, { alias: "$root" });
 		}
 
 		return root;
 	},
+	FromAliasObject: (obj = {}, asTagGroup = true) => {
+		let root = [];
+
+		for(let [ alias, [ type, value, ...args ] ] of Object.entries(obj)) {
+			let clazz = TypeToClass.get(type);
+
+			if(clazz) {
+				if([ TagArray, TagGroup ].includes(clazz)) {
+					let children = Builder.FromAliasObject(value, false);
+
+					root.push(new clazz(children, { alias, ...args }));
+				} else {
+					root.push(new clazz(value, { alias, ...args }));
+				}
+			}
+		}
+
+		if(asTagGroup) {
+			return new TagGroup(root, { alias: "$root" });
+		}
+
+		return root;
+	},
+	FromAliasSchema: (schema = {}, asTagGroup = true) => {
+		let root = [];
+
+		for(let [ alias, type ] of Object.entries(schema)) {
+			if(typeof type === "object") {
+				let clazz = TypeToClass.get("group");
+				let children = Builder.FromAliasSchema(type, false);
+
+				root.push(new clazz(children, { alias }));
+			} else {
+				let clazz = TypeToClass.get(type);
+	
+				if(clazz) {
+					root.push(new clazz(null, { alias }));
+				}
+			}
+		}
+
+		if(asTagGroup) {
+			return new TagGroup(root, { alias: "$root" });
+		}
+
+		return root;
+	}
 };
 
 export default Builder;
