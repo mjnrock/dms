@@ -1,18 +1,14 @@
 import { Tag } from "./Tag";
-import { TagInt8 as TagInt8Class } from "./../../lib/dms/tags/TagInt8";
 
-export function TagInt8({ tag, isEditing = false } = {}) {
+export function TagCharacter({ tag, isEditing = false } = {}) {
 	return (
 		<Tag
 			tag={ tag }
 			isEditing={ isEditing }
 			edit={ (t, v) => (
 				<input
-					type="number"
+					type="text"
 					value={ v }
-					min={ TagInt8Class.MIN_VALUE }
-					max={ TagInt8Class.MAX_VALUE }
-					step={ 1 }
 					onChange={ e => t.update(e.target.value) }
 				/>
 			) }
@@ -23,4 +19,4 @@ export function TagInt8({ tag, isEditing = false } = {}) {
 	);
 };
 
-export default TagInt8;
+export default TagCharacter;

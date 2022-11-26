@@ -1,20 +1,28 @@
 import { Tag } from "./../lib/dms/tags/Tag";
 import { TagString } from "./../lib/dms/tags/TagString";
+import { TagBoolean } from "./../lib/dms/tags/TagBoolean";
+import { TagCharacter } from "../lib/dms/tags/TagCharacter";
 import { TagArray } from "./../lib/dms/tags/TagArray";
 import { TagInt8 } from "./../lib/dms/tags/TagInt8";
 import { TagUint8 } from "./../lib/dms/tags/TagUint8";
-import { TagCharacter } from "../lib/dms/tags/TagCharacter";
 
 import { ChildFinder } from "../lib/dms/tags/controller/ChildFinder";
 import { Builder } from "../lib/dms/tags/controller/Builder";
 
-import TagStringJSX from "./../components/tag/TagString";
-import TagInt8JSX from "./../components/tag/TagInt8";
-import TagUint8JSX from "./../components/tag/TagUint8";
+import MetaTagJSX from "../components/io/tag/MetaTag";
+import TagStringJSX from "../components/io/tag/TagString";
+import TagInt8JSX from "../components/io/tag/TagInt8";
+import TagUint8JSX from "../components/io/tag/TagUint8";
+import TagBooleanJSX from "../components/io/tag/TagBoolean";
+import IOTags from "../components/io/tag/packaage";
 
 const tagStr = new TagString("meow", {
 	alias: "strang",
 	tags: [ "cat", "dog" ],
+});
+const tagBool = new TagBoolean(false, {
+	alias: "boolz",
+	tags: [ "wut" ],
 });
 const tagInt8 = new TagInt8(69, {
 	alias: "nambs",
@@ -24,7 +32,7 @@ const tagUint8 = new TagUint8(230, {
 	alias: "nambs22",
 	tags: [ "$$$", "cat" ],
 });
-const tagArr = new TagArray([ tagStr, tagInt8, tagUint8 ], {
+const tagArr = new TagArray([ tagStr, tagInt8, tagUint8, tagBool ], {
 	alias: "ARrAy"
 });
 
@@ -55,50 +63,39 @@ const tagArr = new TagArray([ tagStr, tagInt8, tagUint8 ], {
 // 		edgeMask: "uint8",
 // 	},
 // });
-	
+
 let tag = tagArr;
 
 export function Default() {
 	return (
 		<>
-			<TagStringJSX tag={ tagStr } />
+			{/* <TagStringJSX tag={ tagStr } />
 			<hr />
 			<TagStringJSX tag={ tagStr } isEditing={ true } />
-			<button onClick={ e => console.log(tagStr.value)} >Log</button>
+			<button onClick={ e => console.log(tagStr.value) } >Log</button>
 
 			<TagInt8JSX tag={ tagInt8 } />
 			<hr />
 			<TagInt8JSX tag={ tagInt8 } isEditing={ true } />
-			<button onClick={ e => console.log(tagInt8.value)} >Log</button>
+			<button onClick={ e => console.log(tagInt8.value) } >Log</button>
 
 			<TagUint8JSX tag={ tagUint8 } />
 			<hr />
 			<TagUint8JSX tag={ tagUint8 } isEditing={ true } />
-			<button onClick={ e => console.log(tagUint8.value)} >Log</button>
+			<button onClick={ e => console.log(tagUint8.value) } >Log</button>
 
+			<TagBooleanJSX tag={ tagBool } />
 			<hr />
+			<TagBooleanJSX tag={ tagBool } isEditing={ true } />
+			<button onClick={ e => console.log(tagBool.value) } >Log</button>
 
-			<pre>
-				{ JSON.stringify(tag.toObject(false), null, 2) }
-				{/* { JSON.stringify(tag.toObject(true), null, 2) } */ }
-			</pre>
+			<hr /> */}
 
-			<div>{ tag.meta.alias }</div>
-			<div>
-				{
-					tag.value.map((tag, i) => {
-						//FIXME: Need a recursive component to properly render this
-						return (
-							<div key={ i }>
-								{ tag.meta.alias }: { tag.toString() }
-							</div>
-						);
-					})
-				}
-			</div>
-
-			{/* <button onClick={ e => console.log(formControl.state[ 0 ].value) }>Log</button>
-			<FormControlInput tag={ formControl } /> */}
+			{
+				// IOTags.Factory(tag, { verbose: true, isEditing: true })
+				IOTags.Factory(tag, { verbose: true, isEditing: false })
+			}
+			<MetaTagJSX tag={ tag } verbose={ false } />
 		</>
 	);
 };

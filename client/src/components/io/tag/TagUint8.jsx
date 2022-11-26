@@ -1,5 +1,5 @@
 import { Tag } from "./Tag";
-import { TagUint8 as TagUint8Class } from "./../../lib/dms/tags/TagUint8";
+import { TagUint8 as TagUint8Class } from "../../../lib/dms/tags/TagUint8";
 
 export function TagUint8({ tag, isEditing = false } = {}) {
 	return (
