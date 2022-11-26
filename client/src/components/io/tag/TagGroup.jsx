@@ -4,7 +4,7 @@ import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 
 import { Tag } from "./Tag";
-import { Factory } from "./packaage";
+import { Factory } from "./package";
 
 export function TagGroup({ tag, isEditing = false } = {}) {
 	return (

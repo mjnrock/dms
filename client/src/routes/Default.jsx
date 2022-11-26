@@ -14,7 +14,7 @@ import TagStringJSX from "../components/io/tag/TagString";
 import TagInt8JSX from "../components/io/tag/TagInt8";
 import TagUint8JSX from "../components/io/tag/TagUint8";
 import TagBooleanJSX from "../components/io/tag/TagBoolean";
-import IOTags from "../components/io/tag/packaage";
+import IOTags from "../components/io/tag/package";
 
 const tagStr = new TagString("meow", {
 	alias: "strang",

@@ -1,5 +1,5 @@
 import { Tag } from "./Tag";
-import { Factory } from "./packaage";
+import { Factory } from "./package";
 
 export function TagArray({ tag, isEditing = false } = {}) {
 	return (
