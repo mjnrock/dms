@@ -8,12 +8,20 @@ import { TagCharacter } from "../lib/dms/tags/TagCharacter";
 import { ChildFinder } from "../lib/dms/tags/controller/ChildFinder";
 import { Builder } from "../lib/dms/tags/controller/Builder";
 
+import TagStringJSX from "./../components/tag/TagString";
+import TagInt8JSX from "./../components/tag/TagInt8";
+import TagUint8JSX from "./../components/tag/TagUint8";
+
 const tagStr = new TagString("meow", {
 	alias: "strang",
 	tags: [ "cat", "dog" ],
 });
 const tagInt8 = new TagInt8(69, {
 	alias: "nambs",
+	tags: [ "$$$", "cat" ],
+});
+const tagUint8 = new TagUint8(230, {
+	alias: "nambs22",
 	tags: [ "$$$", "cat" ],
 });
 const tagArr = new TagArray([ tagStr, tagInt8 ], {
@@ -51,9 +59,26 @@ let tag = Builder.FromAliasSchema({
 export function Default() {
 	return (
 		<>
+			<TagStringJSX tag={ tagStr } />
+			<hr />
+			<TagStringJSX tag={ tagStr } isEditing={ true } />
+			<button onClick={ e => console.log(tagStr.value)} >Log</button>
+
+			<TagInt8JSX tag={ tagInt8 } />
+			<hr />
+			<TagInt8JSX tag={ tagInt8 } isEditing={ true } />
+			<button onClick={ e => console.log(tagInt8.value)} >Log</button>
+
+			<TagUint8JSX tag={ tagUint8 } />
+			<hr />
+			<TagUint8JSX tag={ tagUint8 } isEditing={ true } />
+			<button onClick={ e => console.log(tagUint8.value)} >Log</button>
+
+			<hr />
+
 			<pre>
 				{ JSON.stringify(tag.toObject(false), null, 2) }
-				{/* { JSON.stringify(tag.toObject(true), null, 2) } */}
+				{/* { JSON.stringify(tag.toObject(true), null, 2) } */ }
 			</pre>
 
 			<div>{ tag.meta.alias }</div>
