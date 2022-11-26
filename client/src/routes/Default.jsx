@@ -24,7 +24,7 @@ const tagUint8 = new TagUint8(230, {
 	alias: "nambs22",
 	tags: [ "$$$", "cat" ],
 });
-const tagArr = new TagArray([ tagStr, tagInt8 ], {
+const tagArr = new TagArray([ tagStr, tagInt8, tagUint8 ], {
 	alias: "ARrAy"
 });
 
@@ -48,13 +48,15 @@ const tagArr = new TagArray([ tagStr, tagInt8 ], {
 // 		MeOw2: [ "string", "meow.cat2" ],
 // 	}],
 // });
-let tag = Builder.FromAliasSchema({
-	terrain: {
-		type: "string",
-		weight: "int8",
-		edgeMask: "uint8",
-	},
-});
+// let tag = Builder.FromAliasSchema({
+// 	terrain: {
+// 		type: "string",
+// 		weight: "int8",
+// 		edgeMask: "uint8",
+// 	},
+// });
+	
+let tag = tagArr;
 
 export function Default() {
 	return (
