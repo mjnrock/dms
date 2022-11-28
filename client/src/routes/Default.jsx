@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { LockOpenIcon, LockClosedIcon } from '@heroicons/react/24/solid'
 
 import { Tag } from "./../lib/dms/tags/Tag";
 import { TagString } from "./../lib/dms/tags/TagString";
@@ -68,8 +69,10 @@ let tag = Builder.FromArrayObject([
 
 // let tag = tagArr;
 
+
+
 export function Default() {
-	const [ isEditing, setIsEditing ] = useState(false);
+	const [ isEditing, setIsEditing ] = useState(true);
 
 	return (
 		<>
@@ -95,6 +98,13 @@ export function Default() {
 
 			<hr /> */}
 
+			<div onClick={ e => setIsEditing(!isEditing) } className="w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer">
+				{
+					isEditing
+						? <LockOpenIcon className="text-red-500" />
+						: <LockClosedIcon className="text-green-500" />
+				}
+			</div>
 			{
 				Array.isArray(tag)
 					? tag.map(t => IOTags.Factory(t, { verbose: true, isEditing }))

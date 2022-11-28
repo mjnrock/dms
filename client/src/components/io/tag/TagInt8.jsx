@@ -1,14 +1,14 @@
 import { Tag } from "./Tag";
 import { TagInt8 as TagInt8Class } from "../../../lib/dms/tags/TagInt8";
 
-export function TagInt8({ tag, isEditing = false } = {}) {
+export function TagInt8({ tag, isEditing = false, css = "" } = {}) {
 	return (
 		<Tag
 			tag={ tag }
 			isEditing={ isEditing }
 			edit={ (t, v) => (
 				<input
-					className="p-1 basis-10/12"
+					className={ css }
 					type="number"
 					value={ v }
 					min={ TagInt8Class.MIN_VALUE }
@@ -19,7 +19,7 @@ export function TagInt8({ tag, isEditing = false } = {}) {
 			) }
 			view={ (t, v) => {
 				return (
-					<div className="basis-10/12">{ v }</div>
+					<div className={ css }>{ v }</div>
 				);
 			} }
 		/>

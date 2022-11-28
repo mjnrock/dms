@@ -24,18 +24,19 @@ export const TypeToJSX = new Map([
 /**
  * Dynamically determines the appropriate JSX component to use, based on the `type` property of @tag.
  */
-export function Factory(tag, props = {}, children = []) {
+export function Factory(tag, props = {}) {
 	let Clazz = TypeToJSX.get(tag.type);
 
 	if(Clazz) {
-		if(children.length) {
-			return <Clazz tag={ tag } { ...props }>{ children }</Clazz>;
-		}
-
+		let isGroupingTag = [ EnumTagType.ARRAY, EnumTagType.GROUP ].includes(tag.type);
 		return (
-			<div className={ `flex ${ [ EnumTagType.GROUP, EnumTagType.ARRAY].includes(tag.type) ? "flex-col" : "flex-row" } m-2 border-2 border-gray-500 border-solid rounded` }>
-				<div className="p-0 mt-auto mb-auto mr-2 font-mono font-bold text-center align-middle bg-gray-200 basis-2/12">{ tag.meta.alias }</div>
-				<Clazz tag={ tag } { ...props } />
+			<div key={ tag.id } className={ `flex ${ isGroupingTag ? "flex-col mt-4" : "flex-row" } m-2 border-2 border-gray-500 border-solid rounded` }>
+				<div className="p-0 mt-auto mb-auto mr-0 font-mono font-bold text-center align-middle bg-gray-200 basis-2/12">{ tag.meta.alias }</div>
+				{
+					isGroupingTag
+						? <Clazz tag={ tag } { ...props } />
+						: <Clazz tag={ tag } css={ `ml-2 basis-10/12` } { ...props } />
+				}
 			</div>
 		);
 	}
