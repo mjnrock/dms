@@ -20,6 +20,16 @@ export const TypeToJSX = new Map([
 	[ EnumTagType.STRING, TagString ],
 	[ EnumTagType.UINT8, TagUint8 ],
 ]);
+export const EnumTypeColor = new Map([
+	[ EnumTagType.ANY, `bg-gray-200` ],
+	[ EnumTagType.ARRAY, `bg-gray-200` ],
+	[ EnumTagType.BOOLEAN, `bg-purple-200` ],
+	[ EnumTagType.CHARACTER, `bg-orange-200` ],
+	[ EnumTagType.GROUP, `bg-gray-400` ],
+	[ EnumTagType.INT8, `bg-blue-200` ],
+	[ EnumTagType.STRING, `bg-red-200` ],
+	[ EnumTagType.UINT8, `bg-teal-200` ],
+]);
 
 /**
  * Dynamically determines the appropriate JSX component to use, based on the `type` property of @tag.
@@ -31,11 +41,11 @@ export function Factory(tag, props = {}) {
 		let isGroupingTag = [ EnumTagType.ARRAY, EnumTagType.GROUP ].includes(tag.type);
 		return (
 			<div key={ tag.id } className={ `flex ${ isGroupingTag ? "flex-col mt-4" : "flex-row" } m-2 border-2 border-gray-500 border-solid rounded` }>
-				<div className="p-0 mt-auto mb-auto mr-0 font-mono font-bold text-center align-middle bg-gray-200 basis-2/12">{ tag.meta.alias }</div>
+				<div className={ `p-0 mt-auto mb-auto mr-0 font-mono font-bold text-center align-middle ${ EnumTypeColor.get(tag.type) } basis-2/12` }>{ tag.meta.alias }</div>
 				{
 					isGroupingTag
 						? <Clazz tag={ tag } { ...props } />
-						: <Clazz tag={ tag } css={ `ml-2 basis-10/12` } { ...props } />
+						: <Clazz tag={ tag } css={ `pl-2 basis-10/12` } { ...props } />
 				}
 			</div>
 		);

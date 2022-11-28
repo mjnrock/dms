@@ -76,7 +76,7 @@ export const Builder = {
 				root.push(new clazz(children, { alias }));
 			} else {
 				let clazz = TypeToClass.get(type);
-	
+
 				if(clazz) {
 					root.push(new clazz(null, { alias }));
 				}
@@ -88,6 +88,43 @@ export const Builder = {
 		}
 
 		return root;
+	},
+
+	ToArrayObject(tag) {
+		let arr = [];
+
+		if([ Tag.Type.GROUP, Tag.Type.ARRAY ].includes(tag.type)) {
+			for(let child of tag.value) {
+				arr.push(Builder.ToArrayObject(child));
+			}
+		} else {
+			if(tag.meta.alias) {
+				arr.push([ tag.type, tag.value, { alias: tag.meta.alias } ]);
+			} else {
+				arr.push([ tag.type, tag.value ]);
+			}
+		}
+
+		return arr;
+	},
+	ToAliasSchema(tag, obj = {}) {
+		if([ Tag.Type.GROUP, Tag.Type.ARRAY ].includes(tag.type)) {
+			for(let child of tag.value) {
+				obj[ child.meta.alias ] = Builder.ToAliasSchema(child);
+			}
+
+			/**
+			 * If the grouping is an array, the *first* child will be the data object.
+			 * NOTE: This syntax is to tersely differentiate between an "array" and a "group", while still preserving aliases in a key-value pair.
+			 */
+			if(tag.type === Tag.Type.ARRAY) {
+				obj = [ obj ];
+			}
+
+			return obj;
+		} else {
+			return tag.type;
+		}
 	}
 };
 

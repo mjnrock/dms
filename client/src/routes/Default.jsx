@@ -39,14 +39,18 @@ const tagArr = new TagArray([ tagStr, tagInt8, tagUint8, tagBool ], {
 	alias: "ARrAy"
 });
 
+/**
+ * IDEA: Stop going back and forth on ideations -- the *poinnt* is to have minimal data structures persisted, and Nodes are the mutators/in-memory wrappers.
+ */
 let tag = Builder.FromArrayObject([
 	[ "string", "meow", { alias: "CaTz" } ],
 	[ "int8", 69, { alias: "InT8s" } ],
+	[ "bool", true, { alias: "BoOlZ" } ],
 	[ "array", [
 		[ "string", "meow.cat1", { alias: "MeOw1" } ],
 		[ "string", "meow.cat2", { alias: "MeOw2" } ],
 		[ "array", [
-			[ "string", "meow.cat1.catzz1", { alias: "MeOw1.catzz1" } ],
+			[ "char", "meow.cat1.catzz1", { alias: "MeOw1.catzz1" } ],
 			[ "uint8", 230, { alias: "MeOw2.catzz2" } ],
 		], { alias: "ArRaYzzzz2z2z" } ],
 	], { alias: "ArRaYz" } ],
@@ -110,6 +114,11 @@ export function Default() {
 					? tag.map(t => IOTags.Factory(t, { verbose: true, isEditing }))
 					: IOTags.Factory(tag, { verbose: true, isEditing })
 			}
+			<pre>
+				{/* { JSON.stringify(Builder.ToArrayObject(tag)).replaceAll("],", "],\r\n") } */}
+				{/* { JSON.stringify(Builder.ToAliasSchema(tag)) } */}
+				{ JSON.stringify(Builder.ToAliasSchema(tag), null, 2) }
+			</pre>
 			{/* <MetaTagJSX tag={ tag } verbose={ false } /> */ }
 		</>
 	);
