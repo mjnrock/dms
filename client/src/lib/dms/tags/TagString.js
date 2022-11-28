@@ -14,7 +14,7 @@ export class TagString extends Tag {
 
 	constructor (value, { reducers = [], ...rest } = {}) {
 		super({
-			type: Tag.Type.STRING,
+			dtype: Tag.Type.STRING,
 
 			...rest
 		});

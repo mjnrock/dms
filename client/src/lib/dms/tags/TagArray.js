@@ -16,7 +16,7 @@ export class TagArray extends Tag {
 
 	constructor (value = [], { reducers = [], ...rest } = {}) {
 		super({
-			type: Tag.Type.ARRAY,
+			dtype: Tag.Type.ARRAY,
 
 			...rest
 		});

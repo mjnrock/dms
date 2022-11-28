@@ -22,8 +22,8 @@ export const Builder = {
 	FromArrayObject: (arr = [], asTagGroup = true) => {
 		let root = [];
 
-		for(let [ type, value, ...args ] of arr) {
-			let clazz = TypeToClass.get(type);
+		for(let [ dtype, value, ...args ] of arr) {
+			let clazz = TypeToClass.get(dtype);
 
 			if(clazz) {
 				if([ TagArray, TagGroup ].includes(clazz)) {
@@ -45,8 +45,8 @@ export const Builder = {
 	FromAliasObject: (obj = {}, asTagGroup = true) => {
 		let root = [];
 
-		for(let [ alias, [ type, value, ...args ] ] of Object.entries(obj)) {
-			let clazz = TypeToClass.get(type);
+		for(let [ alias, [ dtype, value, ...args ] ] of Object.entries(obj)) {
+			let clazz = TypeToClass.get(dtype);
 
 			if(clazz) {
 				if([ TagArray, TagGroup ].includes(clazz)) {
@@ -68,14 +68,14 @@ export const Builder = {
 	FromAliasSchema: (schema = {}, asTagGroup = true) => {
 		let root = [];
 
-		for(let [ alias, type ] of Object.entries(schema)) {
-			if(typeof type === "object") {
+		for(let [ alias, dtype ] of Object.entries(schema)) {
+			if(typeof dtype === "object") {
 				let clazz = TypeToClass.get("group");
-				let children = Builder.FromAliasSchema(type, false);
+				let children = Builder.FromAliasSchema(dtype, false);
 
 				root.push(new clazz(children, { alias }));
 			} else {
-				let clazz = TypeToClass.get(type);
+				let clazz = TypeToClass.get(dtype);
 
 				if(clazz) {
 					root.push(new clazz(null, { alias }));
@@ -93,22 +93,22 @@ export const Builder = {
 	ToArrayObject(tag) {
 		let arr = [];
 
-		if([ Tag.Type.GROUP, Tag.Type.ARRAY ].includes(tag.type)) {
+		if([ Tag.Type.GROUP, Tag.Type.ARRAY ].includes(tag.dtype)) {
 			for(let child of tag.value) {
 				arr.push(Builder.ToArrayObject(child));
 			}
 		} else {
 			if(tag.meta.alias) {
-				arr.push([ tag.type, tag.value, { alias: tag.meta.alias } ]);
+				arr.push([ tag.dtype, tag.value, { alias: tag.meta.alias } ]);
 			} else {
-				arr.push([ tag.type, tag.value ]);
+				arr.push([ tag.dtype, tag.value ]);
 			}
 		}
 
 		return arr;
 	},
 	ToAliasSchema(tag, obj = {}) {
-		if([ Tag.Type.GROUP, Tag.Type.ARRAY ].includes(tag.type)) {
+		if([ Tag.Type.GROUP, Tag.Type.ARRAY ].includes(tag.dtype)) {
 			for(let child of tag.value) {
 				obj[ child.meta.alias ] = Builder.ToAliasSchema(child);
 			}
@@ -117,13 +117,13 @@ export const Builder = {
 			 * If the grouping is an array, the *first* child will be the data object.
 			 * NOTE: This syntax is to tersely differentiate between an "array" and a "group", while still preserving aliases in a key-value pair.
 			 */
-			if(tag.type === Tag.Type.ARRAY) {
+			if(tag.dtype === Tag.Type.ARRAY) {
 				obj = [ obj ];
 			}
 
 			return obj;
 		} else {
-			return tag.type;
+			return tag.dtype;
 		}
 	}
 };

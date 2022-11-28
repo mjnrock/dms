@@ -10,7 +10,7 @@ export class TagBoolean extends Tag {
 
 	constructor (value, { reducers = [], ...rest } = {}) {
 		super({
-			type: Tag.Type.BOOLEAN,
+			dtype: Tag.Type.BOOLEAN,
 
 			...rest
 		});

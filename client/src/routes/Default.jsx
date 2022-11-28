@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LockOpenIcon, LockClosedIcon } from '@heroicons/react/24/solid'
+import { LockOpenIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 
 import { Tag } from "./../lib/dms/tags/Tag";
 import { TagString } from "./../lib/dms/tags/TagString";
@@ -12,11 +12,6 @@ import { TagUint8 } from "./../lib/dms/tags/TagUint8";
 import { ChildFinder } from "../lib/dms/tags/controller/ChildFinder";
 import { Builder } from "../lib/dms/tags/controller/Builder";
 
-import MetaTagJSX from "../components/io/tag/MetaTag";
-import TagStringJSX from "../components/io/tag/TagString";
-import TagInt8JSX from "../components/io/tag/TagInt8";
-import TagUint8JSX from "../components/io/tag/TagUint8";
-import TagBooleanJSX from "../components/io/tag/TagBoolean";
 import IOTags from "../components/io/tag/package";
 
 const tagStr = new TagString("meow", {
@@ -80,28 +75,6 @@ export function Default() {
 
 	return (
 		<>
-			{/* <TagStringJSX tag={ tagStr } />
-			<hr />
-			<TagStringJSX tag={ tagStr } isEditing={ true } />
-			<button onClick={ e => console.log(tagStr.value) } >Log</button>
-
-			<TagInt8JSX tag={ tagInt8 } />
-			<hr />
-			<TagInt8JSX tag={ tagInt8 } isEditing={ true } />
-			<button onClick={ e => console.log(tagInt8.value) } >Log</button>
-
-			<TagUint8JSX tag={ tagUint8 } />
-			<hr />
-			<TagUint8JSX tag={ tagUint8 } isEditing={ true } />
-			<button onClick={ e => console.log(tagUint8.value) } >Log</button>
-
-			<TagBooleanJSX tag={ tagBool } />
-			<hr />
-			<TagBooleanJSX tag={ tagBool } isEditing={ true } />
-			<button onClick={ e => console.log(tagBool.value) } >Log</button>
-
-			<hr /> */}
-
 			<div onClick={ e => setIsEditing(!isEditing) } className="w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer">
 				{
 					isEditing

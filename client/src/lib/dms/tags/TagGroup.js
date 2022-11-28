@@ -16,7 +16,7 @@ export class TagGroup extends Tag {
 
 	constructor (value = [], { reducers = [], ...rest } = {}) {
 		super({
-			type: Tag.Type.GROUP,
+			dtype: Tag.Type.GROUP,
 
 			...rest
 		});

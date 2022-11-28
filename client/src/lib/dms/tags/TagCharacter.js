@@ -14,7 +14,7 @@ export class TagCharacter extends Tag {
 
 	constructor (value, { reducers = [], ...rest } = {}) {
 		super({			
-			type: Tag.Type.CHARACTER,
+			dtype: Tag.Type.CHARACTER,
 
 			...rest
 		});

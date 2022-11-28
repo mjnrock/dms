@@ -33,7 +33,7 @@ export const EnumResponseType = {
 };
 
 /**
- * A `Tag` is a specialized type of `Node` that is used to represent schematized data.
+ * A `Tag` is a specialized dtype of `Node` that is used to represent schematized data.
  * You should think of these in similar terms to the NBT tags in Minecraft, but with
  * the underlying capabilities of a `Node`, when needed in data scenarios with complex
  * data structures or interactions.
@@ -44,7 +44,7 @@ export class Tag extends Node {
 	 * value, the next value, and any additional arguments and returns a value
 	 * that is to be used as the next value.
 	 * 
-	 * These are meant to be "standard reducers" for a given type of tag.  If
+	 * These are meant to be "standard reducers" for a given dtype of tag.  If
 	 * you do not want a standard reducer to be present, you must manually empty
 	 * the `reducers` array, as *all* Tag instances have a default reducer that
 	 * gets attach upon instantiation.
@@ -65,13 +65,15 @@ export class Tag extends Node {
 
 	static Type = EnumTagType;
 
-	constructor ({ type, value, ...rest } = {}) {
+	constructor ({ dtype, value, ...rest } = {}) {
 		super({
-			type: type || Tag.Type.ANY,
+			type: "tag",
 			state: value,
 
 			...rest,
 		});
+
+		this.dtype = dtype || Tag.Type.ANY;
 
 		/**
 		 * Does not allow for assignment of `undefined`.
@@ -102,7 +104,7 @@ export class Tag extends Node {
 
 	toObject(verbose = false) {
 		let obj = {
-			type: this.type,
+			dtype: this.dtype,
 			value: this.state,
 		};
 

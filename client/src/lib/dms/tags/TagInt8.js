@@ -23,7 +23,7 @@ export class TagInt8 extends Tag {
 
 	constructor (value, { reducers = [], ...rest } = {}) {
 		super({
-			type: Tag.Type.INT8,
+			dtype: Tag.Type.INT8,
 
 			...rest
 		});
