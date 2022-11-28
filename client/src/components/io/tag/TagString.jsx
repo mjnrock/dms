@@ -7,14 +7,17 @@ export function TagString({ tag, isEditing = false } = {}) {
 			isEditing={ isEditing }
 			edit={ (t, v) => (
 				<input
+					className="p-1 basis-10/12"
 					type="text"
 					value={ v }
 					onChange={ e => t.update(e.target.value) }
 				/>
 			) }
-			view={ (t, v) => (
-				<div>{ v }</div>
-			) }
+			view={ (t, v) => {
+				return (
+					<div className="basis-10/12">{ v }</div>
+				);
+			} }
 		/>
 	);
 };

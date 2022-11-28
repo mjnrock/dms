@@ -21,15 +21,27 @@ export const TypeToJSX = new Map([
 	[ EnumTagType.UINT8, TagUint8 ],
 ]);
 
-export function Factory(tag, props = {}) {
+/**
+ * Dynamically determines the appropriate JSX component to use, based on the `type` property of @tag.
+ */
+export function Factory(tag, props = {}, children = []) {
 	let Clazz = TypeToJSX.get(tag.type);
 
 	if(Clazz) {
-		return <Clazz tag={ tag } { ...props } />;
+		if(children.length) {
+			return <Clazz tag={ tag } { ...props }>{ children }</Clazz>;
+		}
+
+		return (
+			<div className={ `flex ${ [ EnumTagType.GROUP, EnumTagType.ARRAY].includes(tag.type) ? "flex-col" : "flex-row" } m-2 border-2 border-gray-500 border-solid rounded` }>
+				<div className="p-0 mt-auto mb-auto mr-2 font-mono font-bold text-center align-middle bg-gray-200 basis-2/12">{ tag.meta.alias }</div>
+				<Clazz tag={ tag } { ...props } />
+			</div>
+		);
 	}
 
 	return null;
-}
+};
 
 export default {
 	Tag,

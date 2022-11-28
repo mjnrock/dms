@@ -5,7 +5,7 @@ export class TagString extends Tag {
 		if(next != null) {
 			return next.toString();
 		}
-
+		
 		return current;
 	};
 	static RemoveEncoder = (tag) => {

@@ -14,11 +14,12 @@ export function Tag({ tag, isEditing = false, view, edit } = {}) {
 		return () => tag.events.off("update", fn);
 	}, []);
 
+	let val = value == null ? "" : value;
 	if(isEditing) {
-		return edit(tag, value);
+		return edit(tag, val);
 	}
 
-	return view(tag, value);
+	return view(tag, val);
 }
 
 export default Tag;

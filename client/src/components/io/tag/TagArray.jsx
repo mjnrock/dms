@@ -6,15 +6,16 @@ export function TagArray({ tag, isEditing = false } = {}) {
 		<Tag
 			tag={ tag }
 			isEditing={ isEditing }
-			edit={ (t, v) => (
-				<div>TBI...</div>
-			) }
+			edit={ (t, v) => {
+				return (
+					v.map(t => Factory(t, { key: t.id, isEditing }))
+				);
+			} }
 			view={ (t, v) => {
 				return (
-					//FIXME: @isEditing should be controlled, as should the component-specific props (i.e. either an event emission or prop passing)
-					t.state.map(t => Factory(t, { key: t.id, isEditing: true }))
+					v.map(t => Factory(t, { key: t.id, isEditing }))
 				);
-			}}
+			} }
 		/>
 	);
 };

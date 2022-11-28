@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { Tag } from "./../lib/dms/tags/Tag";
 import { TagString } from "./../lib/dms/tags/TagString";
 import { TagBoolean } from "./../lib/dms/tags/TagBoolean";
@@ -36,18 +38,18 @@ const tagArr = new TagArray([ tagStr, tagInt8, tagUint8, tagBool ], {
 	alias: "ARrAy"
 });
 
-// let tag = Builder.FromArraySchema([
-// 	[ "string", "meow", { alias: "CaTz" } ],
-// 	[ "int8", 69, { alias: "InT8s" } ],
-// 	[ "array", [
-// 		[ "string", "meow.cat1", { alias: "MeOw1" } ],
-// 		[ "string", "meow.cat2", { alias: "MeOw2" } ],
-// 		[ "array", [
-// 			[ "string", "meow.cat1.catzz1", { alias: "MeOw1.catzz1" } ],
-// 			[ "uint8", 230, { alias: "MeOw2.catzz2" } ],
-// 		], { alias: "ArRaYzzzz2z2z" } ],
-// 	], { alias: "ArRaYz" } ],
-// ]);
+let tag = Builder.FromArrayObject([
+	[ "string", "meow", { alias: "CaTz" } ],
+	[ "int8", 69, { alias: "InT8s" } ],
+	[ "array", [
+		[ "string", "meow.cat1", { alias: "MeOw1" } ],
+		[ "string", "meow.cat2", { alias: "MeOw2" } ],
+		[ "array", [
+			[ "string", "meow.cat1.catzz1", { alias: "MeOw1.catzz1" } ],
+			[ "uint8", 230, { alias: "MeOw2.catzz2" } ],
+		], { alias: "ArRaYzzzz2z2z" } ],
+	], { alias: "ArRaYz" } ],
+]);
 // let tag = Builder.FromAliasObject({
 // 	CaTz: [ "string", "meow" ],
 // 	InT8s: [ "int8", 69 ],
@@ -62,11 +64,13 @@ const tagArr = new TagArray([ tagStr, tagInt8, tagUint8, tagBool ], {
 // 		weight: "int8",
 // 		edgeMask: "uint8",
 // 	},
-// });
+// }, false);
 
-let tag = tagArr;
+// let tag = tagArr;
 
 export function Default() {
+	const [ isEditing, setIsEditing ] = useState(false);
+
 	return (
 		<>
 			{/* <TagStringJSX tag={ tagStr } />
@@ -92,10 +96,11 @@ export function Default() {
 			<hr /> */}
 
 			{
-				// IOTags.Factory(tag, { verbose: true, isEditing: true })
-				IOTags.Factory(tag, { verbose: true, isEditing: false })
+				Array.isArray(tag)
+					? tag.map(t => IOTags.Factory(t, { verbose: true, isEditing }))
+					: IOTags.Factory(tag, { verbose: true, isEditing })
 			}
-			<MetaTagJSX tag={ tag } verbose={ false } />
+			{/* <MetaTagJSX tag={ tag } verbose={ false } /> */ }
 		</>
 	);
 };

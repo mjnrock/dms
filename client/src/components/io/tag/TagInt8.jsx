@@ -8,6 +8,7 @@ export function TagInt8({ tag, isEditing = false } = {}) {
 			isEditing={ isEditing }
 			edit={ (t, v) => (
 				<input
+					className="p-1 basis-10/12"
 					type="number"
 					value={ v }
 					min={ TagInt8Class.MIN_VALUE }
@@ -16,9 +17,11 @@ export function TagInt8({ tag, isEditing = false } = {}) {
 					onChange={ e => t.update(e.target.value) }
 				/>
 			) }
-			view={ (t, v) => (
-				<div>{ v }</div>
-			) }
+			view={ (t, v) => {
+				return (
+					<div className="basis-10/12">{ v }</div>
+				);
+			} }
 		/>
 	);
 };
