@@ -3,9 +3,14 @@ import { EnumTagType } from "../../../lib/dms/tags/Tag";
 import { Tag } from "./Tag";
 
 /**
- * If you need something more specific, create a custom view or edit component.
+ * If you need something more specific, create a custom view or edit component and return it in the render functions below.
  */
 export const TypeToProps = new Map([
+	[ EnumTagType.ANY, {
+		edit: (t, v, { css } = {}) => (<div className={ css }>{ v.toString() }</div>),
+		view: (t, v, { css } = {}) => (<div className={ css }>{ v.toString() }</div>),
+	} ],
+
 	[ EnumTagType.STRING, {
 		edit: (t, v, { css } = {}) => (<input className={ css } type="text" value={ v } onChange={ e => t.update(e.target.value) } />),
 		view: (t, v, { css } = {}) => (<div className={ css }>{ v }</div>),
@@ -76,7 +81,7 @@ export const EnumTypeColor = new Map([
  * Dynamically determines the appropriate JSX component to use, based on the `dtype` property of @tag.
  */
 export function Factory(tag, props = {}) {
-	let { view, edit } = TypeToProps.get(tag.dtype);
+	let { view, edit } = TypeToProps.get(tag.dtype) || TypeToProps.get(EnumTagType.ANY);
 
 	let isGroupingTag = [ EnumTagType.ARRAY, EnumTagType.GROUP ].includes(tag.dtype);
 	return (
