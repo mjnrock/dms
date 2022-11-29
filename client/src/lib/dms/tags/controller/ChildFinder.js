@@ -31,7 +31,7 @@ export const ChildFinder = {
 	 * Returns the first child whose `alias` matches the passed value.
 	 */
 	getByAlias: (parent, alias) => {
-		return parent.state.find(child => child.meta.alias === alias);
+		return parent.state.find(child => child.alias === alias);
 	},
 	/**
 	 * Returns the first child whose `id`` matches the passed value.

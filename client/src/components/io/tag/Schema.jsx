@@ -18,7 +18,7 @@ export function Schema({ tag, css = "" } = {}) {
 	let isGroupingTag = [ Tag.Type.ARRAY, Tag.Type.GROUP ].includes(tag.dtype);
 	return (
 		<div className={ `flex ${ isGroupingTag ? "flex-col mt-4" : "flex-row" } m-2 border-2 border-gray-500 border-solid rounded` }>
-			<div className={ `p-0 mt-auto mb-auto mr-0 font-bold text-center align-middle basis-2/12 ${ isGroupingTag ? `bg-${ EnumTypeColor.get(tag.dtype) }` : "" }` }>{ tag.meta.alias }</div>
+			<div className={ `p-0 mt-auto mb-auto mr-0 font-bold text-center align-middle basis-2/12 ${ isGroupingTag ? `bg-${ EnumTypeColor.get(tag.dtype) }` : "" }` }>{ tag.alias }</div>
 			{
 				isGroupingTag
 					? tag.value.map(t => <Schema key={ t.id } tag={ t } />)

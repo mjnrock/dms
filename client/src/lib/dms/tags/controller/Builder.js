@@ -98,8 +98,8 @@ export const Builder = {
 				arr.push(Builder.ToArrayObject(child));
 			}
 		} else {
-			if(tag.meta.alias) {
-				arr.push([ tag.dtype, tag.value, { alias: tag.meta.alias } ]);
+			if(tag.alias) {
+				arr.push([ tag.dtype, tag.value, { alias: tag.alias } ]);
 			} else {
 				arr.push([ tag.dtype, tag.value ]);
 			}
@@ -110,7 +110,7 @@ export const Builder = {
 	ToAliasSchema(tag, obj = {}) {
 		if([ Tag.Type.GROUP, Tag.Type.ARRAY ].includes(tag.dtype)) {
 			for(let child of tag.value) {
-				obj[ child.meta.alias ] = Builder.ToAliasSchema(child);
+				obj[ child.alias ] = Builder.ToAliasSchema(child);
 			}
 
 			/**

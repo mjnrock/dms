@@ -87,9 +87,9 @@ export function Factory(tag, props = {}) {
 	let isGroupingTag = [ EnumTagType.ARRAY, EnumTagType.GROUP ].includes(tag.dtype);
 	return (
 		<div key={ tag.id } className={ `flex ${ isGroupingTag ? "flex-col mt-4" : "flex-row" } m-2 border-2 border-gray-500 border-solid rounded` }>
-			<div  className={ `p-0 mt-auto mb-auto mr-0 font-mono font-bold text-center align-middle bg-${ EnumTypeColor.get(tag.dtype) } basis-2/12` }>{ tag.meta.alias }</div>
+			<div  className={ `p-0 mt-auto mb-auto mr-0 font-mono font-bold text-center align-middle bg-${ EnumTypeColor.get(tag.dtype) } basis-2/12` }>{ tag.alias }</div>
 			{/* //FIXME: Move this into the Tag component, as editing/viewing the alias be handled there. */}
-			{/* <input  className={ `p-0 mt-auto mb-auto mr-0 font-mono font-bold text-center align-middle bg-${ EnumTypeColor.get(tag.dtype) } basis-2/12` } value={ tag.meta.alias } /> */}
+			{/* <input  className={ `p-0 mt-auto mb-auto mr-0 font-mono font-bold text-center align-middle bg-${ EnumTypeColor.get(tag.dtype) } basis-2/12` } value={ tag.alias } /> */}
 			{
 				isGroupingTag
 					? <Tag tag={ tag } view={ view } edit={ edit } { ...props } />

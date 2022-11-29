@@ -119,10 +119,6 @@ export class Node extends Identity {
 		this.shared.set("state", state);
 	}
 
-	get name() {
-		return this.meta.alias ? `${ this.meta.alias }-${ this.id }` : this.id;
-	}
-
 	addSharedReducer(module, reducer) {
 		if(typeof reducer === "function") {
 			let reducers = this.reducers.get(module) || [];

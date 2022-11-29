@@ -65,7 +65,7 @@ export class Tag extends Node {
 
 	static Type = EnumTagType;
 
-	constructor ({ dtype, value, ...rest } = {}) {
+	constructor ({ dtype, alias, value, ...rest } = {}) {
 		super({
 			type: "tag",
 			state: value,
@@ -74,6 +74,7 @@ export class Tag extends Node {
 		});
 
 		this.dtype = dtype || Tag.Type.ANY;
+		this.alias = alias;
 
 		/**
 		 * Does not allow for assignment of `undefined`.
@@ -106,11 +107,8 @@ export class Tag extends Node {
 		let obj = {
 			dtype: this.dtype,
 			value: this.state,
+			alias: this.alias,
 		};
-
-		if(this.meta.alias) {
-			obj.alias = this.meta.alias;
-		}
 
 		if(verbose) {
 			obj = {
