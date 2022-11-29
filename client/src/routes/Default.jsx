@@ -72,11 +72,19 @@ let tag = Builder.FromArrayObject([
 
 
 export function Default() {
-	const [ isEditing, setIsEditing ] = useState(true);
+	const [ isEditingData, setIsEditingData ] = useState(false);
+	const [ isEditingMeta, setIsEditingMeta ] = useState(false);
 
 	return (
 		<>
 			<h1 className="text-2xl font-bold text-center">Meta</h1>
+			<div onClick={ e => setIsEditingMeta(!isEditingMeta) } className="w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer">
+				{
+					isEditingMeta
+						? <LockOpenIcon className="text-red-500" />
+						: <LockClosedIcon className="text-green-500" />
+				}
+			</div>
 			<Schema tag={ tag } />
 
 			<br />
@@ -84,17 +92,17 @@ export function Default() {
 			<br />
 
 			<h1 className="text-2xl font-bold text-center">Data</h1>
-			<div onClick={ e => setIsEditing(!isEditing) } className="w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer">
+			<div onClick={ e => setIsEditingData(!isEditingData) } className="w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer">
 				{
-					isEditing
+					isEditingData
 						? <LockOpenIcon className="text-red-500" />
 						: <LockClosedIcon className="text-green-500" />
 				}
 			</div>
 			{
 				Array.isArray(tag)
-					? tag.map(t => IOTags.Factory(t, { verbose: true, isEditing }))
-					: IOTags.Factory(tag, { verbose: true, isEditing })
+					? tag.map(t => IOTags.Factory(t, { verbose: true, isEditing: isEditingData }))
+					: IOTags.Factory(tag, { verbose: true, isEditing: isEditingData })
 			}
 		</>
 	);
