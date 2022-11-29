@@ -13,6 +13,7 @@ import { ChildFinder } from "../lib/dms/tags/controller/ChildFinder";
 import { Builder } from "../lib/dms/tags/controller/Builder";
 
 import IOTags from "./../components/io/tag/package";
+import { Schema } from "./../components/io/tag/Schema";
 
 const tagStr = new TagString("meow", {
 	alias: "strang",
@@ -75,6 +76,14 @@ export function Default() {
 
 	return (
 		<>
+			<h1 className="text-2xl font-bold text-center">Meta</h1>
+			<Schema tag={ tag } />
+
+			<br />
+			<hr />
+			<br />
+
+			<h1 className="text-2xl font-bold text-center">Data</h1>
 			<div onClick={ e => setIsEditing(!isEditing) } className="w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer">
 				{
 					isEditing
@@ -87,12 +96,6 @@ export function Default() {
 					? tag.map(t => IOTags.Factory(t, { verbose: true, isEditing }))
 					: IOTags.Factory(tag, { verbose: true, isEditing })
 			}
-			<pre>
-				{/* { JSON.stringify(Builder.ToArrayObject(tag)).replaceAll("],", "],\r\n") } */}
-				{/* { JSON.stringify(Builder.ToAliasSchema(tag)) } */}
-				{ JSON.stringify(Builder.ToAliasSchema(tag), null, 2) }
-			</pre>
-			{/* <MetaTagJSX tag={ tag } verbose={ false } /> */ }
 		</>
 	);
 };

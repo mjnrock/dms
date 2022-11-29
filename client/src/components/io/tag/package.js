@@ -76,23 +76,6 @@ export const EnumTypeColor = new Map([
 	[ EnumTagType.INT8, `blue-200` ],
 	[ EnumTagType.STRING, `red-200` ],
 	[ EnumTagType.UINT8, `teal-200` ],
-	//IDEA: Tailwindcss needs these explicitly defined, but see if there is a more explicit place to force preloading of these classes.
-	// [ EnumTagType.ANY, `bg-gray-200` ],
-	// [ EnumTagType.ARRAY, `bg-gray-200` ],
-	// [ EnumTagType.BOOLEAN, `bg-purple-200` ],
-	// [ EnumTagType.CHARACTER, `bg-orange-200` ],
-	// [ EnumTagType.GROUP, `bg-gray-400` ],
-	// [ EnumTagType.INT8, `bg-blue-200` ],
-	// [ EnumTagType.STRING, `bg-red-200` ],
-	// [ EnumTagType.UINT8, `bg-teal-200` ],
-	// [ EnumTagType.ANY, `hover:border-gray-200` ],
-	// [ EnumTagType.ARRAY, `hover:border-gray-200` ],
-	// [ EnumTagType.BOOLEAN, `hover:border-purple-200` ],
-	// [ EnumTagType.CHARACTER, `hover:border-orange-200` ],
-	// [ EnumTagType.GROUP, `hover:border-gray-400` ],
-	// [ EnumTagType.INT8, `hover:border-blue-200` ],
-	// [ EnumTagType.STRING, `hover:border-red-200` ],
-	// [ EnumTagType.UINT8, `hover:border-teal-200` ],
 ]);
 
 /**
@@ -104,8 +87,9 @@ export function Factory(tag, props = {}) {
 	let isGroupingTag = [ EnumTagType.ARRAY, EnumTagType.GROUP ].includes(tag.dtype);
 	return (
 		<div key={ tag.id } className={ `flex ${ isGroupingTag ? "flex-col mt-4" : "flex-row" } m-2 border-2 border-gray-500 border-solid rounded` }>
+			<div  className={ `p-0 mt-auto mb-auto mr-0 font-mono font-bold text-center align-middle bg-${ EnumTypeColor.get(tag.dtype) } basis-2/12` }>{ tag.meta.alias }</div>
 			{/* //FIXME: Move this into the Tag component, as editing/viewing the alias be handled there. */}
-			<input  className={ `p-0 mt-auto mb-auto mr-0 font-mono font-bold text-center align-middle bg-${ EnumTypeColor.get(tag.dtype) } basis-2/12` } value={ tag.meta.alias } />
+			{/* <input  className={ `p-0 mt-auto mb-auto mr-0 font-mono font-bold text-center align-middle bg-${ EnumTypeColor.get(tag.dtype) } basis-2/12` } value={ tag.meta.alias } /> */}
 			{
 				isGroupingTag
 					? <Tag tag={ tag } view={ view } edit={ edit } { ...props } />
