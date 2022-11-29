@@ -26,6 +26,8 @@ export const EnumTagType = {
 	// MAP: "map",
 	// REFERENCE: "reference",
 	// FUNCTION: "function",
+	// GEOLOCATION: "geolocation",	// lat, long, alt, acc
+	// UUID: "uuid",
 };
 
 export const EnumResponseType = {
