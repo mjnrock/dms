@@ -4,7 +4,7 @@ import { LockOpenIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { Tag } from "./../lib/dms/tags/Tag";
 import { TagString } from "./../lib/dms/tags/TagString";
 import { TagBoolean } from "./../lib/dms/tags/TagBoolean";
-import { TagCharacter } from "../lib/dms/tags/TagCharacter";
+import { TagCharacter } from "./../lib/dms/tags/TagCharacter";
 import { TagArray } from "./../lib/dms/tags/TagArray";
 import { TagInt8 } from "./../lib/dms/tags/TagInt8";
 import { TagUint8 } from "./../lib/dms/tags/TagUint8";
@@ -12,7 +12,7 @@ import { TagUint8 } from "./../lib/dms/tags/TagUint8";
 import { ChildFinder } from "../lib/dms/tags/controller/ChildFinder";
 import { Builder } from "../lib/dms/tags/controller/Builder";
 
-import IOTags from "../components/io/tag/package";
+import IOTags from "./../components/io/tag/package";
 
 const tagStr = new TagString("meow", {
 	alias: "strang",
