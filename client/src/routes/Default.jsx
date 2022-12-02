@@ -13,7 +13,7 @@ import { ChildFinder } from "../lib/dms/tags/controller/ChildFinder";
 import { Builder } from "../lib/dms/tags/controller/Builder";
 
 import IOTags from "./../components/io/tag/package";
-import { Schema } from "./../components/io/tag/Schema";
+import { Schema, SchemaVariant } from "./../components/io/tag/Schema";
 
 const tagStr = new TagString("meow", {
 	alias: "strang",
@@ -85,6 +85,7 @@ export function Default() {
 						: <LockClosedIcon className="text-green-500" />
 				}
 			</div>
+			<SchemaVariant tag={ tag } />
 			<Schema tag={ tag } />
 
 			<br />

@@ -1,3 +1,5 @@
+import { v4 as uuid } from "uuid";
+
 import { Identity } from "./util/Identity.js";
 import { Events } from "./util/Events.js";
 
@@ -62,6 +64,12 @@ export class Node extends Identity {
 		 * Without being overridden, this is a get/set trap for this.shared.get("state")
 		 */
 		this.state = state;
+
+		/**
+		 * A public location to manage named channels, where a channel represents a type of relation (e.g. "parent", "child", "next", "previous", "friend").
+		 * This should be utilize analogously to events, in that there can be multiple members of that relation (channel).
+		 */
+		this.relations = new Map();
 
 		/**
 		 * This should be an array to allow for the same reducer to be used multiple times.
@@ -228,11 +236,125 @@ export class Node extends Identity {
 		return this.clearSharedReducers("state");
 	}
 
+	addRelation(relation, node) {
+		if(node instanceof Node) {
+			let relations = this.relations.get(relation) || new Set();
+			
+			if(!relations.has(node)) {
+				relations.add(node);
+			}
+
+			this.relations.set(relation, relations);
+
+			return true;
+		}
+
+		return false;
+	}
+	addRelations(relation, ...nodes) {
+		if(typeof relation === "object") {
+			for(let [ rel, nodes ] of Object.entries(relation)) {
+				if(Array.isArray(nodes)) {
+					this.addRelations(rel, ...nodes);
+				} else {
+					this.addRelation(rel, nodes);
+				}
+			}
+
+			return true;
+		}
+
+		let results = []
+
+		for(let node of nodes) {
+			results.push(this.addRelation(relation, node));
+		}
+
+		return results;
+	}
+	removeRelation(relation, node) {
+		if(node instanceof Node) {
+			let relations = this.relations.get(relation) || new Set();
+
+			if(relations.has(node)) {
+				return relations.delete(node);
+			}
+		}
+		
+		return false;
+	}
+	removeRelations(relation, ...nodes) {
+		if(typeof relation === "object") {
+			for(let [ rel, nodes ] of Object.entries(relation)) {
+				if(Array.isArray(nodes)) {
+					this.removeRelations(rel, ...nodes);
+				} else {
+					this.removeRelation(rel, nodes);
+				}
+			}
+
+			return true;
+		}
+
+		let results = []
+
+		for(let node of nodes) {
+			results.push(this.removeRelation(relation, node));
+		}
+
+		return results;
+	}
+
+	/**
+	 * This is a generic convenience method to allow a Node to leverage stored relation information of
+	 * other Nodes.  In such cases, `relate` allows a passed function to receieve each Node in the relation
+	 * as a parameter, alongside a customizable list of arguments.  As such, this can be used to perform
+	 * any action on the related Nodes, for whatever paradigmatic reason.
+	 */
+	relate(relation, fn, ...args) {
+		let nodes = this.relations.get(relation) || new Set();
+
+		let results = [];
+		for(let node of nodes) {
+			results.push(fn(node, ...args));
+		}
+
+		return results;
+	}
+
+	/**
+	 * This doesn't have any defined purpose other than to be a convenience method for use
+	 * when the Node paradigm requires signaling to another Node, for whatever reason.  This
+	 * allows the Node to either send a signal directly to a specific Node, or to send a
+	 * signal to all Nodes that are related to it under a given `.relation`.
+	 * 
+	 * NOTE: All invocations wil emit a "signal" event on the target Node/s; listen accordingly.
+	 */
+	signal(node, ...args) {
+		if(node instanceof Node) {
+			/* Signal a specified node directly */
+			node.emit("signal", ...args);
+
+			return true;
+		} else if(typeof node === "string") {
+			/* Signal all nodes of a relation -- internally selected via `.relations` */
+			let nodes = this.relations.get(node) || new Set();
+
+			for(let node of nodes) {
+				node.emit("signal", ...args);
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * A quick convenience method to *remove all exisiting reducers* and add a trivial reducer that returns the value passed to it.
 	 * If you don't want the latter behavior, then use `clearReducers` instead.
 	 * 
-	 * This exists because if a Node has no reducers, it will *always* return the **current* state.
+	 * !NOTE: This exists because if a Node has no reducers, it will *always* return the **current* state, based on current `sharedUpdate` codebase.
 	 */
 	makeTrivial() {
 		this.reducers.set("state", [
@@ -301,6 +423,10 @@ export class Node extends Identity {
 
 		return next;
 	}
+	/**
+	 * A convenience function for invoking state updates, specifically, as it is
+	 * the most common use-case.
+	 */
 	update(...args) {
 		return this.sharedUpdate("state", ...args);
 	}
