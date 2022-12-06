@@ -310,6 +310,8 @@ export class Node extends Identity {
 	 * other Nodes.  In such cases, `relate` allows a passed function to receieve each Node in the relation
 	 * as a parameter, alongside a customizable list of arguments.  As such, this can be used to perform
 	 * any action on the related Nodes, for whatever paradigmatic reason.
+	 * 
+	 * NOTE: This should be considered analogous to the `map` method of an Array.
 	 */
 	relate(relation, fn, ...args) {
 		let nodes = this.relations.get(relation) || new Set();
