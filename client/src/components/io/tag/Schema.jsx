@@ -13,7 +13,7 @@ export const EnumTypeColor = new Map([
 ]);
 
 export function Schema({ tag, css = "" } = {}) {
-	const schema = Builder.ToAliasSchema(tag);
+	// const schema = Builder.ToAliasSchema(tag);
 
 	let isGroupingTag = [ Tag.Type.ARRAY, Tag.Type.GROUP ].includes(tag.dtype);
 	return (
@@ -23,22 +23,6 @@ export function Schema({ tag, css = "" } = {}) {
 				isGroupingTag
 					? tag.value.map(t => <Schema key={ t.id } tag={ t } />)
 					: <div className={ `font-mono pl-2 basis-10/12 bg-${ EnumTypeColor.get(tag.dtype) }` }>{ tag.dtype }</div>
-			}
-		</div>
-	);
-};
-
-export function SchemaVariant({ tag, css = "" } = {}) {
-	const schema = Builder.ToAliasSchema(tag);
-
-	let isGroupingTag = [ Tag.Type.ARRAY, Tag.Type.GROUP ].includes(tag.dtype);
-	return (
-		<div className={ `m-2 border-2 border-gray-500 border-solid rounded` }>
-			<div className={ `p-0 mt-auto mb-auto mr-0 font-bold text-center align-middle ${ isGroupingTag ? `bg-${ EnumTypeColor.get(tag.dtype) }` : "" }` }>{ tag.alias }</div>
-			{
-				isGroupingTag
-					? tag.value.map(t => <SchemaVariant key={ t.id } tag={ t } />)
-					: <div className={ `font-mono pl-2 bg-${ EnumTypeColor.get(tag.dtype) }` }>{ tag.dtype }</div>
 			}
 		</div>
 	);

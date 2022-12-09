@@ -14,6 +14,7 @@ import { Builder } from "../lib/dms/tags/controller/Builder";
 
 import IOTags from "./../components/io/tag/package";
 import { Schema, SchemaVariant } from "./../components/io/tag/Schema";
+import { Edit } from "../components/schema/Edit";
 
 const tagStr = new TagString("meow", {
 	alias: "strang",
@@ -69,11 +70,42 @@ let tag = Builder.FromArrayObject([
 
 // let tag = tagArr;
 
+let baseSchema = {
+	CaTz: "string",
+	InT8s: "int8",
+	GrOuP: {
+		MeOw1: "string",
+		MeOw2: "string",
+	},
+};
+
 
 
 export function Default() {
+	const [ schema, setSchema ] = useState(baseSchema);
 	const [ isEditingData, setIsEditingData ] = useState(false);
 	const [ isEditingMeta, setIsEditingMeta ] = useState(false);
+
+	/**
+	 * TODO:
+	 * ->First map to entries, and link edits to an index number (this avoids potential runtime-level issues with aliasing, e.g. Phone, Phone2 -- if you delete the 2, it'll delete Phone and replace with changes)
+	 * ->When "Enter" is pressed for @alias, update the alias at that namespace/alias
+	 * -> When "onChange" for @type, update the type at that namespace/alias
+	 * --> If the new type is an "array" or "object", then add a section below to add children
+	 * ---> If remove a child, remove it from the schema; if remove a parent, remove all children from the schema
+	 */
+	function onEditSchema(namespace, prop, value) {
+		let split = namespace.split("."),
+			obj = schema;
+
+		if(split.length > 1) {
+			
+		} else {
+			
+		}
+
+		// setSchema(obj);
+	};
 
 	return (
 		<>
@@ -85,8 +117,14 @@ export function Default() {
 						: <LockClosedIcon className="text-green-500" />
 				}
 			</div>
-			<SchemaVariant tag={ tag } />
+
 			<Schema tag={ tag } />
+
+			<br />
+			<hr />
+			<br />
+
+			<Edit schema={ schema } onChange={ onEditSchema } />
 
 			<br />
 			<hr />
