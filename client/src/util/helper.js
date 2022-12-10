@@ -325,6 +325,11 @@ export function coerceToIterable(arg) {
 	return [ arg ];
 };
 
+/**
+ * Convert an object to a nested array of entries, where each entry is
+ * a key/value pair.  If the value is an object, it will be converted
+ * to a nested array of entries, and so on.
+ */
 export function objectToNestedEntries(obj) {
 	return Object.entries(obj).map(([ key, value ]) => {
 		if(typeof value === "object") {
@@ -335,6 +340,27 @@ export function objectToNestedEntries(obj) {
 	});
 };
 
+/**
+ * The inverse of objectToNestedEntries.  This will convert a nested array
+ * of entries back into an object.
+ */
+export function nestedEntriesToObject(entries) {
+	return entries.reduce((acc, [ key, value ]) => {
+		if(Array.isArray(value)) {
+			acc[ key ] = nestedEntriesToObject(value);
+		} else {
+			acc[ key ] = value;
+		}
+
+		return acc;
+	}, {});
+};
+
+/**
+ * Convert an object to a namespace object, where each key is a namespace
+ * of the original object's keys.  For example: { a: { b: 1, c: 2 } } will
+ * become { "a.b": 1, "a.c": 2 }.
+ */
 export function objectToNamespaceObject(obj, namespace = "") {
 	return Object.entries(obj).reduce((acc, [ key, value ]) => {
 		if(typeof value === "object") {
@@ -354,8 +380,45 @@ export function objectToNamespaceObject(obj, namespace = "") {
 	}, {});
 };
 
+/**
+ * The inverse of objectToNamespaceObject.  This will convert a namespace
+ * object back into a nested object.
+ */
+export function namespaceObjectToObject(obj) {
+	return Object.entries(obj).reduce((acc, [ key, value ]) => {
+		const parts = key.split(".");
+		const last = parts.pop();
+
+		let current = acc;
+		for(let i = 0; i < parts.length; i++) {
+			if(!current[ parts[ i ] ]) {
+				current[ parts[ i ] ] = {};
+			}
+
+			current = current[ parts[ i ] ];
+		}
+
+		current[ last ] = value;
+
+		return acc;
+	}, {});
+};
+
+/**
+ * Convert an object to a namespace array of entries, where each entry is
+ * a key/value pair.  If the value is an object, it will be converted
+ * to a namespace array of entries, and so on.
+ */
 export function objectToNamespaceEntries(obj, namespace = "") {
 	return Object.entries(objectToNamespaceObject(obj, namespace));
+};
+
+/**
+ * The inverse of objectToNamespaceEntries.  This will convert a namespace
+ * array of entries back into an object.
+ */
+export function namespaceEntriesToObject(entries) {
+	return namespaceObjectToObject(Object.fromEntries(entries));
 };
 
 export default {
@@ -384,6 +447,9 @@ export default {
 	singleOrArrayArgs,
 	coerceToIterable,
 	objectToNestedEntries,
+	nestedEntriesToObject,
 	objectToNamespaceObject,
+	namespaceObjectToObject,
 	objectToNamespaceEntries,
+	namespaceEntriesToObject,
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LockOpenIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 
 import { Tag } from "./../lib/dms/tags/Tag";
@@ -13,10 +13,17 @@ import { ChildFinder } from "../lib/dms/tags/controller/ChildFinder";
 import { Builder } from "../lib/dms/tags/controller/Builder";
 
 import IOTags from "./../components/io/tag/package";
-import { Schema, SchemaVariant } from "./../components/io/tag/Schema";
+import { Schema } from "./../components/io/tag/Schema";
 
 import { Edit } from "../components/schema/Edit";
-import { objectToNestedEntries, objectToNamespaceObject, objectToNamespaceEntries } from "./../util/helper";
+import {
+	objectToNestedEntries,
+	nestedEntriesToObject,
+	objectToNamespaceObject,
+	namespaceObjectToObject,
+	objectToNamespaceEntries,
+	namespaceEntriesToObject,
+} from "./../util/helper";
 
 const tagStr = new TagString("meow", {
 	alias: "strang",
@@ -38,40 +45,6 @@ const tagArr = new TagArray([ tagStr, tagInt8, tagUint8, tagBool ], {
 	alias: "ARrAy"
 });
 
-/**
- * IDEA: Stop going back and forth on ideations -- the *poinnt* is to have minimal data structures persisted, and Nodes are the mutators/in-memory wrappers.
- */
-let tag = Builder.FromArrayObject([
-	[ "string", "meow", { alias: "CaTz" } ],
-	[ "int8", 69, { alias: "InT8s" } ],
-	[ "bool", true, { alias: "BoOlZ" } ],
-	[ "array", [
-		[ "string", "meow.cat1", { alias: "MeOw1" } ],
-		[ "string", "meow.cat2", { alias: "MeOw2" } ],
-		[ "array", [
-			[ "char", "meow.cat1.catzz1", { alias: "MeOw1.catzz1" } ],
-			[ "uint8", 230, { alias: "MeOw2.catzz2" } ],
-		], { alias: "ArRaYzzzz2z2z" } ],
-	], { alias: "ArRaYz" } ],
-]);
-// let tag = Builder.FromAliasObject({
-// 	CaTz: [ "string", "meow" ],
-// 	InT8s: [ "int8", 69 ],
-// 	ArRaYz: [ "array", {
-// 		MeOw1: [ "string", "meow.cat1" ],
-// 		MeOw2: [ "string", "meow.cat2" ],
-// 	}],
-// });
-// let tag = Builder.FromAliasSchema({
-// 	terrain: {
-// 		type: "string",
-// 		weight: "int8",
-// 		edgeMask: "uint8",
-// 	},
-// }, false);
-
-// let tag = tagArr;
-
 let baseSchema = {
 	CaTz: "string",
 	InT8s: "int8",
@@ -89,37 +62,37 @@ let baseSchema = {
 	},
 };
 
+let baseTag = Builder.FromAliasSchema(baseSchema, false);
+
 console.log(objectToNamespaceObject(baseSchema));
+console.log(namespaceObjectToObject(objectToNamespaceObject(baseSchema)));
 console.log(objectToNestedEntries(baseSchema));
+console.log(nestedEntriesToObject(objectToNestedEntries(baseSchema)));
 console.log(objectToNamespaceEntries(baseSchema));
+console.log(namespaceEntriesToObject(objectToNamespaceEntries(baseSchema)));
 
 export function Default() {
+	const [ tag, setTag ] = useState(baseTag);
 	const [ schema, setSchema ] = useState(baseSchema);
 	const [ isEditingData, setIsEditingData ] = useState(false);
 	const [ isEditingMeta, setIsEditingMeta ] = useState(false);
 
-	/**
-	 * TODO:
-	 * ->First map to entries, and link edits to an index number (this avoids potential runtime-level issues with aliasing, e.g. Phone, Phone2 -- if you delete the 2, it'll delete Phone and replace with changes)
-	 * ->When "Enter" is pressed for @alias, update the alias at that namespace/alias
-	 * -> When "onChange" for @type, update the type at that namespace/alias
-	 * --> If the new type is an "array" or "object", then add a section below to add children
-	 * ---> If remove a child, remove it from the schema; if remove a parent, remove all children from the schema
-	 */
-	let base = objectToNestedEntries(schema);
-	function onEditSchema(changeType, namespace, newValue, parent = {}) {
-		for(let [ key, value ] of base) {
-			if(key === namespace) {
-				if(changeType === "type") {
-					value[1] = newValue;
-				} else if(changeType === "alias") {
-					value[0] = newValue;
-				}
-			}
+	function onEditSchema(changeType, namespace, alias, newValue) {
+		let base = objectToNamespaceObject(schema);
+
+		if(changeType === "type") {
+			base[ `${ namespace }${ alias }` ] = newValue;
+		} else if(changeType === "alias") {
+			base[ `${ namespace }${ newValue }` ] = base[ `${ namespace }${ alias }` ];
+			delete base[ `${ namespace }${ alias }` ];
 		}
 
-		// setSchema(schema);
-	}
+		setSchema(namespaceObjectToObject(base));
+	};
+
+	useEffect(() => {
+		setTag(Builder.FromAliasSchema(schema, false));
+	}, [schema]);
 
 	return (
 		<>
@@ -131,12 +104,6 @@ export function Default() {
 						: <LockClosedIcon className="text-green-500" />
 				}
 			</div>
-
-			<Schema tag={ tag } />
-
-			<br />
-			<hr />
-			<br />
 
 			<Edit schema={ schema } onChange={ onEditSchema } />
 
