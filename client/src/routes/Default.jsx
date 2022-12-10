@@ -94,6 +94,8 @@ export function Default() {
 		setTag(Builder.FromAliasSchema(schema, false));
 	}, [schema]);
 
+	//IDEA: The IOFactory generates the Tag Components correctly, but test if the components are getting recreated each refresh (not great) or if they persist (ideal)
+
 	return (
 		<>
 			<h1 className="text-2xl font-bold text-center">Meta</h1>
