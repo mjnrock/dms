@@ -14,7 +14,9 @@ import { Builder } from "../lib/dms/tags/controller/Builder";
 
 import IOTags from "./../components/io/tag/package";
 import { Schema, SchemaVariant } from "./../components/io/tag/Schema";
+
 import { Edit } from "../components/schema/Edit";
+import { objectToNestedEntries, objectToNamespaceObject, objectToNamespaceEntries } from "./../util/helper";
 
 const tagStr = new TagString("meow", {
 	alias: "strang",
@@ -76,10 +78,20 @@ let baseSchema = {
 	GrOuP: {
 		MeOw1: "string",
 		MeOw2: "string",
+		gROUp2: {
+			CaTz2: "string",
+			InT8s2: "int8",
+			GrOuP22: {
+				MeOw122: "string",
+				MeOw222: "string",
+			},
+		}
 	},
 };
 
-
+console.log(objectToNamespaceObject(baseSchema));
+console.log(objectToNestedEntries(baseSchema));
+console.log(objectToNamespaceEntries(baseSchema));
 
 export function Default() {
 	const [ schema, setSchema ] = useState(baseSchema);
@@ -94,18 +106,20 @@ export function Default() {
 	 * --> If the new type is an "array" or "object", then add a section below to add children
 	 * ---> If remove a child, remove it from the schema; if remove a parent, remove all children from the schema
 	 */
-	function onEditSchema(namespace, prop, value) {
-		let split = namespace.split("."),
-			obj = schema;
-
-		if(split.length > 1) {
-			
-		} else {
-			
+	let base = objectToNestedEntries(schema);
+	function onEditSchema(changeType, namespace, newValue, parent = {}) {
+		for(let [ key, value ] of base) {
+			if(key === namespace) {
+				if(changeType === "type") {
+					value[1] = newValue;
+				} else if(changeType === "alias") {
+					value[0] = newValue;
+				}
+			}
 		}
 
-		// setSchema(obj);
-	};
+		// setSchema(schema);
+	}
 
 	return (
 		<>

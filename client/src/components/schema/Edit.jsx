@@ -19,10 +19,10 @@ export function Edit({ schema, onChange, namespace }) {
 						return (
 							<div key={ localNamespace } className="flex flex-row w-full h-full">
 								<div className="flex flex-col w-1/2 h-full">
-									<input className="w-full h-full" type="text" placeholder="Alias" value={ alias } onChange={ e => onChange(`${ localNamespace }`, "alias", e.target.value) } />
+									<input className="w-full h-full" type="text" placeholder="Alias" value={ alias } onChange={ e => onChange("alias", `${ localNamespace }`, e.target.value) } />
 								</div>
 								<div className="flex flex-col w-1/2 h-full">
-									<input className="w-full h-full" type="text" placeholder="Type" value={ type } onChange={ e => onChange(`${ localNamespace }`, "type", e.target.value) } />
+									<input className="w-full h-full" type="text" placeholder="Type" value={ type } onChange={ e => onChange("type", `${ localNamespace }`, e.target.value) } />
 								</div>
 							</div>
 						);
