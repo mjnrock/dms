@@ -81,18 +81,31 @@ export function Default() {
 		let base = objectToNamespaceObject(schema);
 
 		if(changeType === "type") {
-			base[ `${ namespace }${ alias }` ] = newValue;
+			if(newValue === "group") {
+				base[ `${ namespace }${ alias }` ] = {
+					[ `` ]: ``,
+				};
+			} else {
+				base[ `${ namespace }${ alias }` ] = newValue;
+			}
 		} else if(changeType === "alias") {
-			base[ `${ namespace }${ newValue }` ] = base[ `${ namespace }${ alias }` ];
+			if(newValue === "group") {
+				base[ `${ namespace }${ newValue }` ] = {
+					[ `` ]: ``,
+				};
+			} else {
+				base[ `${ namespace }${ newValue }` ] = base[ `${ namespace }${ alias }` ];
+			}
 			delete base[ `${ namespace }${ alias }` ];
 		}
+
 
 		setSchema(namespaceObjectToObject(base));
 	};
 
 	useEffect(() => {
 		setTag(Builder.FromAliasSchema(schema, false));
-	}, [schema]);
+	}, [ schema ]);
 
 	//IDEA: The IOFactory generates the Tag Components correctly, but test if the components are getting recreated each refresh (not great) or if they persist (ideal)
 
