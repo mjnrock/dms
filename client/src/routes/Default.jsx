@@ -71,6 +71,8 @@ console.log(nestedEntriesToObject(objectToNestedEntries(baseSchema)));
 console.log(objectToNamespaceEntries(baseSchema));
 console.log(namespaceEntriesToObject(objectToNamespaceEntries(baseSchema)));
 
+//FIXME: While these helper functions are great, the JSX state really needs to be a managed Tag, rather than an array or object; for many reasons -- don't overthink it, just use Tags and *display* the relevant parts
+
 export function Default() {
 	const [ tag, setTag ] = useState(baseTag);
 	const [ schema, setSchema ] = useState(baseSchema);
