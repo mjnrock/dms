@@ -43,7 +43,7 @@ export class Node extends Identity {
 	 */
 	static Type = EnumNodeType;
 
-	constructor ({ type, state, reducers = [], sharedReducers = {}, events = {}, alias, meta = {}, id, tags = [] } = {}) {
+	constructor ({ type, state, reducers = [], sharedReducers = {}, events = {}, meta = {}, id, tags = [] } = {}) {
 		super({ id, tags });
 
 		if(!type) {
@@ -94,11 +94,6 @@ export class Node extends Identity {
 			timestamp: Date.now(),
 
 			...meta,
-
-			/**
-			 * An optional alias for the node
-			 */
-			alias: alias || meta.alias,
 		};
 
 		/**

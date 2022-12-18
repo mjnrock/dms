@@ -65,6 +65,10 @@ export const TypeToProps = new Map([
 		edit: (t, v, { css, isEditing } = {}) => (v.map(t => Factory(t, { key: t.id, isEditing }))),
 		view: (t, v, { css, isEditing } = {}) => (v.map(t => Factory(t, { key: t.id, isEditing }))),
 	} ],
+	[ EnumTagType.NAMESPACE, {
+		edit: (t, v, { css, isEditing } = {}) => (v.map(t => Factory(t, { key: t.id, isEditing }))),
+		view: (t, v, { css, isEditing } = {}) => (v.map(t => Factory(t, { key: t.id, isEditing }))),
+	} ],
 ]);
 
 export const EnumTypeColor = new Map([
@@ -73,6 +77,7 @@ export const EnumTypeColor = new Map([
 	[ EnumTagType.BOOLEAN, `purple-200` ],
 	[ EnumTagType.CHARACTER, `orange-200` ],
 	[ EnumTagType.GROUP, `gray-400` ],
+	[ EnumTagType.NAMESPACE, `neutral-600` ],
 	[ EnumTagType.INT8, `blue-200` ],
 	[ EnumTagType.STRING, `red-200` ],
 	[ EnumTagType.UINT8, `teal-200` ],
@@ -84,12 +89,10 @@ export const EnumTypeColor = new Map([
 export function Factory(tag, props = {}) {
 	let { view, edit } = TypeToProps.get(tag.dtype) || TypeToProps.get(EnumTagType.ANY);
 
-	let isGroupingTag = [ EnumTagType.ARRAY, EnumTagType.GROUP ].includes(tag.dtype);
+	let isGroupingTag = [ EnumTagType.ARRAY, EnumTagType.GROUP, EnumTagType.NAMESPACE ].includes(tag.dtype);
 	return (
-		<div key={ tag.id } className={ `flex ${ isGroupingTag ? "flex-col mt-4" : "flex-row" } m-2 border-2 border-gray-500 border-solid rounded` }>
-			<div  className={ `p-0 mt-auto mb-auto mr-0 font-mono font-bold text-center align-middle bg-${ EnumTypeColor.get(tag.dtype) } basis-2/12` }>{ tag.alias }</div>
-			{/* //FIXME: Move this into the Tag component, as editing/viewing the alias be handled there. */}
-			{/* <input  className={ `p-0 mt-auto mb-auto mr-0 font-mono font-bold text-center align-middle bg-${ EnumTypeColor.get(tag.dtype) } basis-2/12` } value={ tag.alias } /> */}
+		<div key={ `tag:${ tag.id }` } className={ `flex ${ isGroupingTag ? "flex-col mt-4" : "flex-row" } m-2 border-2 border-gray-400 border-solid rounded` }>
+			<div  className={ `p-0 mt-auto mb-auto mr-0 font-mono font-bold text-center align-middle bg-${ EnumTypeColor.get(tag.dtype) } basis-2/12 ${ tag.dtype === EnumTagType.NAMESPACE ? `text-white` : `` }` }>{ tag.alias }</div>
 			{
 				isGroupingTag
 					? <Tag tag={ tag } view={ view } edit={ edit } { ...props } />

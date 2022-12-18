@@ -2,6 +2,7 @@ import { Node } from "./../Node.js";
 
 export const EnumTagType = {
 	ANY: "any",
+	NAMESPACE: "namespace",
 	GROUP: "group",
 	BOOLEAN: "bool",
 	UINT8: "uint8",

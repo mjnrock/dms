@@ -1,5 +1,5 @@
 import Builder from "../../../lib/dms/tags/controller/Builder";
-import { Tag } from "./../../../lib/dms/tags/Tag";
+import { Tag } from "../../../lib/dms/tags/Tag";
 
 export const EnumTypeColor = new Map([
 	[ Tag.Type.ANY, `gray-200` ],
