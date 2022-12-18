@@ -19,6 +19,16 @@ export const TypeToClass = new Map([
 ]);
 
 export const Builder = {
+	Factory: (dtype, value = null, { ...args }) => {
+		let clazz = TypeToClass.get(dtype);
+
+		if(clazz) {
+			//TODO: TagNamespace (and potentially others) need exceptions here, as they require an additional argument before the options object.
+			return new clazz(value, args);
+		}
+
+		return null;
+	},
 	FromArrayObject: (arr = [], asTagGroup = true) => {
 		let root = [];
 

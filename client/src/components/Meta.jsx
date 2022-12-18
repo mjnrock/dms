@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Button } from "semantic-ui-react";
+import { Button, Dropdown } from "semantic-ui-react";
 import { Bars3Icon, MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 
-import { EnumTagType } from "../lib/dms/tags/Tag";
+import { EnumTagType, ReverseEnumTagType } from "../lib/dms/tags/Tag";
+import Builder from "../lib/dms/tags/controller/Builder";
 
 export const EnumTypeColor = new Map([
 	[ EnumTagType.ANY, [ "gray", 200 ] ],
@@ -14,6 +15,7 @@ export const EnumTypeColor = new Map([
 	[ EnumTagType.INT8, [ "blue", 200 ] ],
 	[ EnumTagType.STRING, [ "red", 200 ] ],
 	[ EnumTagType.UINT8, [ "teal", 200 ] ],
+	[ EnumTagType.SCHEMA, [ "gray", 400 ] ],
 ]);
 
 function DetailBar({ tag }) {
@@ -52,8 +54,7 @@ function DetailBar({ tag }) {
 	);
 }
 
-function InfoBar({ tag }) {
-	// const [ mode, setMode ] = useState("advanced");	// String version of "isExpanded", allowing for more nuanced states
+function InfoBar({ tag, parent }) {
 	const [ mode, setMode ] = useState("simple");	// String version of "isExpanded", allowing for more nuanced states
 
 	let [ color, magnitude ] = EnumTypeColor.get(tag.dtype);
@@ -62,16 +63,45 @@ function InfoBar({ tag }) {
 	function editAlias(alias) {
 		tag.alias = alias;
 	}
+	function editType(type) {
+		parent.replaceChild(tag, Builder.Factory(type, null, {
+			alias: tag.alias,
+		}));
+	}
 
 	return (
 		<div className="flex flex-col">
-			<div className="flex flex-row p-2">
-				<div className="pr-2">
+			<div className="flex flex-row">
+				{/* Reorder handle icon */ }
+				<div className="mt-auto mb-auto">
 					<Bars3Icon className={ `w-6 h-6 text-${ color }-400 cursor-grab` } />
 				</div>
-				<input className={ `basis-1/2` } value={ tag.alias } onChange={ e => editAlias(e.target.value) } />
-				<input className={ `basis-1/2 font-mono font-bold text-${ color }-${ magnitude }` } value={ tag.dtype } readOnly={ true } />
-				<div className="pl-2">
+
+				{/* Alias */ }
+				<input className={ `basis-1/2 p-2` } value={ tag.alias } onChange={ e => editAlias(e.target.value) } />
+
+				{/* Type */ }
+				<div className={ `basis-1/2 mt-auto mb-auto font-mono font-bold text-${ color }-${ magnitude }` }>
+					<Dropdown text={ tag.dtype }>
+						<Dropdown.Menu>
+							{
+								Array.from(Object.values(EnumTagType)).map((option, index) => {
+									let [ color, magnitude ] = EnumTypeColor.get(option);
+									magnitude += 100;
+
+									return (
+										<Dropdown.Item key={ index } onClick={ () => editType(option) }>
+											<div className={ `font-mono font-bold text-${ color }-${ magnitude }` }>{ option }</div>
+										</Dropdown.Item>
+									);
+								})
+							}
+						</Dropdown.Menu>
+					</Dropdown>
+				</div>
+
+				{/* Expand/collapse icon */ }
+				<div className="mt-auto mb-auto">
 					{
 						mode === "simple"
 							? (
@@ -87,11 +117,11 @@ function InfoBar({ tag }) {
 					? <DetailBar tag={ tag } />
 					: null
 			}
-		</div>
+		</div >
 	);
 }
 
-export function Meta({ tag }) {
+export function Meta({ tag, parent }) {
 	const [ state, setState ] = useState({});
 
 	useEffect(() => {
@@ -113,13 +143,13 @@ export function Meta({ tag }) {
 
 	return (
 		<div className={ `m-2 p-2 border-2 border-${ color }-200 border-solid rounded flex flex-col shadow-md` }>
-			<InfoBar tag={ tag } />
+			<InfoBar tag={ tag } parent={ parent } />
 			<>
 				{
 					[ EnumTagType.ARRAY, EnumTagType.GROUP, EnumTagType.NAMESPACE ].includes(tag.dtype)
 						? tag.state.map((child, index) => {
 							return (
-								<Meta key={ `meta:${ child.id }` } tag={ child } />
+								<Meta key={ `meta:${ child.id }` } tag={ child } parent={ tag } />
 							);
 						})
 						: null

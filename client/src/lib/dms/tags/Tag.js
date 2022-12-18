@@ -32,6 +32,16 @@ export const EnumTagType = {
 	SCHEMA: "schema",
 };
 
+export function ReverseEnumTagType(value) {
+	for(let key in EnumTagType) {
+		if(EnumTagType[ key ] === value) {
+			return key;
+		}
+	}
+
+	return EnumTagType.ANY;
+}
+
 export const EnumResponseType = {
 	INVALID_VALUE: "10af8701-8a02-4580-a6d5-f45ed27093f9",
 };
