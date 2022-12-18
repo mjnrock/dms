@@ -60,8 +60,10 @@ let baseTag = new TagNamespace("root", [
 	alias: "root",
 });
 
-console.table(Serializer.ToHierarchy(baseTag));
-console.log(Serializer.ToHierarchyRecord(baseTag));
+console.table(Serializer.ToHierarchy(baseTag), [ "id", "pid", "alias", "dtype", "value", "path" ]);
+console.log(Serializer.ToHierarchyObject(baseTag));
+console.table(Serializer.ToHierarchyRecord(baseTag));
+console.log(Serializer.ToHierarchyRecordObject(baseTag));
 
 export function Default() {
 	const [ tag, setTag ] = useState(baseTag);
