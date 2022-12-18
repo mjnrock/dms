@@ -16,6 +16,7 @@ import { Builder } from "../lib/dms/tags/controller/Builder";
 
 import IOTags from "../components/io/tag/package";
 import IOSchema from "../components/io/schema/package";
+import Serializer from "../lib/dms/tags/controller/Serializer";
 
 const tagStr = new TagString("meow", {
 	alias: "strang",
@@ -59,6 +60,9 @@ let baseTag = new TagNamespace("root", [
 	alias: "root",
 });
 
+console.table(Serializer.ToHierarchy(baseTag));
+console.log(Serializer.ToHierarchyRecord(baseTag));
+
 export function Default() {
 	const [ tag, setTag ] = useState(baseTag);
 	const [ isEditingData, setIsEditingData ] = useState(false);
@@ -96,9 +100,7 @@ export function Default() {
 				<CommandLineIcon className="text-gray-800 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => console.log(tag) } />
 				<CodeBracketIcon className="text-gray-600 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => console.log(tag.toObject()) } />
 			</div>
-			{
-				IOTags.Factory(tag, { isEditing: isEditingData })
-			}
+			<IOTags.Factory tag={ tag } isEditing={ isEditingData } />
 		</>
 	);
 };

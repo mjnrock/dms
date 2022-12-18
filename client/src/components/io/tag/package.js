@@ -58,16 +58,16 @@ export const TypeToProps = new Map([
 		view: (t, v, { css } = {}) => (<div className={ css }>{ v }</div>),
 	} ],
 	[ EnumTagType.ARRAY, {
-		edit: (t, v, { css, isEditing } = {}) => (v.map(t => Factory(t, { key: t.id, isEditing }))),
-		view: (t, v, { css, isEditing } = {}) => (v.map(t => Factory(t, { key: t.id, isEditing }))),
+		edit: (t, v, { css, isEditing } = {}) => (v.map(t => <Factory tag={ t } key={ t.id } isEditing={ isEditing } />)),
+		view: (t, v, { css, isEditing } = {}) => (v.map(t => <Factory tag={ t } key={ t.id } isEditing={ isEditing } />)),
 	} ],
 	[ EnumTagType.GROUP, {
-		edit: (t, v, { css, isEditing } = {}) => (v.map(t => Factory(t, { key: t.id, isEditing }))),
-		view: (t, v, { css, isEditing } = {}) => (v.map(t => Factory(t, { key: t.id, isEditing }))),
+		edit: (t, v, { css, isEditing } = {}) => (v.map(t => <Factory tag={ t } key={ t.id } isEditing={ isEditing } />)),
+		view: (t, v, { css, isEditing } = {}) => (v.map(t => <Factory tag={ t } key={ t.id } isEditing={ isEditing } />)),
 	} ],
 	[ EnumTagType.NAMESPACE, {
-		edit: (t, v, { css, isEditing } = {}) => (v.map(t => Factory(t, { key: t.id, isEditing }))),
-		view: (t, v, { css, isEditing } = {}) => (v.map(t => Factory(t, { key: t.id, isEditing }))),
+		edit: (t, v, { css, isEditing } = {}) => (v.map(t => <Factory tag={ t } key={ t.id } isEditing={ isEditing } />)),
+		view: (t, v, { css, isEditing } = {}) => (v.map(t => <Factory tag={ t } key={ t.id } isEditing={ isEditing } />)),
 	} ],
 ]);
 
@@ -86,7 +86,7 @@ export const EnumTypeColor = new Map([
 /**
  * Dynamically determines the appropriate JSX component to use, based on the `dtype` property of @tag.
  */
-export function Factory(tag, props = {}) {
+export function Factory({ tag, ...props }) {
 	let { view, edit } = TypeToProps.get(tag.dtype) || TypeToProps.get(EnumTagType.ANY);
 
 	let isGroupingTag = [ EnumTagType.ARRAY, EnumTagType.GROUP, EnumTagType.NAMESPACE ].includes(tag.dtype);
