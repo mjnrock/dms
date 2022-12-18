@@ -1,7 +1,8 @@
-import { Bars3Icon, ChevronDownIcon, ChevronRightIcon, MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { useState, useEffect } from "react";
+import { Button } from "semantic-ui-react";
+import { Bars3Icon, MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
+
 import { EnumTagType } from "../lib/dms/tags/Tag";
-import { useState } from "react";
-import { useEffect } from "react";
 
 export const EnumTypeColor = new Map([
 	[ EnumTagType.ANY, [ "gray", 200 ] ],
@@ -33,14 +34,15 @@ function DetailBar({ tag }) {
 			{
 				Object.entries(setting).map(([ key, value ]) => {
 					return (
-						<div key={ `${ key }:${ tag.id }` } className={ `flex flex-row` }>
+						<div key={ `${ key }:${ tag.id }` } className={ `flex flex-row mt-2` }>
 							<code className={ `basis-1/2` }>{ key }</code>
 							<div className="basis-1/2">
-								<input className={ `mr-4 ml-4` } type="radio" name={ `${ key.toLowerCase() }:${ tag.id }` } value="1" checked={ value } onChange={ e => updateSetting(key, true, value) } />
-								<label>On</label>
-
-								<input className={ `mr-4 ml-4` } type="radio" name={ `${ key.toLowerCase() }:${ tag.id }` } value="0" checked={ !value } onChange={ e => updateSetting(key, false, value) } />
-								<label>Off</label>
+								<Button
+									basic
+									color={ value ? `green` : `red` }
+									className={ `w-full` }
+									onClick={ e => updateSetting(key, !value, value) }
+								>{ value ? `Yes` : `No` }</Button>
 							</div>
 						</div>
 					);
@@ -51,6 +53,7 @@ function DetailBar({ tag }) {
 }
 
 function InfoBar({ tag }) {
+	// const [ mode, setMode ] = useState("advanced");	// String version of "isExpanded", allowing for more nuanced states
 	const [ mode, setMode ] = useState("simple");	// String version of "isExpanded", allowing for more nuanced states
 
 	let [ color, magnitude ] = EnumTypeColor.get(tag.dtype);

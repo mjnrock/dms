@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 
 import Router from "./routes/package";
 
+import "semantic-ui-css/semantic.min.css"
 import "./assets/css/reset.css";
 import "./assets/css/main.css";
 
