@@ -14,9 +14,11 @@ import { TagNamespace } from "../lib/dms/tags/TagNamespace";
 import { ChildFinder } from "../lib/dms/tags/controller/ChildFinder";
 import { Builder } from "../lib/dms/tags/controller/Builder";
 
+import Serializer from "../lib/dms/tags/controller/Serializer";
+
+import { Meta } from "../components/Meta";
 import IOTags from "../components/io/tag/package";
 import IOSchema from "../components/io/schema/package";
-import Serializer from "../lib/dms/tags/controller/Serializer";
 
 const tagStr = new TagString("meow", {
 	alias: "strang",
@@ -60,10 +62,10 @@ let baseTag = new TagNamespace("root", [
 	alias: "root",
 });
 
-console.table(Serializer.ToHierarchy(baseTag), [ "id", "pid", "alias", "dtype", "value", "path" ]);
-console.log(Serializer.ToHierarchyObject(baseTag));
-console.table(Serializer.ToHierarchyRecord(baseTag));
-console.log(Serializer.ToHierarchyRecordObject(baseTag));
+// console.table(Serializer.ToHierarchy(baseTag), [ "id", "pid", "alias", "dtype", "value", "path" ]);
+// console.log(Serializer.ToHierarchyObject(baseTag));
+// console.table(Serializer.ToHierarchyRecord(baseTag));
+// console.log(Serializer.ToHierarchyRecordObject(baseTag));
 
 export function Default() {
 	const [ tag, setTag ] = useState(baseTag);
@@ -84,7 +86,13 @@ export function Default() {
 				<CommandLineIcon className="text-gray-800 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => console.log(tag) } />
 				<CodeBracketIcon className="text-gray-600 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => console.log(tag.toObject()) } />
 			</div>
-			<IOSchema.Factory tag={ tag } isEditing={ isEditingMeta } />
+			{/* <IOSchema.Factory tag={ tag } isEditing={ isEditingMeta } />
+
+			<br />
+			<hr />
+			<br /> */}
+
+			<Meta tag={ tag } />
 
 			<br />
 			<hr />
