@@ -1,24 +1,15 @@
-import { useState, useEffect } from "react";
+export function Schema({ tag, color } = {}) {
+	let [ base, magnitude ] = color.split("-");
 
-/**
- * Create a wrapper component that handles a dynamic edit/view and controls
- * a component's value with update listeners.
- */
-export function Schema({ tag, isEditing = false, view, edit, ...props } = {}) {
-	const [ dtype, setDtype ] = useState(tag.dtype);
-
-	useEffect(() => {
-		let fn = () => setDtype(tag.dtype);
-		tag.events.on("update", fn);
-
-		return () => tag.events.off("update", fn);
-	}, []);
-
-	if(isEditing) {
-		return edit(tag, dtype, { isEditing, ...props });
-	}
-
-	return view(tag, dtype, { isEditing, ...props });
+	//TODO: Add support for { view, edit, isEditing } props
+	return (
+		<>
+			<div className={ `flex flex-row` }>
+				<div className={ `basis-1/2` }>{ tag.alias }</div>
+				<div className={ `basis-1/2 p-0 mt-auto mb-auto mr-0 font-mono font-bold text-center align-middle text-${ base }-${ +magnitude + 100 }` }>{ tag.dtype }</div>
+			</div>
+		</>
+	);
 }
 
 export default Schema;

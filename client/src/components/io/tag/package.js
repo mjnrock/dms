@@ -92,7 +92,7 @@ export function Factory(tag, props = {}) {
 	let isGroupingTag = [ EnumTagType.ARRAY, EnumTagType.GROUP, EnumTagType.NAMESPACE ].includes(tag.dtype);
 	return (
 		<div key={ `tag:${ tag.id }` } className={ `flex ${ isGroupingTag ? "flex-col mt-4" : "flex-row" } m-2 border-2 border-gray-400 border-solid rounded` }>
-			<div  className={ `p-0 mt-auto mb-auto mr-0 font-mono font-bold text-center align-middle bg-${ EnumTypeColor.get(tag.dtype) } basis-2/12 ${ tag.dtype === EnumTagType.NAMESPACE ? `text-white` : `` }` }>{ tag.alias }</div>
+			<div className={ `basis-2/12 p-0 mt-auto mb-auto mr-0 font-mono font-bold text-center align-middle bg-${ EnumTypeColor.get(tag.dtype) } ${ tag.dtype === EnumTagType.NAMESPACE ? `text-white` : `` }` }>{ tag.alias }</div>
 			{
 				isGroupingTag
 					? <Tag tag={ tag } view={ view } edit={ edit } { ...props } />

@@ -16,10 +16,22 @@ export function Tag({ tag, isEditing = false, view, edit, ...props } = {}) {
 
 	let val = value == null ? "" : value;
 	if(isEditing) {
-		return edit(tag, val, { isEditing, ...props });
+		return (
+			<>
+				{
+					edit(tag, val, { isEditing, ...props })
+				}
+			</>
+		);
 	}
 
-	return view(tag, val, { isEditing, ...props });
+	return (
+		<>
+			{
+				view(tag, val, { isEditing, ...props })
+			}
+		</>
+	);
 }
 
 export default Tag;

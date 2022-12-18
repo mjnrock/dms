@@ -85,17 +85,23 @@ export class Tag extends Node {
 		 */
 		this.addReducer(Tag.Encoder);
 
+		/**
+		 * Attach a listener to the `update` event, and fire a 'modify' event for "state"
+		 */
+		this.events.add("update", ({ module, current, previous } = {}) => this.emit("modify", { prop: "state", current, previous }));
+
 		return new Proxy(this, {
 			set: (target, prop, value, receiver) => {
+				let oldValue = target[ prop ],
+					result = value;
+
 				if(prop === "state") {
-					let result = target.update(value);
-
-					target[ prop ] = result;
-
-					return true;
+					result = target.update(value);
 				}
 
-				return Reflect.set(target, prop, value, receiver);
+				target.emit("modify", { prop, current: value, previous: oldValue });
+
+				return Reflect.set(target, prop, result, receiver);
 			}
 		});
 	}
@@ -131,6 +137,12 @@ export class Tag extends Node {
 	}
 	toString(verbose = false) {
 		return this.toJson(verbose);
+	}
+
+	modify(prop, value) {
+		this[ prop ] = value;
+
+		return this;
 	}
 }
 

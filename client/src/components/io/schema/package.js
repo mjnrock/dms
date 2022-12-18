@@ -1,75 +1,10 @@
+import { useState, useEffect } from "react";
+import { PlusIcon } from "@heroicons/react/24/outline";
+
 import { EnumTagType } from "./../../../lib/dms/tags/Tag";
+import { TypeToClass } from "./../../../lib/dms/tags/controller/Builder";
 
 import { Schema } from "./Schema";
-
-/**
- * If you need something more specific, create a custom view or edit component and return it in the render functions below.
- */
-export const TypeToProps = new Map([
-	[ EnumTagType.ANY, {
-		edit: (t, dtype, { css } = {}) => (<div className={ css }>{ dtype.toString() }</div>),
-		view: (t, dtype, { css } = {}) => (<div className={ css }>{ dtype.toString() }</div>),
-	} ],
-
-	[ EnumTagType.STRING, {
-		edit: (t, dtype, { css } = {}) => (<input className={ css } type="text" value={ dtype } onChange={ e => t.update(e.target.value) } />),
-		view: (t, dtype, { css } = {}) => (<div className={ css }>{ dtype }</div>),
-	} ],
-	[ EnumTagType.INT8, {
-		edit: (t, dtype, { css } = {}) => (<input
-			className={ css }
-			type="number"
-			value={ dtype }
-			min={ -128 }
-			max={ 127 }
-			step={ 1 }
-			onChange={ e => t.update(e.target.value) }
-		/>),
-		view: (t, dtype, { css } = {}) => (<div className={ css }>{ dtype }</div>),
-	} ],
-	[ EnumTagType.UINT8, {
-		edit: (t, dtype, { css } = {}) => (<input
-			className={ css }
-			type="number"
-			value={ dtype }
-			min={ 0 }
-			max={ 255 }
-			step={ 1 }
-			onChange={ e => t.update(e.target.value) }
-		/>),
-		view: (t, dtype, { css } = {}) => (<div className={ css }>{ dtype }</div>),
-	} ],
-	[ EnumTagType.BOOLEAN, {
-		edit: (t, dtype, { css } = {}) => (<input
-			className={ css }
-			type="checkbox"
-			checked={ dtype }
-			onChange={ e => t.update(e.target.checked) }
-		/>),
-		view: (t, dtype, { css } = {}) => (<div className={ css }>{ dtype }</div>),
-	} ],
-	[ EnumTagType.CHARACTER, {
-		edit: (t, dtype, { css } = {}) => (<input
-			className={ css }
-			type="text"
-			value={ dtype }
-			onChange={ e => t.update(e.target.value) }
-		/>),
-		view: (t, dtype, { css } = {}) => (<div className={ css }>{ dtype }</div>),
-	} ],
-	[ EnumTagType.ARRAY, {
-		edit: (t, dtype, { css, isEditing } = {}) => (t.state.map(t => Factory(t, { key: t.id, isEditing }))),
-		view: (t, dtype, { css, isEditing } = {}) => (t.state.map(t => Factory(t, { key: t.id, isEditing }))),
-	} ],
-	[ EnumTagType.GROUP, {
-		edit: (t, dtype, { css, isEditing } = {}) => (t.state.map(t => Factory(t, { key: t.id, isEditing }))),
-		view: (t, dtype, { css, isEditing } = {}) => (t.state.map(t => Factory(t, { key: t.id, isEditing }))),
-	} ],
-	[ EnumTagType.NAMESPACE, {
-		edit: (t, dtype, { css, isEditing } = {}) => (t.state.map(t => Factory(t, { key: t.id, isEditing }))),
-		view: (t, dtype, { css, isEditing } = {}) => (t.state.map(t => Factory(t, { key: t.id, isEditing }))),
-	} ],
-]);
 
 export const EnumTypeColor = new Map([
 	[ EnumTagType.ANY, `gray-200` ],
@@ -84,19 +19,91 @@ export const EnumTypeColor = new Map([
 ]);
 
 /**
- * Dynamically determines the appropriate JSX component to use, based on the `dtype` property of @tag.
+ * This adds a "Add Child Tag" button that will add a new tag to the parent tag
  */
-export function Factory(tag, props = {}) {
-	let { view, edit } = TypeToProps.get(tag.dtype) || TypeToProps.get(EnumTagType.ANY);
+export function AddChild({ tag }) {
+	function addChildByType(dtype, alias) {
+		let clazz = TypeToClass.get(EnumTagType[ dtype ]);
 
-	let isGroupingTag = [ EnumTagType.ARRAY, EnumTagType.GROUP, EnumTagType.NAMESPACE ].includes(tag.dtype);
+		console.log(!!clazz, tag, dtype, alias);
+
+		if(clazz) {
+			let newTag = new clazz(null, {
+				alias,
+			});
+
+			tag.addChild(newTag);
+		}
+	};
+
 	return (
-		<div key={ tag.id } className={ `flex ${ isGroupingTag ? "flex-col mt-4" : "flex-row" } m-2 border-2 border-gray-400 border-solid rounded` }>
-			<div  className={ `p-0 mt-auto mb-auto mr-0 font-mono font-bold text-center align-middle bg-${ EnumTypeColor.get(tag.dtype) } basis-2/12 ${ tag.dtype === EnumTagType.NAMESPACE ? `text-white` : `` }` }>{ tag.alias }</div>
+		<>
+			<div className="flex flex-row">
+				<PlusIcon className="text-gray-600 w-[32px] h-[32px] mt-auto mb-auto text-center" />
+				<select onChange={ e => addChildByType(e.target.value, Math.random()) } value="">
+					<option value="" disabled hidden>Add Child Tag</option>
+					{
+						Object.keys(EnumTagType).sort()
+							//STUB: Only here until these are implemented
+							.filter(v => ![
+								`ANY`,
+								`NAMESPACE`,
+								`SCHEMA`,
+							].includes(v))
+							.map(key => {
+								return (
+									<option key={ key } value={ key }>{ key }</option>
+								);
+							})
+					}
+				</select>
+			</div>
+		</>
+	);
+}
+
+export function Factory({ tag, ...props }) {
+	const [ value, setValue ] = useState({});
+
+	useEffect(() => {
+		let fn = ({ prop, current, previous } = {}) => {
+			// console.log("DO SOMETHING HERE", prop, current, previous);
+			setValue({
+				...value,
+				[ prop ]: current,
+			});
+		};
+		tag.events.on("modify", fn);
+
+		return () => tag.events.off("modify", fn);
+	}, []);
+
+	let jsx = null,
+		isGroupingTag = [ EnumTagType.ARRAY, EnumTagType.GROUP, EnumTagType.NAMESPACE ].includes(tag.dtype);
+
+	if(isGroupingTag) {
+		jsx = (
+			<div className={ `flex flex-col border-2 border-gray-400 border-solid rounded` }>
+				<Schema tag={ tag } color={ EnumTypeColor.get(tag.dtype) } />
+
+				<div className="flex flex-col ml-4">
+					{
+						tag.state.map(child => <Factory key={ child.id } tag={ child } isEditing={ props.isEditing } />)
+					}
+					<AddChild tag={ tag } />
+				</div>
+			</div>
+		);
+	} else {
+		jsx = (
+			<Schema tag={ tag } color={ EnumTypeColor.get(tag.dtype) } />
+		);
+	}
+
+	return (
+		<div key={ `schema:${ tag.id }` }>
 			{
-				isGroupingTag
-					? <Schema tag={ tag } view={ view } edit={ edit } { ...props } />
-					: <Schema tag={ tag } view={ view } edit={ edit } css={ `hover:border-2 hover:border-${ EnumTypeColor.get(tag.dtype) } hover:border-solid hover:rounded hover:m-[-2px] pl-2 basis-10/12` } { ...props } />
+				jsx
 			}
 		</div>
 	);
@@ -105,6 +112,5 @@ export function Factory(tag, props = {}) {
 export default {
 	Schema,
 
-	TypeToProps,
 	Factory,
 };

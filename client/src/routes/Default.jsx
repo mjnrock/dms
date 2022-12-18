@@ -75,24 +75,10 @@ export function Default() {
 							: <LockClosedIcon className="text-green-500" />
 					}
 				</div>
-				<div onClick={ e => console.log(tag) } className="w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer">
-					<CommandLineIcon className="text-gray-800" />
-				</div>
-				<div onClick={ e => console.log(tag.toObject()) } className="w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer">
-					<CodeBracketIcon className="text-gray-600" />
-				</div>
+				<CommandLineIcon className="text-gray-800 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => console.log(tag) } />
+				<CodeBracketIcon className="text-gray-600 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => console.log(tag.toObject()) } />
 			</div>
-			{
-				Array.isArray(tag)
-					? (
-						<div key={ tag.id } className={ `flex flex-col mt-4 m-2 border-2 border-gray-600 border-solid rounded` }>
-							{
-								tag.map(t => IOSchema.Factory(t, { verbose: true, isEditing: isEditingData }))
-							}
-						</div>
-					)
-					: IOSchema.Factory(tag, { verbose: true, isEditing: isEditingData })
-			}
+			<IOSchema.Factory tag={ tag } isEditing={ isEditingMeta } />
 
 			<br />
 			<hr />
@@ -107,23 +93,11 @@ export function Default() {
 							: <LockClosedIcon className="text-green-500" />
 					}
 				</div>
-				<div onClick={ e => console.log(tag) } className="w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer">
-					<CommandLineIcon className="text-gray-800" />
-				</div>
-				<div onClick={ e => console.log(tag.toObject()) } className="w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer">
-					<CodeBracketIcon className="text-gray-600" />
-				</div>
+				<CommandLineIcon className="text-gray-800 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => console.log(tag) } />
+				<CodeBracketIcon className="text-gray-600 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => console.log(tag.toObject()) } />
 			</div>
 			{
-				Array.isArray(tag)
-					? (
-						<div key={ tag.id } className={ `flex flex-col mt-4 m-2 border-2 border-gray-600 border-solid rounded` }>
-							{
-								tag.map(t => IOTags.Factory(t, { verbose: true, isEditing: isEditingData }))
-							}
-						</div>
-					)
-					: IOTags.Factory(tag, { verbose: true, isEditing: isEditingData })
+				IOTags.Factory(tag, { isEditing: isEditingData })
 			}
 		</>
 	);

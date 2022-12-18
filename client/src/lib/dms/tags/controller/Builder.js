@@ -26,13 +26,16 @@ export const Builder = {
 			let clazz = TypeToClass.get(dtype);
 
 			if(clazz) {
+				let tag;
 				if([ TagArray, TagGroup ].includes(clazz)) {
 					let children = Builder.FromArrayObject(value, false);
 
-					root.push(new clazz(children, ...args));
+					tag = new clazz(children, ...args);
 				} else {
-					root.push(new clazz(value, ...args));
+					tag = new clazz(value, ...args);
 				}
+
+				root.push(tag);
 			}
 		}
 
@@ -49,13 +52,16 @@ export const Builder = {
 			let clazz = TypeToClass.get(dtype);
 
 			if(clazz) {
+				let tag;
 				if([ TagArray, TagGroup ].includes(clazz)) {
 					let children = Builder.FromAliasObject(value, false);
 
-					root.push(new clazz(children, { alias, ...args }));
+					tag = new clazz(children, { alias, ...args });
 				} else {
-					root.push(new clazz(value, { alias, ...args }));
+					tag = new clazz(value, { alias, ...args });
 				}
+
+				root.push(tag);
 			}
 		}
 
@@ -69,18 +75,21 @@ export const Builder = {
 		let root = [];
 
 		for(let [ alias, dtype ] of Object.entries(schema)) {
+			let tag;
 			if(typeof dtype === "object") {
 				let clazz = TypeToClass.get("group");
 				let children = Builder.FromAliasSchema(dtype, false);
 
-				root.push(new clazz(children, { alias }));
+				tag = new clazz(children, { alias });
 			} else {
 				let clazz = TypeToClass.get(dtype);
 
 				if(clazz) {
-					root.push(new clazz(null, { alias }));
+					tag = new clazz(null, { alias });
 				}
 			}
+
+			root.push(tag);
 		}
 
 		if(asTagGroup) {
