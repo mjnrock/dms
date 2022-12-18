@@ -78,6 +78,16 @@ export class TagGroup extends Tag {
 		return results;
 	}
 
+	replaceChild(child, newChild) {
+		if(child instanceof Tag && newChild instanceof Tag) {
+			this.update(this.value.map(item => item === child ? newChild : item));
+
+			return true;
+		}
+
+		return false;
+	}
+
 	toObject(verbose = false) {
 		let obj = {
 			...super.toObject(verbose),
