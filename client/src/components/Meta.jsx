@@ -20,8 +20,8 @@ export const EnumTypeColor = new Map([
 
 function DetailBar({ tag }) {
 	const [ setting, setSetting ] = useState({
-		IsNullable: true,
-		IsNullable2: true,
+		Required: false,
+		Nullable: true,
 	});
 
 	function updateSetting(key, next, current) {
@@ -31,8 +31,11 @@ function DetailBar({ tag }) {
 		});
 	}
 
+	let [ color, magnitude ] = EnumTypeColor.get(tag.dtype);
+	magnitude += 100;
+
 	return (
-		<div className={ `mb-2 p-2 flex flex-col border-2 border-solid rounded border-neutral-100 shadow-sm` }>
+		<div className={ `mb-2 p-2 flex flex-col border-2 border-solid rounded border-${ color }-${ 100 } shadow-sm` }>
 			{
 				Object.entries(setting).map(([ key, value ]) => {
 					return (
@@ -78,36 +81,34 @@ function InfoBar({ tag, parent }) {
 				</div>
 
 				{/* Alias */ }
-				<input className={ `basis-1/2 p-2` } value={ tag.alias } onChange={ e => editAlias(e.target.value) } />
+				<input className={ `basis-1/2 ml-2 p-2 focus:shadow-sm focus:outline-3 focus:outline-${ color }-${ 200 } border rounded border-transparent hover:rounded hover:border hover:border-${ color }-${ 200 } hover:rounded` } value={ tag.alias } onChange={ e => editAlias(e.target.value) } />
 
 				{/* Type */ }
-				<div className={ `basis-1/2 mt-auto mb-auto font-mono font-bold text-${ color }-${ magnitude }` }>
-					<Dropdown text={ tag.dtype }>
-						<Dropdown.Menu>
-							{
-								Array.from(Object.values(EnumTagType)).map((option, index) => {
-									let [ color, magnitude ] = EnumTypeColor.get(option);
-									magnitude += 100;
+				<Dropdown text={ tag.dtype } className={ `basis-1/2 p-2 ml-2 font-mono font-bold text-${ color }-${ magnitude } hover:bg-${ color }-${ magnitude + 200 } hover:rounded` } icon={ "none" }>
+					<Dropdown.Menu className={ `w-full` }>
+						{
+							Array.from(Object.values(EnumTagType))
+							.filter(o => [ EnumTagType.ANY, EnumTagType.NAMESPACE, EnumTagType.SCHEMA ].includes(o) === false)
+							.map((option, index) => {
+								let [ color, magnitude ] = EnumTypeColor.get(option);
+								magnitude += 100;
 
-									return (
-										<Dropdown.Item key={ index } onClick={ () => editType(option) }>
-											<div className={ `font-mono font-bold text-${ color }-${ magnitude }` }>{ option }</div>
-										</Dropdown.Item>
-									);
-								})
-							}
-						</Dropdown.Menu>
-					</Dropdown>
-				</div>
+								return (
+									<div key={ index } onClick={ () => editType(option) } className={ `p-2 font-mono font-bold text-center cursor-pointer bg-${ color }-${ 100 } text-${ color }-${ magnitude } hover:bg-${ color }-${ magnitude + 200 }` }>{ option }</div>
+								);
+							})
+						}
+					</Dropdown.Menu>
+				</Dropdown>
 
 				{/* Expand/collapse icon */ }
 				<div className="mt-auto mb-auto">
 					{
 						mode === "simple"
 							? (
-								<PlusIcon className={ `w-6 h-6 text-${ color }-400 cursor-pointer` } onClick={ e => setMode("advanced") } />
+								<PlusIcon className={ `w-6 h-6 text-${ color }-300 cursor-pointer` } onClick={ e => setMode("advanced") } />
 							) : (
-								<MinusIcon className={ `w-6 h-6 text-${ color }-400 cursor-pointer` } onClick={ e => setMode("simple") } />
+								<MinusIcon className={ `w-6 h-6 text-${ color }-300 cursor-pointer` } onClick={ e => setMode("simple") } />
 							)
 					}
 				</div>
