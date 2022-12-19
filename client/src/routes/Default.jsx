@@ -95,6 +95,7 @@ export function Default() {
 
 			{/* TODO: Rebuild the Data edit/view components */}
 			{/* TODO: Build a repository system and a "record" concept so that data entries can be persisted/retrieved */}
+			{/* TODO: Establish a standard list of meta options/config for a given Tag (e.g. Required, Nullable, etc.) */}
 		</>
 	);
 };
