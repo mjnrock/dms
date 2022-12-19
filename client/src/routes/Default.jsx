@@ -92,6 +92,9 @@ export function Default() {
 				<MiniViewMeta tag={ tag } size={ 24 } className={ `m-2 p-1 border border-b-2 border-solid border-neutral-200 rounded shadow` } />
 				<MiniViewMeta isVertical={ false } tag={ tag } size={ 24 } className={ `m-2 p-1 border border-b-2 border-solid border-neutral-200 rounded shadow` } />
 			</div>
+
+			{/* TODO: Rebuild the Data edit/view components */}
+			{/* TODO: Build a repository system and a "record" concept so that data entries can be persisted/retrieved */}
 		</>
 	);
 };
