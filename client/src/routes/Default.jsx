@@ -86,12 +86,8 @@ export function Default() {
 				<CommandLineIcon className="text-gray-800 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => console.log(tag) } />
 				<CodeBracketIcon className="text-gray-600 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => console.log(tag.toObject()) } />
 			</div>
-			{/* <IOSchema.Factory tag={ tag } isEditing={ isEditingMeta } />
-
-			<br />
-			<hr />
-			<br /> */}
-
+			
+			{/* TODO: Overall this is good, but it doesn't yet resolve name collisions (i.e. no uniqueness check on aliases) */}
 			<Meta tag={ tag } />
 
 			<br />
