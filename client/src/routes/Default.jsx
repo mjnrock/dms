@@ -16,7 +16,8 @@ import { Builder } from "../lib/dms/tags/controller/Builder";
 
 import Serializer from "../lib/dms/tags/controller/Serializer";
 
-import { Meta } from "../components/Meta";
+import { Meta as EditMeta } from "../components/meta/edit/EditMeta";
+import { Meta as ViewMeta } from "../components/meta/view/ViewMeta";
 import IOTags from "../components/io/tag/package";
 import IOSchema from "../components/io/schema/package";
 
@@ -88,7 +89,8 @@ export function Default() {
 			</div>
 			
 			{/* TODO: Overall this is good, but it doesn't yet resolve name collisions (i.e. no uniqueness check on aliases) */}
-			<Meta tag={ tag } />
+			<EditMeta tag={ tag } />
+			<ViewMeta tag={ tag } />
 
 			<br />
 			<hr />
