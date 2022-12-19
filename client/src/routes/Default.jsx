@@ -16,9 +16,6 @@ import { Builder } from "../lib/dms/tags/controller/Builder";
 
 import Serializer from "../lib/dms/tags/controller/Serializer";
 
-import IOTags from "../components/io/tag/package";
-import IOSchema from "../components/io/schema/package";
-
 import { Meta as EditMeta } from "../components/meta/edit/EditMeta";
 import { Meta as ViewMeta } from "../components/meta/view/ViewMeta";
 import { Meta as MiniViewMeta } from "../components/meta/view/MiniViewMeta";
@@ -91,32 +88,25 @@ export function Default() {
 			</div>
 
 			{/* TODO: Overall this is good, but it doesn't yet resolve name collisions (i.e. no uniqueness check on aliases) */ }
-			Edit the Tag Meta
+			<br />
+			<hr />
+			<br />
+			<h3 className="text-lg font-bold text-center">Edit the Tag Meta</h3>
 			<EditMeta tag={ tag } />
-			View the Tag Meta
-			<ViewMeta tag={ tag } />
-			View the Mini Tag Meta
-			<div className="">
-				<MiniViewMeta tag={ tag } size={ 24 } className={`m-2 p-1 border border-b-2 border-solid border-neutral-200 rounded shadow`} />
-			</div>
 
 			<br />
 			<hr />
 			<br />
+			<h3 className="text-lg font-bold text-center">View the Tag Meta</h3>
+			<ViewMeta tag={ tag } />
 
-			<h1 className="text-2xl font-bold text-center">Data</h1>
-			<div className="flex">
-				<div onClick={ e => setIsEditingData(!isEditingData) } className="w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer">
-					{
-						isEditingData
-							? <LockOpenIcon className="text-red-500" />
-							: <LockClosedIcon className="text-green-500" />
-					}
-				</div>
-				<CommandLineIcon className="text-gray-800 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => console.log(tag) } />
-				<CodeBracketIcon className="text-gray-600 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => console.log(tag.toObject()) } />
+			<br />
+			<hr />
+			<br />
+			<h3 className="text-lg font-bold text-center">View the Mini Tag Meta</h3>
+			<div className="">
+				<MiniViewMeta tag={ tag } size={ 24 } className={ `m-2 p-1 border border-b-2 border-solid border-neutral-200 rounded shadow` } />
 			</div>
-			<IOTags.Factory tag={ tag } isEditing={ isEditingData } />
 		</>
 	);
 };

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useTagEvent } from "../../../lib/dms/react/useTagEvent";
 
 import { EnumTagType } from "../../../lib/dms/tags/Tag";
 
@@ -17,22 +17,7 @@ export const EnumTypeColor = new Map([
 ]);
 
 export function Meta({ tag, parent }) {
-	const [ state, setState ] = useState({});
-
-	useEffect(() => {
-		let fn = ({ prop, current }) => {
-			setState({
-				...state,
-				[ prop ]: current,
-			});
-		};
-
-		tag.events.on("modify", fn);
-
-		return () => {
-			tag.events.off("modify", fn);
-		};
-	}, []);
+	const { prop, current, previous } = useTagEvent("modify", tag);
 
 	let [ color, magnitude ] = EnumTypeColor.get(tag.dtype);
 
