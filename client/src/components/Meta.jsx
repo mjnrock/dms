@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button, Dropdown } from "semantic-ui-react";
-import { Bars3Icon, MinusIcon, PlusCircleIcon, PlusIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, MinusIcon, PlusCircleIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 import { EnumTagType, ReverseEnumTagType } from "../lib/dms/tags/Tag";
 import Builder from "../lib/dms/tags/controller/Builder";
@@ -62,7 +62,7 @@ function DropdownDType({ tag, callback, text }) {
 	magnitude += 100;
 
 	return (
-		<Dropdown text={ text || tag.dtype } className={ `basis-1/2 p-2 ml-2 font-mono font-bold text-${ color }-${ magnitude } hover:bg-${ color }-${ magnitude + 200 } hover:rounded` } icon={ "none" }>
+		<Dropdown text={ text || tag.dtype } className={ `basis-1/2 p-2 ml-2 font-mono font-bold text-${ color }-${ magnitude } border border-solid border-transparent hover:border-${ color }-${ 200 } hover:rounded` } icon={ false }>
 			<Dropdown.Menu className={ `w-full` }>
 				{
 					Array.from(Object.values(EnumTagType))
@@ -72,7 +72,7 @@ function DropdownDType({ tag, callback, text }) {
 							magnitude += 100;
 
 							return (
-								<div key={ index } onClick={ () => callback(option) } className={ `p-2 font-mono font-bold text-center cursor-pointer bg-${ color }-${ 100 } text-${ color }-${ magnitude } hover:bg-${ color }-${ magnitude + 200 }` }>{ option }</div>
+								<div key={ index } onClick={ () => callback(option) } className={ `p-2 pl-4 font-mono font-bold cursor-pointer bg-${ color }-${ 100 } text-${ color }-${ magnitude } hover:bg-${ color }-${ magnitude + 200 }` }>{ option }</div>
 							);
 						})
 				}
@@ -114,18 +114,18 @@ function InfoBar({ tag, parent }) {
 				<DropdownDType tag={ tag } callback={ editType } />
 
 				{/* Expand/collapse icon */ }
-				<div className="mt-auto mb-auto">
+				<div className="mt-auto mb-auto ml-2">
 					{
 						mode === "simple"
 							? (
-								<PlusIcon className={ `w-6 h-6 text-${ color }-300 cursor-pointer` } onClick={ e => setMode("advanced") } />
+								<PlusIcon className={ `w-6 h-6 text-${ color }-300 hover:text-${ color }-500 cursor-pointer` } onClick={ e => setMode("advanced") } />
 							) : (
-								<MinusIcon className={ `w-6 h-6 text-${ color }-300 cursor-pointer` } onClick={ e => setMode("simple") } />
+								<MinusIcon className={ `w-6 h-6 text-${ color }-300 hover:text-${ color }-500 cursor-pointer` } onClick={ e => setMode("simple") } />
 							)
 					}
 				</div>
 				<div className="mt-auto mb-auto">
-					<TrashIcon className={ `w-6 h-6 ml-2 text-gray-300 cursor-pointer` } onClick={ e => removeTag() } />
+					<TrashIcon className={ `w-6 h-6 ml-2 text-gray-300 hover:text-gray-500 cursor-pointer` } onClick={ e => removeTag() } />
 				</div>
 			</div>
 			{
@@ -158,7 +158,7 @@ export function Meta({ tag, parent }) {
 	let [ color, magnitude ] = EnumTypeColor.get(tag.dtype);
 
 	return (
-		<div className={ `m-2 p-2 border-2 border-${ color }-200 border-solid rounded flex flex-col shadow-md` }>
+		<div className={ `m-2 p-2 border-2 border-${ color }-200 hover:border-${ color }-400 border-solid rounded flex flex-col shadow-md` }>
 			<InfoBar tag={ tag } parent={ parent } />
 			<>
 				{
