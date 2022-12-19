@@ -179,7 +179,7 @@ export function Meta({ tag, parent }) {
 								tag={ tag }
 								callback={ dtype => {
 									tag.addChild(Builder.Factory(dtype, null, {
-										alias: Date.now().toString(),
+										alias: `${ Date.now() }${ ~~(Math.random() * 1000000) }`,
 									}));
 								} }
 								text={ (
