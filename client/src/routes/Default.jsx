@@ -11,11 +11,6 @@ import { TagUint8 } from "../lib/dms/tags/TagUint8";
 import { TagGroup } from "../lib/dms/tags/TagGroup";
 import { TagNamespace } from "../lib/dms/tags/TagNamespace";
 
-import { ChildFinder } from "../lib/dms/tags/controller/ChildFinder";
-import { Builder } from "../lib/dms/tags/controller/Builder";
-
-import Serializer from "../lib/dms/tags/controller/Serializer";
-
 import { Meta as EditMeta } from "../components/meta/edit/EditMeta";
 import { Meta as ViewMeta } from "../components/meta/view/ViewMeta";
 import { Meta as MiniViewMeta } from "../components/meta/view/MiniViewMeta";
@@ -48,12 +43,6 @@ const tagGroup = new TagGroup([ tagStr, tagBool, tagInt8, tagUint8 ], {
 // 	alias: "ARrAy"
 // });
 
-// let baseTag = [
-// 	tagChar,
-// 	// tagArr,
-// 	tagGroup,
-// ];
-// let baseTag = new TagGroup([
 let baseTag = new TagNamespace("root", [
 	tagChar,
 	// tagArr,
@@ -61,11 +50,6 @@ let baseTag = new TagNamespace("root", [
 ], {
 	alias: "root",
 });
-
-// console.table(Serializer.ToHierarchy(baseTag), [ "id", "pid", "alias", "dtype", "value", "path" ]);
-// console.log(Serializer.ToHierarchyObject(baseTag));
-console.table(Serializer.ToHierarchyRecord(baseTag));
-// console.log(Serializer.ToHierarchyRecordObject(baseTag));
 
 export function Default() {
 	const [ tag, setTag ] = useState(baseTag);

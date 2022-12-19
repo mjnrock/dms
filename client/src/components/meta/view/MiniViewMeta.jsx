@@ -25,25 +25,6 @@ export function Meta({ tag, parent, offset = 0, size = 10, ...rest }) {
 			<div className={ `inline-flex` }>
 				{
 					[ ...Array(offset).keys() ].map((_, index) => {
-						//IDEA: Decide on whether you should implement this or not, or something similar
-						// if(index === offset - 1) {
-						// 	return (
-						// 		<div
-						// 			className={ `select-none text-neutral-700 text-center` }
-						// 			style={ {
-						// 				width: `${ size }px`,
-						// 				height: `${ size }px`,
-						// 				display: "flex",
-						// 				alignItems: "flex-start",
-						// 				justifyContent: "center",
-						// 			} }>{
-						// 				[ EnumTagType.ARRAY, EnumTagType.GROUP, EnumTagType.NAMESPACE ].includes(tag.dtype)
-						// 					? `+`
-						// 					: `-`
-						// 			}</div>
-						// 	);
-						// }
-
 						return (
 							<div
 								key={ `meta:offset:${ index }` }
