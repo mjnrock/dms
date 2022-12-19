@@ -16,10 +16,12 @@ import { Builder } from "../lib/dms/tags/controller/Builder";
 
 import Serializer from "../lib/dms/tags/controller/Serializer";
 
-import { Meta as EditMeta } from "../components/meta/edit/EditMeta";
-import { Meta as ViewMeta } from "../components/meta/view/ViewMeta";
 import IOTags from "../components/io/tag/package";
 import IOSchema from "../components/io/schema/package";
+
+import { Meta as EditMeta } from "../components/meta/edit/EditMeta";
+import { Meta as ViewMeta } from "../components/meta/view/ViewMeta";
+import { Meta as MiniViewMeta } from "../components/meta/view/MiniViewMeta";
 
 const tagStr = new TagString("meow", {
 	alias: "strang",
@@ -87,10 +89,16 @@ export function Default() {
 				<CommandLineIcon className="text-gray-800 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => console.log(tag) } />
 				<CodeBracketIcon className="text-gray-600 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => console.log(tag.toObject()) } />
 			</div>
-			
-			{/* TODO: Overall this is good, but it doesn't yet resolve name collisions (i.e. no uniqueness check on aliases) */}
+
+			{/* TODO: Overall this is good, but it doesn't yet resolve name collisions (i.e. no uniqueness check on aliases) */ }
+			Edit the Tag Meta
 			<EditMeta tag={ tag } />
+			View the Tag Meta
 			<ViewMeta tag={ tag } />
+			View the Mini Tag Meta
+			<div className="">
+				<MiniViewMeta tag={ tag } size={ 24 } className={`m-2 p-1 border border-b-2 border-solid border-neutral-200 rounded shadow`} />
+			</div>
 
 			<br />
 			<hr />

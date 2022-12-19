@@ -42,7 +42,7 @@ export function Meta({ tag, parent }) {
 	let [ color, magnitude ] = EnumTypeColor.get(tag.dtype);
 
 	return (
-		<div className={ `m-2 p-2 border-2 border-${ color }-200 hover:border-${ color }-400 border-solid rounded flex flex-col shadow-md` }>
+		<div className={ `m-2 p-2 border border-b-2 border-${ color }-200 hover:border-${ color }-400 border-solid rounded flex flex-col shadow-md` }>
 			<InfoBar tag={ tag } parent={ parent } />
 			<>
 				{
