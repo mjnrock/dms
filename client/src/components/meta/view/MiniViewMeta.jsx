@@ -47,7 +47,7 @@ export function Meta({ tag, parent, offset = 0, size = 10, ...rest }) {
 						return (
 							<div
 								key={ `meta:offset:${ index }` }
-								className={ `select-none text-neutral-200` }
+								className={ `select-none text-neutral-200 cursor-auto` }
 								style={ {
 									width: `${ size }px`,
 									height: `${ size }px`,
@@ -58,7 +58,7 @@ export function Meta({ tag, parent, offset = 0, size = 10, ...rest }) {
 				<div style={ {
 					width: `${ size }px`,
 					height: `${ size }px`,
-				} } className={ `bg-${ color }-${ magnitude } border border-solid rounded border-white text-transparent` }>{ [ offset, tag.dtype ].join(",") }</div>
+				} } className={ `select-none bg-${ color }-${ magnitude } hover:bg-${ color }-${ magnitude + 200 } border border-solid rounded border-white` }>&nbsp;</div>
 			</div>
 			<>
 				{
