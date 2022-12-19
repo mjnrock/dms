@@ -90,6 +90,7 @@ export function Default() {
 			<h3 className="text-lg font-bold text-center">View the Mini Tag Meta</h3>
 			<div className="">
 				<MiniViewMeta tag={ tag } size={ 24 } className={ `m-2 p-1 border border-b-2 border-solid border-neutral-200 rounded shadow` } />
+				<MiniViewMeta isVertical={ false } tag={ tag } size={ 24 } className={ `m-2 p-1 border border-b-2 border-solid border-neutral-200 rounded shadow` } />
 			</div>
 		</>
 	);

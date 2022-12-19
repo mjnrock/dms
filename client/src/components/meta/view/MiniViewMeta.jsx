@@ -16,13 +16,13 @@ export const EnumTypeColor = new Map([
 	[ EnumTagType.SCHEMA, [ "gray", 400 ] ],
 ]);
 
-export function Meta({ tag, parent, offset = 0, size = 10, ...rest }) {
+export function Meta({ tag, parent, offset = 0, size = 10, isVertical = true, ...rest }) {
 	const { prop, current, previous } = useTagEvent("modify", tag);
 
 	let [ color, magnitude ] = EnumTypeColor.get(tag.dtype);
 	return (
-		<div className={ `inline-flex flex-col ${ rest.className ? rest.className : "" }` }>
-			<div className={ `inline-flex` }>
+		<div className={ `inline-flex ${ isVertical ? `flex-col` : `` } ${ rest.className ? rest.className : "" }` }>
+			<div className={ `inline-flex ${ isVertical ? `` : `flex-col` }` }>
 				{
 					[ ...Array(offset).keys() ].map((_, index) => {
 						return (
@@ -46,7 +46,7 @@ export function Meta({ tag, parent, offset = 0, size = 10, ...rest }) {
 					[ EnumTagType.ARRAY, EnumTagType.GROUP, EnumTagType.NAMESPACE ].includes(tag.dtype)
 						? tag.state.map((child, index) => {
 							return (
-								<Meta key={ `meta:${ child.id }` } tag={ child } parent={ tag } offset={ offset + 1 } size={ size } />
+								<Meta key={ `meta:${ child.id }` } tag={ child } parent={ tag } offset={ offset + 1 } isVertical={ isVertical } size={ size } />
 							);
 						}) : null
 				}
