@@ -27,6 +27,7 @@ export function DropdownDType({ tag, callback, text }) {
 				{
 					Array.from(Object.values(EnumTagType))
 						.filter(o => [ EnumTagType.ANY, EnumTagType.NAMESPACE, EnumTagType.SCHEMA ].includes(o) === false)
+						.sort()
 						.map((option, index) => {
 							let [ color, magnitude ] = EnumTypeColor.get(option);
 							magnitude += 100;
