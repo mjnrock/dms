@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button, Dropdown } from "semantic-ui-react";
-import { Bars3Icon, MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, MinusIcon, PlusCircleIcon, PlusIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 import { EnumTagType, ReverseEnumTagType } from "../lib/dms/tags/Tag";
 import Builder from "../lib/dms/tags/controller/Builder";
@@ -35,7 +35,7 @@ function DetailBar({ tag }) {
 	magnitude += 100;
 
 	return (
-		<div className={ `mb-2 p-2 flex flex-col border-2 border-solid rounded border-${ color }-${ 100 } shadow-sm` }>
+		<div className={ `mt-2 p-2 flex flex-col border-2 border-solid rounded border-${ color }-${ 100 } shadow-sm` }>
 			{
 				Object.entries(setting).map(([ key, value ]) => {
 					return (
@@ -57,6 +57,30 @@ function DetailBar({ tag }) {
 	);
 }
 
+function DropdownDType({ tag, callback, text }) {
+	let [ color, magnitude ] = EnumTypeColor.get(tag.dtype);
+	magnitude += 100;
+
+	return (
+		<Dropdown text={ text || tag.dtype } className={ `basis-1/2 p-2 ml-2 font-mono font-bold text-${ color }-${ magnitude } hover:bg-${ color }-${ magnitude + 200 } hover:rounded` } icon={ "none" }>
+			<Dropdown.Menu className={ `w-full` }>
+				{
+					Array.from(Object.values(EnumTagType))
+						.filter(o => [ EnumTagType.ANY, EnumTagType.NAMESPACE, EnumTagType.SCHEMA ].includes(o) === false)
+						.map((option, index) => {
+							let [ color, magnitude ] = EnumTypeColor.get(option);
+							magnitude += 100;
+
+							return (
+								<div key={ index } onClick={ () => callback(option) } className={ `p-2 font-mono font-bold text-center cursor-pointer bg-${ color }-${ 100 } text-${ color }-${ magnitude } hover:bg-${ color }-${ magnitude + 200 }` }>{ option }</div>
+							);
+						})
+				}
+			</Dropdown.Menu>
+		</Dropdown>
+	);
+}
+
 function InfoBar({ tag, parent }) {
 	const [ mode, setMode ] = useState("simple");	// String version of "isExpanded", allowing for more nuanced states
 
@@ -71,6 +95,9 @@ function InfoBar({ tag, parent }) {
 			alias: tag.alias,
 		}));
 	}
+	function removeTag() {
+		parent.removeChild(tag);
+	}
 
 	return (
 		<div className="flex flex-col">
@@ -84,22 +111,7 @@ function InfoBar({ tag, parent }) {
 				<input className={ `basis-1/2 ml-2 p-2 focus:shadow-sm focus:outline-3 focus:outline-${ color }-${ 200 } border rounded border-transparent hover:rounded hover:border hover:border-${ color }-${ 200 } hover:rounded` } value={ tag.alias } onChange={ e => editAlias(e.target.value) } />
 
 				{/* Type */ }
-				<Dropdown text={ tag.dtype } className={ `basis-1/2 p-2 ml-2 font-mono font-bold text-${ color }-${ magnitude } hover:bg-${ color }-${ magnitude + 200 } hover:rounded` } icon={ "none" }>
-					<Dropdown.Menu className={ `w-full` }>
-						{
-							Array.from(Object.values(EnumTagType))
-							.filter(o => [ EnumTagType.ANY, EnumTagType.NAMESPACE, EnumTagType.SCHEMA ].includes(o) === false)
-							.map((option, index) => {
-								let [ color, magnitude ] = EnumTypeColor.get(option);
-								magnitude += 100;
-
-								return (
-									<div key={ index } onClick={ () => editType(option) } className={ `p-2 font-mono font-bold text-center cursor-pointer bg-${ color }-${ 100 } text-${ color }-${ magnitude } hover:bg-${ color }-${ magnitude + 200 }` }>{ option }</div>
-								);
-							})
-						}
-					</Dropdown.Menu>
-				</Dropdown>
+				<DropdownDType tag={ tag } callback={ editType } />
 
 				{/* Expand/collapse icon */ }
 				<div className="mt-auto mb-auto">
@@ -111,6 +123,9 @@ function InfoBar({ tag, parent }) {
 								<MinusIcon className={ `w-6 h-6 text-${ color }-300 cursor-pointer` } onClick={ e => setMode("simple") } />
 							)
 					}
+				</div>
+				<div className="mt-auto mb-auto">
+					<TrashIcon className={ `w-6 h-6 ml-2 text-gray-300 cursor-pointer` } onClick={ e => removeTag() } />
 				</div>
 			</div>
 			{
@@ -152,8 +167,26 @@ export function Meta({ tag, parent }) {
 							return (
 								<Meta key={ `meta:${ child.id }` } tag={ child } parent={ tag } />
 							);
-						})
-						: null
+						}) : null
+				}
+			</>
+			<>
+				{
+
+					[ EnumTagType.ARRAY, EnumTagType.GROUP, EnumTagType.NAMESPACE ].includes(tag.dtype)
+						? (
+							<DropdownDType
+								tag={ tag }
+								callback={ dtype => {
+									tag.addChild(Builder.Factory(dtype, null, {
+										alias: Date.now().toString(),
+									}));
+								} }
+								text={ (
+									<PlusCircleIcon className={ `w-6 h-6 text-${ color }-300 cursor-pointer` } />
+								) }
+							/>
+						) : null
 				}
 			</>
 		</div>
