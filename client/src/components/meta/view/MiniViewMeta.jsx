@@ -38,6 +38,7 @@ export function Meta({ tag, parent, offset = 0, size = 10, isVertical = true, ..
 					})
 				}
 				<Popup
+					position="top center"
 					content={ (
 						<div className={ `flex flex-row` }>
 							<div className={`basis-1/2`}>{ tag.alias }</div>
