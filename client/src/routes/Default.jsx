@@ -10,6 +10,7 @@ import { TagInt8 } from "../lib/dms/tags/TagInt8";
 import { TagUint8 } from "../lib/dms/tags/TagUint8";
 import { TagGroup } from "../lib/dms/tags/TagGroup";
 import { TagNamespace } from "../lib/dms/tags/TagNamespace";
+import { TagSchema } from "../lib/dms/tags/TagSchema";
 
 import { Meta as EditMeta } from "../components/meta/edit/EditMeta";
 import { Meta as ViewMeta } from "../components/meta/view/ViewMeta";
@@ -43,13 +44,11 @@ const tagGroup = new TagGroup([ tagStr, tagBool, tagInt8, tagUint8 ], {
 // 	alias: "ARrAy"
 // });
 
-let baseTag = new TagNamespace("root", [
+let baseTag = new TagSchema("$root", [
 	tagChar,
 	// tagArr,
 	tagGroup,
-], {
-	alias: "root",
-});
+]);
 
 export function Default() {
 	const [ tag, setTag ] = useState(baseTag);
@@ -93,9 +92,9 @@ export function Default() {
 				<MiniViewMeta isVertical={ false } tag={ tag } size={ 24 } className={ `m-2 p-1 border border-b-2 border-solid border-neutral-200 rounded shadow` } />
 			</div>
 
-			{/* TODO: Rebuild the Data edit/view components */}
-			{/* TODO: Build a repository system and a "record" concept so that data entries can be persisted/retrieved */}
-			{/* TODO: Establish a standard list of meta options/config for a given Tag (e.g. Required, Nullable, etc.) */}
+			{/* TODO: Rebuild the Data edit/view components */ }
+			{/* TODO: Build a repository system and a "record" concept so that data entries can be persisted/retrieved */ }
+			{/* TODO: Establish a standard list of meta options/config for a given Tag (e.g. Required, Nullable, etc.) */ }
 		</>
 	);
 };

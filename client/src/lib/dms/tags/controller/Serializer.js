@@ -27,7 +27,7 @@ export const Serializer = {
 	ToHierarchy: (tag, { parent = {}, index = "0" } = {}) => {
 		let hierarchy = [];
 
-		if([ EnumTagType.GROUP, EnumTagType.ARRAY, EnumTagType.NAMESPACE ].includes(tag.dtype)) {
+		if([ EnumTagType.GROUP, EnumTagType.ARRAY, EnumTagType.NAMESPACE, EnumTagType.SCHEMA ].includes(tag.dtype)) {
 			hierarchy.push(Helpers.createHierarchyRow(tag, parent, index, true));
 
 			let lindex = -1;

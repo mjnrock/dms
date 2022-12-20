@@ -14,11 +14,11 @@ export const EnumTypeColor = new Map([
 	[ EnumTagType.BOOLEAN, [ "purple", 200 ] ],
 	[ EnumTagType.CHARACTER, [ "orange", 200 ] ],
 	[ EnumTagType.GROUP, [ "gray", 400 ] ],
-	[ EnumTagType.NAMESPACE, [ "neutral", 600 ] ],
+	[ EnumTagType.NAMESPACE, [ "neutral", 300 ] ],
 	[ EnumTagType.INT8, [ "blue", 200 ] ],
 	[ EnumTagType.STRING, [ "red", 200 ] ],
 	[ EnumTagType.UINT8, [ "teal", 200 ] ],
-	[ EnumTagType.SCHEMA, [ "gray", 400 ] ],
+	[ EnumTagType.SCHEMA, [ "neutral", 600 ] ],
 ]);
 
 export function InfoBar({ tag, parent }) {
@@ -39,6 +39,7 @@ export function InfoBar({ tag, parent }) {
 		parent.removeChild(tag);
 	}
 
+	//NOTE: The `tag.dtype === EnumTagType.SCHEMA` enforce "no change" rules for the root schema tag
 	return (
 		<div className="flex flex-col">
 			<div className="flex flex-row">
@@ -48,10 +49,19 @@ export function InfoBar({ tag, parent }) {
 				</div>
 
 				{/* Alias */ }
-				<input className={ `basis-1/2 ml-2 p-2 focus:shadow-sm focus:outline-3 focus:outline-${ color }-${ 200 } border rounded border-transparent hover:rounded hover:border hover:border-${ color }-${ 200 } hover:rounded` } value={ tag.alias } onChange={ e => editAlias(e.target.value) } />
+				{
+					tag.dtype === EnumTagType.SCHEMA
+						? <div className={ `basis-1/2 ml-2 p-2 border rounded border-transparent font-mono font-bold` }>{ tag.alias }</div>
+						: <input className={ `basis-1/2 ml-2 p-2 border rounded border-transparent hover:rounded hover:border hover:border-${ color }-${ 200 } hover:rounded` } value={ tag.alias } onChange={ e => editAlias(e.target.value) } />
+				}
+				
 
 				{/* Type */ }
-				<DropdownDType tag={ tag } callback={ editType } />
+				{
+					tag.dtype === EnumTagType.SCHEMA
+						? <div className={ `basis-1/2 p-2 ml-2 font-mono font-bold text-${ color }-${ magnitude } border border-solid border-transparent` }>{ tag.dtype }</div>
+						: <DropdownDType tag={ tag } callback={ editType } />
+				}
 
 				{/* Expand/collapse icon */ }
 				<div className="mt-auto mb-auto ml-2">
@@ -64,9 +74,15 @@ export function InfoBar({ tag, parent }) {
 							)
 					}
 				</div>
-				<div className="mt-auto mb-auto">
-					<TrashIcon className={ `w-6 h-6 ml-2 text-gray-300 hover:text-gray-500 cursor-pointer` } onClick={ e => removeTag() } />
-				</div>
+				{
+					tag.dtype === EnumTagType.SCHEMA
+						? null
+						: (
+							<div className="mt-auto mb-auto">
+								<TrashIcon className={ `w-6 h-6 ml-2 text-gray-300 hover:text-gray-500 cursor-pointer` } onClick={ e => removeTag() } />
+							</div>
+						)
+				}
 			</div>
 			{
 				mode === "advanced"

@@ -1,62 +1,30 @@
-import { Tag } from "./Tag";
+import { Tag } from "./Tag.js";
+import { TagGroup } from "./TagGroup.js";
 
 /**
- *  Importantly, you should use a `TagGroup` if you want to store values, as the
- *  Schema does not care about values, as it is *strictly* a metastructure for use
- *  in structurally defining data structures, interactions, or ecosystems.  
- *  
- *  Array Version:
- *  [
- *  	dtype | [ dtype, alias ] | [ dtype, { alias, ...rest } ],
- *  	[ dtype, [
- *  		dtype | [ dtype, alias ] | [ dtype, { alias, ...rest } ],
- * 			...,
- *  	], alias | { alias, ...rest } ],
- *  ]
- * 
- * Object Version:
- * 	{
- *  	alias: dtype | [ dtype, { ...rest } ],
- *  	alias: {
- * 			alias: dtype | [ dtype, { ...rest } ],
- * 			...,
- *  		$opts: [ dtype, { ...rest } ]
- *  	},
- *  }
+ * The TagSchema is similar to the TagNamespace, but is intended to explicitly
+ * define a metastructure.  A TagNamespace is intended to be used to "instantiate"
+ * a TagSchema, and its children should accordingly contain data in their state.
  */
-export class TagSchema extends Tag {
-	static Encoder = ({ previous, emitter }, next) => {
-		if(Array.isArray(next)) {
-			return next;
-		} else if(typeof next === "object") {
-			return Object.entries(next);
-		}
+export class TagSchema extends TagGroup {
 
-		return previous;
-	};
-	static RemoveEncoder = (tag) => {
-		tag.removeReducer(this.Encoder);
-	};
-
-	constructor (value = [], { reducers = [], ...rest } = {}) {
-		super({
-			dtype: Tag.Type.SCHEMA,
-
+	constructor (namespace, members, { reducers = [], ...rest } = {}) {
+		super(members, {
 			...rest
 		});
 
+		this.dtype = Tag.Type.SCHEMA;
+		this.alias = namespace;
+
 		this.addReducer(TagSchema.Encoder);
 		this.addReducers(...reducers);
-
-		this.update(value);
 	}
-	toObject(verbose = false) {
-		let obj = {
-			...super.toObject(verbose),
-			value: this.state.map(child => child.toObject(verbose)),
-		};
 
-		return obj;
+	get namespace() {
+		return this.alias;
+	}
+	set namespace(namespace) {
+		this.alias = namespace;
 	}
 }
 

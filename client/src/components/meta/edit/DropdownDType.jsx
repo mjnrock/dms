@@ -10,11 +10,11 @@ export const EnumTypeColor = new Map([
 	[ EnumTagType.BOOLEAN, [ "purple", 200 ] ],
 	[ EnumTagType.CHARACTER, [ "orange", 200 ] ],
 	[ EnumTagType.GROUP, [ "gray", 400 ] ],
-	[ EnumTagType.NAMESPACE, [ "neutral", 600 ] ],
+	[ EnumTagType.NAMESPACE, [ "neutral", 300 ] ],
 	[ EnumTagType.INT8, [ "blue", 200 ] ],
 	[ EnumTagType.STRING, [ "red", 200 ] ],
 	[ EnumTagType.UINT8, [ "teal", 200 ] ],
-	[ EnumTagType.SCHEMA, [ "gray", 400 ] ],
+	[ EnumTagType.SCHEMA, [ "neutral", 600 ] ],
 ]);
 
 export function DropdownDType({ tag, callback, text }) {

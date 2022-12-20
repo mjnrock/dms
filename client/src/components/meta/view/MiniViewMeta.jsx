@@ -9,11 +9,11 @@ export const EnumTypeColor = new Map([
 	[ EnumTagType.BOOLEAN, [ "purple", 200 ] ],
 	[ EnumTagType.CHARACTER, [ "orange", 200 ] ],
 	[ EnumTagType.GROUP, [ "gray", 400 ] ],
-	[ EnumTagType.NAMESPACE, [ "neutral", 600 ] ],
+	[ EnumTagType.NAMESPACE, [ "neutral", 300 ] ],
 	[ EnumTagType.INT8, [ "blue", 200 ] ],
 	[ EnumTagType.STRING, [ "red", 200 ] ],
 	[ EnumTagType.UINT8, [ "teal", 200 ] ],
-	[ EnumTagType.SCHEMA, [ "gray", 400 ] ],
+	[ EnumTagType.SCHEMA, [ "neutral", 600 ] ],
 ]);
 
 export function Meta({ tag, parent, offset = 0, size = 10, isVertical = true, ...rest }) {
@@ -43,7 +43,7 @@ export function Meta({ tag, parent, offset = 0, size = 10, isVertical = true, ..
 			</div>
 			<>
 				{
-					[ EnumTagType.ARRAY, EnumTagType.GROUP, EnumTagType.NAMESPACE ].includes(tag.dtype)
+					[ EnumTagType.ARRAY, EnumTagType.GROUP, EnumTagType.NAMESPACE, EnumTagType.SCHEMA ].includes(tag.dtype)
 						? tag.state.map((child, index) => {
 							return (
 								<Meta key={ `meta:${ child.id }` } tag={ child } parent={ tag } offset={ offset + 1 } isVertical={ isVertical } size={ size } />

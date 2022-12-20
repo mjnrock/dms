@@ -9,11 +9,11 @@ export const EnumTypeColor = new Map([
 	[ EnumTagType.BOOLEAN, [ "purple", 200 ] ],
 	[ EnumTagType.CHARACTER, [ "orange", 200 ] ],
 	[ EnumTagType.GROUP, [ "gray", 400 ] ],
-	[ EnumTagType.NAMESPACE, [ "neutral", 600 ] ],
+	[ EnumTagType.NAMESPACE, [ "neutral", 300 ] ],
 	[ EnumTagType.INT8, [ "blue", 200 ] ],
 	[ EnumTagType.STRING, [ "red", 200 ] ],
 	[ EnumTagType.UINT8, [ "teal", 200 ] ],
-	[ EnumTagType.SCHEMA, [ "gray", 400 ] ],
+	[ EnumTagType.SCHEMA, [ "neutral", 600 ] ],
 ]);
 
 export function Meta({ tag, parent }) {
@@ -22,11 +22,11 @@ export function Meta({ tag, parent }) {
 	let [ color, magnitude ] = EnumTypeColor.get(tag.dtype);
 
 	return (
-		<div className={ `m-2 ml-3 rounded flex flex-col border border-b-2 border-${ color }-200 hover:border-${ color }-400 border-solid shadow` }>
+		<div className={ `m-2 pt-1 ml-3 rounded flex flex-col border border-b-2 border-${ color }-200 hover:border-${ color }-400 border-solid shadow` }>
 			<div className="flex flex-col">
 				<div className="flex flex-row">
 					{/* Alias */ }
-					<div className={ `basis-1/6 ml-2 p-1` }>{ tag.alias }</div>
+					<div className={ `basis-1/6 ml-2 p-1 ${ tag.dtype === EnumTagType.SCHEMA ? `font-mono font-bold` : `` }` }>{ tag.alias }</div>
 
 					{/* DType */ }
 					<div className={ `basis-5/6 p-1 ml-2 font-mono font-bold text-${ color }-${ magnitude }` }>{ tag.dtype }</div>
@@ -35,7 +35,7 @@ export function Meta({ tag, parent }) {
 			<>
 				<div className="pr-2 mb-1">
 					{
-						[ EnumTagType.ARRAY, EnumTagType.GROUP, EnumTagType.NAMESPACE ].includes(tag.dtype)
+						[ EnumTagType.ARRAY, EnumTagType.GROUP, EnumTagType.NAMESPACE, EnumTagType.SCHEMA ].includes(tag.dtype)
 							? tag.state.map((child, index) => {
 								return (
 									<Meta key={ `meta:${ child.id }` } tag={ child } parent={ tag } />
