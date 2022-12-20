@@ -22,7 +22,7 @@ export function Meta({ tag, parent }) {
 	let [ color, magnitude ] = EnumTypeColor.get(tag.dtype);
 
 	return (
-		<div className={ `m-2 pt-1 ml-3 rounded flex flex-col border border-b-2 border-${ color }-200 hover:border-${ color }-400 border-solid shadow` }>
+		<div className={ `m-2 pt-1 ml-3 rounded flex flex-col border border-l-4 border-${ color }-200 hover:border-${ color }-400 border-solid shadow` }>
 			<div className="flex flex-col">
 				<div className="flex flex-row">
 					{/* Alias */ }
