@@ -48,7 +48,7 @@ export function Meta({ tag, parent, offset = 0, size = 10, isVertical = true, ..
 						<div style={ {
 							width: `${ size }px`,
 							height: `${ size }px`,
-						} } className={ `select-none bg-${ color }-${ magnitude } hover:bg-${ color }-${ magnitude + 200 } border border-solid rounded border-white` }>&nbsp;</div>
+						} } className={ `cursor-help select-none bg-${ color }-${ magnitude } hover:bg-${ color }-${ magnitude + 200 } border border-solid rounded border-white` }>&nbsp;</div>
 					} />
 			</div>
 			<>
