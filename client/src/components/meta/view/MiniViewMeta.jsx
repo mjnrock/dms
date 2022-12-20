@@ -1,3 +1,4 @@
+import { Popup } from "semantic-ui-react";
 import { useTagEvent } from "../../../lib/dms/react/useTagEvent";
 
 import { EnumTagType } from "../../../lib/dms/tags/Tag";
@@ -36,10 +37,19 @@ export function Meta({ tag, parent, offset = 0, size = 10, isVertical = true, ..
 						);
 					})
 				}
-				<div style={ {
-					width: `${ size }px`,
-					height: `${ size }px`,
-				} } className={ `select-none bg-${ color }-${ magnitude } hover:bg-${ color }-${ magnitude + 200 } border border-solid rounded border-white` }>&nbsp;</div>
+				<Popup
+					content={ (
+						<div className={ `flex flex-row` }>
+							<div className={`basis-1/2`}>{ tag.alias }</div>
+							<div className={`basis-1/2 font-mono font-bold text-${ color }-${ magnitude }`}>&nbsp;{ tag.dtype }</div>
+						</div>
+					) }
+					trigger={
+						<div style={ {
+							width: `${ size }px`,
+							height: `${ size }px`,
+						} } className={ `select-none bg-${ color }-${ magnitude } hover:bg-${ color }-${ magnitude + 200 } border border-solid rounded border-white` }>&nbsp;</div>
+					} />
 			</div>
 			<>
 				{
