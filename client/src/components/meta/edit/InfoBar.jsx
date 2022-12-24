@@ -55,11 +55,12 @@ export function InfoBar({ tag, parent, ondrag }) {
 
 	//NOTE: The `tag.dtype === EnumTagType.SCHEMA` enforce "no change" rules for the root schema tag
 	//FIXME: When you replace a tag, the React is not connecting the new Component correctly, causing missed updates and errors
+	const opacity = isDragging ? 0.4 : 1;
 	return (
-		<div className="flex flex-col" ref={ (node) => drag(node) }>
+		<div className="flex flex-col" style={ { opacity } }>
 			<div className="flex flex-row">
 				{/* Reorder handle icon */ }
-				<div className="mt-auto mb-auto">
+				<div className="mt-auto mb-auto" ref={ (node) => drag(node) }>
 					<Bars3Icon className={ `w-6 h-6 text-${ color }-400 cursor-grab` } />
 				</div>
 
