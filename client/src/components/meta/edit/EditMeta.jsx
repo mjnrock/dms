@@ -1,6 +1,6 @@
-import { useTagEvent } from "../../../lib/dms/react/useTagEvent";
+import { useState } from "react";
 import { useDrop } from "react-dnd";
-
+import { useTagEvent } from "../../../lib/dms/react/useTagEvent";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 
 import { EnumTagType } from "../../../lib/dms/tags/Tag";
@@ -27,19 +27,10 @@ export const EnumDragType = {
 	TAG: "tag",
 };
 
-export function DragContainer({ tags, children }) {
-	const [ , drop ] = useDrop(() => ({ accept: EnumDragType.TAG }));
-
-	return (
-		<div ref={ drop }>
-			{ children }
-		</div>
-	);
-};
-
 export function Meta({ tag, parent }) {
 	const { prop, current, previous } = useTagEvent("modify", tag);
 
+	const [ isDragging, setIsDragging ] = useState(false);
 	const [ , drop ] = useDrop(
 		() => ({
 			accept: EnumDragType.TAG,
@@ -55,20 +46,22 @@ export function Meta({ tag, parent }) {
 	return (
 		<div
 			ref={ (node) => drop(node) }
-			className={ `m-2 p-2 border border-l-4 border-${ color }-200 hover:border-${ color }-400 border-solid rounded flex flex-col shadow-md` }
+			className={ `m-2 p-2 border border-l-4 border-${ color }-200 hover:border-${ color }-400 border-solid rounded flex flex-col shadow-md ${ isDragging ? `bg-${ color }-100` : `` }` }
 		>
-			<InfoBar tag={ tag } parent={ parent } />
+			<InfoBar tag={ tag } parent={ parent } ondrag={ v => setIsDragging(v) } />
 			<>
-				<DragContainer>
-					{
-						[ EnumTagType.ARRAY, EnumTagType.GROUP, EnumTagType.NAMESPACE, EnumTagType.SCHEMA ].includes(tag.dtype)
-							? tag.state.map((child, index) => {
-								return (
-									<Meta key={ `meta:${ child.id }` } tag={ child } parent={ tag } />
-								);
-							}) : null
-					}
-				</DragContainer>
+				{
+					[ EnumTagType.ARRAY, EnumTagType.GROUP, EnumTagType.NAMESPACE, EnumTagType.SCHEMA ].includes(tag.dtype)
+						? tag.state.map((child, index) => {
+							if(isDragging) {
+								return null;
+							}
+
+							return (
+								<Meta key={ `meta:${ child.id }` } tag={ child } parent={ tag } />
+							);
+						}) : null
+				}
 			</>
 			<>
 				{

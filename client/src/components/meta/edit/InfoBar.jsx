@@ -7,6 +7,7 @@ import { EnumTagType } from "./../../../lib/dms/tags/Tag";
 
 import { DropdownDType } from "./DropdownDType";
 import { DetailBar } from "./DetailBar";
+import { useEffect } from "react";
 
 export const EnumDragType = {
 	TAG: "tag",
@@ -36,6 +37,10 @@ export function InfoBar({ tag, parent, ondrag }) {
 			}),
 		}), [ tag ]);
 
+	useEffect(() => {
+		ondrag(isDragging);
+	}, [ isDragging ]);
+
 	let [ color, magnitude ] = EnumTypeColor.get(tag.dtype);
 	magnitude += 100;
 
@@ -51,11 +56,9 @@ export function InfoBar({ tag, parent, ondrag }) {
 		parent.removeChild(tag);
 	}
 
-	//TODO: Send `isDragging` back to Meta to update opacity correctly
-
 	//NOTE: The `tag.dtype === EnumTagType.SCHEMA` enforce "no change" rules for the root schema tag
 	//FIXME: When you replace a tag, the React is not connecting the new Component correctly, causing missed updates and errors
-	const opacity = isDragging ? 0.4 : 1;
+	const opacity = isDragging ? 0 : 1;
 	return (
 		<div className="flex flex-col" style={ { opacity } }>
 			<div className="flex flex-row">
