@@ -23,7 +23,6 @@ export const Builder = {
 		let clazz = TypeToClass.get(dtype);
 
 		if(clazz) {
-			//TODO: TagNamespace (and potentially others) need exceptions here, as they require an additional argument before the options object.
 			return new clazz(value, args);
 		}
 

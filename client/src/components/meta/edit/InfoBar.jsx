@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Bars3Icon, PlusIcon, MinusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { useDrag } from "react-dnd";
 
 import Builder from "./../../../lib/dms/tags/controller/Builder";
 import { EnumTagType } from "./../../../lib/dms/tags/Tag";
@@ -7,6 +8,9 @@ import { EnumTagType } from "./../../../lib/dms/tags/Tag";
 import { DropdownDType } from "./DropdownDType";
 import { DetailBar } from "./DetailBar";
 
+export const EnumDragType = {
+	TAG: "tag",
+};
 
 export const EnumTypeColor = new Map([
 	[ EnumTagType.ANY, [ "gray", 200 ] ],
@@ -21,8 +25,16 @@ export const EnumTypeColor = new Map([
 	[ EnumTagType.SCHEMA, [ "neutral", 600 ] ],
 ]);
 
-export function InfoBar({ tag, parent }) {
+export function InfoBar({ tag, parent, ondrag }) {
 	const [ mode, setMode ] = useState("simple");	// String version of "isExpanded", allowing for more nuanced states
+	const [ { isDragging }, drag ] = useDrag(
+		() => ({
+			type: EnumDragType.TAG,
+			item: { tag },
+			collect: (monitor) => ({
+				isDragging: monitor.isDragging(),
+			}),
+		}), [ tag ]);
 
 	let [ color, magnitude ] = EnumTypeColor.get(tag.dtype);
 	magnitude += 100;
@@ -39,9 +51,12 @@ export function InfoBar({ tag, parent }) {
 		parent.removeChild(tag);
 	}
 
+	//TODO: Send `isDragging` back to Meta to update opacity correctly
+
 	//NOTE: The `tag.dtype === EnumTagType.SCHEMA` enforce "no change" rules for the root schema tag
+	//FIXME: When you replace a tag, the React is not connecting the new Component correctly, causing missed updates and errors
 	return (
-		<div className="flex flex-col">
+		<div className="flex flex-col" ref={ (node) => drag(node) }>
 			<div className="flex flex-row">
 				{/* Reorder handle icon */ }
 				<div className="mt-auto mb-auto">
@@ -49,12 +64,8 @@ export function InfoBar({ tag, parent }) {
 				</div>
 
 				{/* Alias */ }
-				{
-					tag.dtype === EnumTagType.SCHEMA
-						? <div className={ `basis-1/2 ml-2 p-2 border rounded border-transparent font-mono font-bold` }>{ tag.alias }</div>
-						: <input className={ `basis-1/2 ml-2 p-2 border rounded border-transparent hover:rounded hover:border hover:border-${ color }-${ 200 } hover:rounded` } value={ tag.alias } onChange={ e => editAlias(e.target.value) } />
-				}
-				
+				<input className={ `basis-1/2 ml-2 p-2 border rounded border-transparent hover:rounded hover:border hover:border-${ color }-${ 200 } hover:rounded` } value={ tag.alias } onChange={ e => editAlias(e.target.value) } />
+
 
 				{/* Type */ }
 				{

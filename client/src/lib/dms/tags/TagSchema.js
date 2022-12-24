@@ -8,13 +8,13 @@ import { TagGroup } from "./TagGroup.js";
  */
 export class TagSchema extends TagGroup {
 
-	constructor (namespace, members, { reducers = [], ...rest } = {}) {
+	constructor (members, { reducers = [], ...rest } = {}) {
 		super(members, {
 			...rest
 		});
 
 		this.dtype = Tag.Type.SCHEMA;
-		this.alias = namespace;
+		this.alias = this.id;
 
 		this.addReducer(TagSchema.Encoder);
 		this.addReducers(...reducers);

@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { LockOpenIcon, LockClosedIcon, CommandLineIcon, CodeBracketIcon } from "@heroicons/react/24/outline";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 import { Tag } from "../lib/dms/tags/Tag";
 import { TagString } from "../lib/dms/tags/TagString";
@@ -15,6 +17,8 @@ import { TagSchema } from "../lib/dms/tags/TagSchema";
 import { Meta as EditMeta } from "../components/meta/edit/EditMeta";
 import { Meta as ViewMeta } from "../components/meta/view/ViewMeta";
 import { Meta as MiniViewMeta } from "../components/meta/view/MiniViewMeta";
+
+import { Serializer } from "./../lib/dms/tags/controller/Serializer";
 
 const tagStr = new TagString("meow", {
 	alias: "strang",
@@ -44,7 +48,7 @@ const tagGroup = new TagGroup([ tagStr, tagBool, tagInt8, tagUint8 ], {
 // 	alias: "ARrAy"
 // });
 
-let baseTag = new TagSchema("$root", [
+let baseTag = new TagSchema([
 	tagChar,
 	// tagArr,
 	tagGroup,
@@ -56,7 +60,7 @@ export function Default() {
 	const [ isEditingMeta, setIsEditingMeta ] = useState(false);
 
 	return (
-		<>
+		<DndProvider backend={ HTML5Backend }>
 			<h1 className="text-2xl font-bold text-center">Meta</h1>
 			<div className="flex">
 				<div onClick={ e => setIsEditingMeta(!isEditingMeta) } className="w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer">
@@ -67,7 +71,7 @@ export function Default() {
 					}
 				</div>
 				<CommandLineIcon className="text-gray-800 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => console.log(tag) } />
-				<CodeBracketIcon className="text-gray-600 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => console.log(tag.toObject()) } />
+				<CodeBracketIcon className="text-gray-600 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => console.table(Serializer.ToHierarchy(tag)) } />
 			</div>
 
 			{/* TODO: Overall this is good, but it doesn't yet resolve name collisions (i.e. no uniqueness check on aliases) */ }
@@ -95,7 +99,7 @@ export function Default() {
 			{/* TODO: Rebuild the Data edit/view components */ }
 			{/* TODO: Build a repository system and a "record" concept so that data entries can be persisted/retrieved */ }
 			{/* TODO: Establish a standard list of meta options/config for a given Tag (e.g. Required, Nullable, etc.) */ }
-		</>
+		</DndProvider>
 	);
 };
 

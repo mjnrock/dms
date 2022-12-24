@@ -1,4 +1,5 @@
 import { useTagEvent } from "../../../lib/dms/react/useTagEvent";
+import { useDrop } from "react-dnd";
 
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 
@@ -22,23 +23,52 @@ export const EnumTypeColor = new Map([
 	[ EnumTagType.SCHEMA, [ "neutral", 600 ] ],
 ]);
 
+export const EnumDragType = {
+	TAG: "tag",
+};
+
+export function DragContainer({ tags, children }) {
+	const [ , drop ] = useDrop(() => ({ accept: EnumDragType.TAG }));
+
+	return (
+		<div ref={ drop }>
+			{ children }
+		</div>
+	);
+};
+
 export function Meta({ tag, parent }) {
 	const { prop, current, previous } = useTagEvent("modify", tag);
+
+	const [ , drop ] = useDrop(
+		() => ({
+			accept: EnumDragType.TAG,
+			hover({ tag: draggedTag }) {
+				if(parent) {
+					parent.swapIndex(draggedTag, tag);
+				}
+			},
+		}), [ tag ]);
 
 	let [ color, magnitude ] = EnumTypeColor.get(tag.dtype);
 
 	return (
-		<div className={ `m-2 p-2 border border-l-4 border-${ color }-200 hover:border-${ color }-400 border-solid rounded flex flex-col shadow-md` }>
+		<div
+			ref={ (node) => drop(node) }
+			className={ `m-2 p-2 border border-l-4 border-${ color }-200 hover:border-${ color }-400 border-solid rounded flex flex-col shadow-md` }
+		>
 			<InfoBar tag={ tag } parent={ parent } />
 			<>
-				{
-					[ EnumTagType.ARRAY, EnumTagType.GROUP, EnumTagType.NAMESPACE, EnumTagType.SCHEMA ].includes(tag.dtype)
-						? tag.state.map((child, index) => {
-							return (
-								<Meta key={ `meta:${ child.id }` } tag={ child } parent={ tag } />
-							);
-						}) : null
-				}
+				<DragContainer>
+					{
+						[ EnumTagType.ARRAY, EnumTagType.GROUP, EnumTagType.NAMESPACE, EnumTagType.SCHEMA ].includes(tag.dtype)
+							? tag.state.map((child, index) => {
+								return (
+									<Meta key={ `meta:${ child.id }` } tag={ child } parent={ tag } />
+								);
+							}) : null
+					}
+				</DragContainer>
 			</>
 			<>
 				{
@@ -49,7 +79,7 @@ export function Meta({ tag, parent }) {
 								tag={ tag }
 								callback={ dtype => {
 									tag.addChild(Builder.Factory(dtype, null, {
-										alias: `${ Date.now() }${ ~~(Math.random() * 1000000) }`,
+										alias: true,
 									}));
 								} }
 								text={ (

@@ -1,7 +1,7 @@
-import { Tag } from "./Tag.js";
+import { EnumTagType, Tag } from "./Tag.js";
 
 export class TagGroup extends Tag {
-	static Encoder = ({}, next) => {
+	static Encoder = ({ }, next) => {
 		if(next instanceof Tag) {
 			return [ next ];
 		} else if(!Array.isArray(next)) {
@@ -30,7 +30,7 @@ export class TagGroup extends Tag {
 	addChild(child) {
 		if(child instanceof Tag) {
 			this.update([ ...this.value, child ]);
-			
+
 			return true;
 		}
 
@@ -77,9 +77,37 @@ export class TagGroup extends Tag {
 
 		return results;
 	}
-
-	replaceChild(child, newChild) {
+	
+	swapIndex(child, newChild) {
 		if(child instanceof Tag && newChild instanceof Tag) {
+			let index = this.value.indexOf(child),
+				newIndex = this.value.indexOf(newChild);
+
+			if(index !== -1 && newIndex !== -1) {
+				let value = [ ...this.value ];
+				value[ index ] = newChild;
+				value[ newIndex ] = child;
+
+				this.update(value);
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	replaceChild(child, newChild, convert = true) {
+		if(child instanceof Tag && newChild instanceof Tag) {
+			if(convert) {
+				newChild.id = child.id;
+				newChild.alias = child.alias;
+
+				if([ EnumTagType.GROUP, EnumTagType.ARRAY ].includes(child.dtype && newChild.dtype)) {
+					newChild.state = child.state;
+				}
+			}
+
 			this.update(this.value.map(item => item === child ? newChild : item));
 
 			return true;

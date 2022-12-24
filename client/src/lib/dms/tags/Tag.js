@@ -88,7 +88,12 @@ export class Tag extends Node {
 		});
 
 		this.dtype = dtype || Tag.Type.ANY;
-		this.alias = alias;
+
+		if(alias === true) {
+			this.alias = this.id;
+		} else {
+			this.alias = alias;
+		}
 
 		/**
 		 * Does not allow for assignment of `undefined`.
