@@ -16,7 +16,7 @@ VALUES
 	('CHARACTER', 'char', 0),
 	('ARRAY', 'array', 0);
 
-INSERT INTO [Node].EnumTagSQLType (EnumTagTypeID, [Key], [Value], Data1)
+INSERT INTO [Node].EnumTagSQLType (EnumTagTypeID, [Value], Data1)
 VALUES
-	([Node].GetEnumTagType('STRING', 1, 0), 'STRING', 'VARCHAR', 'MAX'),
-	([Node].GetEnumTagType('INT8', 1, 0), 'INT8', 'TINY', NULL);
+	([Node].GetEnumTagType('STRING', 1, 0), 'VARCHAR', 'MAX'),
+	([Node].GetEnumTagType('INT8', 1, 0), 'TINY', NULL);

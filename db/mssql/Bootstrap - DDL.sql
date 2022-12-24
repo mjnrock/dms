@@ -29,7 +29,6 @@ CREATE TABLE [Node].EnumTagType (
 CREATE TABLE [Node].EnumTagSQLType (
 	EnumTagSQLTypeID INT IDENTITY(1,1) PRIMARY KEY,
 	EnumTagTypeID INT UNIQUE NOT NULL FOREIGN KEY REFERENCES [Node].EnumTagType (EnumTagTypeID),	-- Enforce uniqueness to ensure bijection
-	[Key] VARCHAR(255) NOT NULL,
 	[Value] VARCHAR(255) NOT NULL,
 	
 	Data1 VARCHAR(255) NULL,	-- Store optional "meta" data (e.g. DECIMAL's precision, scale, etc.)
