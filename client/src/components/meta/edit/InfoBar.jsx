@@ -35,6 +35,7 @@ export function InfoBar({ tag, parent, ondrag }) {
 			collect: (monitor) => ({
 				isDragging: monitor.isDragging(),
 			}),
+			end: () => ondrag(false),
 		}), [ tag ]);
 
 	useEffect(() => {

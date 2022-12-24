@@ -43,10 +43,16 @@ export function Meta({ tag, parent }) {
 
 	let [ color, magnitude ] = EnumTypeColor.get(tag.dtype);
 
+	if(isDragging) {
+		return (
+			<div className={ `h-[60px] m-2 p-2 border border-l-4 border-${ color }-200 hover:border-${ color }-400 border-solid rounded flex flex-col shadow-md bg-${ color }-100` } />
+		);
+	}
+
 	return (
 		<div
 			ref={ (node) => drop(node) }
-			className={ `m-2 p-2 border border-l-4 border-${ color }-200 hover:border-${ color }-400 border-solid rounded flex flex-col shadow-md ${ isDragging ? `bg-${ color }-100` : `` }` }
+			className={ `m-2 p-2 border border-l-4 border-${ color }-200 hover:border-${ color }-400 border-solid rounded flex flex-col shadow-md` }
 		>
 			<InfoBar tag={ tag } parent={ parent } ondrag={ v => setIsDragging(v) } />
 			<>
