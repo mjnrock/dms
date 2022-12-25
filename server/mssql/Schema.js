@@ -1,4 +1,5 @@
 import { EnumTagType } from "../../client/src/lib/dms/tags/Tag";
+import Serializer from "../../client/src/lib/dms/tags/controller/Serializer";
 
 const SQL = require("mssql");
 const sqlConfig = {
@@ -20,19 +21,24 @@ const sqlConfig = {
 export async function Create({ tag, parent }) {
 	if(tag.dtype === EnumTagType.SCHEMA) {
 		try {
-			// make sure that any items are correctly URL encoded in the connection string
-			SQL.connect(sqlConfig).then((pool) => {
-				// const result = await sql.query`SELECT * FROM [Node].EnumTagType`;
+			SQL.connect(sqlConfig).then(async (pool) => {
+				let tagHierarchy = Serializer.ToHierarchy(tag);
+				let recurser = async (tag) => {
+					let opts = {},
+						sql = ``;
 
-				let opts = {};
+					let fields = tagHierarchy.map(([ id, pid, alias, dtype, state, path ]) => {
+						return `INSERT INTO [Node].Tag (UUID, ParentUUID, EnumTagTypeID, [Value], Opts)
+						VALUES ('${ id.toUpperCase() }', ${ pid ? `'${ pid }'` : 'NULL' }, [Node].GetEnumTagType('${ dtype }', 2, 0), NULL, '${ JSON.stringify(opts) }');`;
+					});
+					sql += fields.join("");
 
-				let sql = `INSERT INTO [Node].Tag (UUID, ParentUUID, EnumTagTypeID, [Value], Opts)
-				VALUES ('${ tag.id.toUpperCase() }', NULL, [Node].GetEnumTagType('${ tag.dtype }', 1, 0), NULL, '${ JSON.stringify(opts) }');`;
+					return await pool.query(sql);
+				};
 
-				//TODO: Recurse through all child tags and insert them to prevent FK errors
-				//NOTE: This will FAIL with FK constraint error until this is fixed
+				await recurser(tag);
 
-				sql += `INSERT INTO [Node].[Schema] (Alias, TagUUID, NamespaceID) OUTPUT INSERTED.*
+				let sql = `INSERT INTO [Node].[Schema] (Alias, TagUUID, NamespaceID) OUTPUT INSERTED.*
 				VALUES ('${ tag.alias.toUpperCase() }', '${ tag.id.toUpperCase() }', NULL);`;
 
 				let request = pool.request();
@@ -42,9 +48,11 @@ export async function Create({ tag, parent }) {
 
 						let schemaId = result.recordset[ 0 ].SchemaID;
 						if(schemaId) {
-							let fields = tag.state.map((t) => {
-								return `(${ schemaId }, 1, '${ t.id }')`;	//FIXME: Insert the correct EnumTagSQLTypeID
-							});
+							let fields = tagHierarchy.reduce((a, [ id, pid, alias, dtype, state, path ]) => {
+								let row = `('${ schemaId }', [Node].GetEnumTagSQLType('${ dtype }', 4, 0), '${ id }')`;
+
+								return [ ...a, row ];
+							}, []);
 							sql += fields.join(",") + ";";
 						}
 
