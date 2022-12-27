@@ -42,11 +42,13 @@ GO
 
 CREATE VIEW [Node].vwTagHierarchy AS
 /* Recursively reconstitute the tag hierarchy */
-WITH RCTE([Level], UUID, ParentUUID, Alias, EnumTagTypeID) AS (
+WITH RCTE([Level], UUID, ParentUUID, RootUUID, [Namespace], Alias, EnumTagTypeID) AS (
 	SELECT
 		0,
 		c.UUID,
 		c.ParentUUID,
+		CAST(NULL AS VARCHAR(255)),
+		CAST(NULL AS VARCHAR(255)),
 		c.Alias,
 		c.EnumTagTypeID
 	FROM
@@ -60,6 +62,11 @@ WITH RCTE([Level], UUID, ParentUUID, Alias, EnumTagTypeID) AS (
 		[Level] + 1,
 		c.UUID,
 		c.ParentUUID,
+		CAST(COALESCE(p.RootUUID, p.UUID) AS VARCHAR(255)),
+		CAST(CASE
+			WHEN p.[Namespace] IS NULL THEN p.Alias
+			ELSE CONCAT(p.[Namespace], '.', p.Alias)
+		END AS VARCHAR(255)),
 		c.Alias,
 		c.EnumTagTypeID
 	FROM
@@ -72,6 +79,8 @@ WITH RCTE([Level], UUID, ParentUUID, Alias, EnumTagTypeID) AS (
 		base.[Level],
 		base.UUID,
 		base.ParentUUID,
+		base.RootUUID,
+		base.[Namespace],
 		base.Alias,
 		base.EnumTagTypeID,
 		ett.[Key],

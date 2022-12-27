@@ -14,6 +14,15 @@ IF OBJECT_ID('[Node].EnumTagSQLType') IS NOT NULL DROP TABLE [Node].EnumTagSQLTy
 IF OBJECT_ID('[Node].EnumTagType') IS NOT NULL DROP TABLE [Node].EnumTagType;
 GO
 
+/* Dynamically drop all remaining tables (e.g. custom record tables), provided they don't have unchecked constraints */
+DECLARE @SqlStatement NVARCHAR(MAX)
+SELECT @SqlStatement = COALESCE(@SqlStatement, N'') + N'DROP TABLE [Node].' + QUOTENAME(TABLE_NAME) + N';' + CHAR(13)
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_SCHEMA = 'Node' and TABLE_TYPE = 'BASE TABLE'
+
+EXEC (@SqlStatement)
+GO
+
 
 CREATE TABLE [Node].EnumTagType (
 	EnumTagTypeID INT IDENTITY(1,1) PRIMARY KEY,
@@ -70,7 +79,6 @@ CREATE TABLE [Node].[Namespace] (
 CREATE TABLE [Node].[Schema] (
 	SchemaID INT IDENTITY(1,1) PRIMARY KEY,
 	NamespaceID INT NULL FOREIGN KEY REFERENCES [Node].[Namespace] (NamespaceID),
-	Alias NVARCHAR(MAX),
 	
 	TagUUID UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES [Node].Tag (UUID),
 	CreatedDT DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
