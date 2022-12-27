@@ -55,6 +55,9 @@ let baseTag = new TagSchema([
 	tagGroup,
 ]);
 
+//FIXME: A blank Array currently adds a [0] column to its table
+//IDEA: Reevaluate how this whole thing works, and how it should work -- it's close, but not quite there yet
+
 /**
  * This currently sends the tag to the server, but is also is not very robust.
  */
