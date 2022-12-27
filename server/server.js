@@ -10,6 +10,7 @@ import { TagUint8 } from "./lib/dms/tags/TagUint8";
 import { TagGroup } from "./lib/dms/tags/TagGroup";
 import { TagNamespace } from "./lib/dms/tags/TagNamespace";
 import { TagSchema } from "./lib/dms/tags/TagSchema";
+import Builder from "../client/src/lib/dms/tags/controller/Builder";
 
 const express = require("express");
 const cors = require("cors");
@@ -63,23 +64,21 @@ const app = express();
 app.use(cors());
 app.use(express.urlencoded());
 app.use(express.json());
-app.get("/", (req, res) => {
-	console.info(req.body);
-	// const { searchType, data, onPremiseOnly } = req.body;
+app.post("/", (req, res) => {
+	try {
+		const tag = Builder.FromAliasSchema(req.body);
+		Create({ tag });
 
-	Create({ tag: baseTag });
-
-	res.json({
-		"status": "ok",
-		"message": "success",
-		"data": [
-			1,
-			2,
-			3,
-			4,
-			5,
-		],
-	});
+		res.json({
+			"status": "ok",
+			"message": "success",
+		});
+	} catch(e) {
+		res.json({
+			"status": "error",
+			"message": e.message,
+		});
+	}
 });
 
 let isSSL = false,

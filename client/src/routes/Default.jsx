@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { LockOpenIcon, LockClosedIcon, CommandLineIcon, CodeBracketIcon } from "@heroicons/react/24/outline";
+import { LockOpenIcon, LockClosedIcon, CommandLineIcon, CodeBracketIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
@@ -19,6 +19,7 @@ import { Meta as ViewMeta } from "../components/meta/view/ViewMeta";
 import { Meta as MiniViewMeta } from "../components/meta/view/MiniViewMeta";
 
 import { Serializer } from "./../lib/dms/tags/controller/Serializer";
+import Builder from "../lib/dms/tags/controller/Builder";
 
 const tagStr = new TagString("meow", {
 	alias: "strang",
@@ -54,6 +55,22 @@ let baseTag = new TagSchema([
 	tagGroup,
 ]);
 
+/**
+ * This currently sends the tag to the server, but is also is not very robust.
+ */
+function sendTagToServer(tag) {
+	fetch(`http://localhost:3001`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(Builder.ToAliasSchema(tag)),
+	})
+		.then(res => res.json())
+		.then(res => console.log(res))
+		.catch(err => console.error(err));
+};
+
 export function Default() {
 	const [ tag, setTag ] = useState(baseTag);
 	const [ isEditingData, setIsEditingData ] = useState(false);
@@ -72,6 +89,7 @@ export function Default() {
 				</div>
 				<CommandLineIcon className="text-gray-800 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => console.log(tag) } />
 				<CodeBracketIcon className="text-gray-600 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => console.table(Serializer.ToHierarchy(tag)) } />
+				<PaperAirplaneIcon className="text-gray-600 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => sendTagToServer(tag) } />
 			</div>
 
 			{/* TODO: Overall this is good, but it doesn't yet resolve name collisions (i.e. no uniqueness check on aliases) */ }

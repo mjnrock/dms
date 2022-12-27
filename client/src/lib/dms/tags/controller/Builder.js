@@ -1,3 +1,4 @@
+import {TagSchema} from "./../TagSchema";
 import { Tag } from "./../Tag";
 import { TagArray } from "./../TagArray";
 import { TagBoolean } from "./../TagBoolean";
@@ -28,7 +29,7 @@ export const Builder = {
 
 		return null;
 	},
-	FromArrayObject: (arr = [], asTagGroup = true) => {
+	FromArrayObject: (arr = [], asTagSchema = true) => {
 		let root = [];
 
 		for(let [ dtype, value, ...args ] of arr) {
@@ -36,7 +37,7 @@ export const Builder = {
 
 			if(clazz) {
 				let tag;
-				if([ TagArray, TagGroup ].includes(clazz)) {
+				if([ TagArray, TagGroup, TagSchema ].includes(clazz)) {
 					let children = Builder.FromArrayObject(value, false);
 
 					tag = new clazz(children, ...args);
@@ -48,13 +49,13 @@ export const Builder = {
 			}
 		}
 
-		if(asTagGroup) {
-			return new TagGroup(root, { alias: "$root" });
+		if(asTagSchema) {
+			return new TagSchema(root, { alias: "$root" });
 		}
 
 		return root;
 	},
-	FromAliasObject: (obj = {}, asTagGroup = true) => {
+	FromAliasObject: (obj = {}, asTagSchema = true) => {
 		let root = [];
 
 		for(let [ alias, [ dtype, value, ...args ] ] of Object.entries(obj)) {
@@ -62,7 +63,7 @@ export const Builder = {
 
 			if(clazz) {
 				let tag;
-				if([ TagArray, TagGroup ].includes(clazz)) {
+				if([ TagArray, TagGroup, TagSchema ].includes(clazz)) {
 					let children = Builder.FromAliasObject(value, false);
 
 					tag = new clazz(children, { alias, ...args });
@@ -74,13 +75,13 @@ export const Builder = {
 			}
 		}
 
-		if(asTagGroup) {
-			return new TagGroup(root, { alias: "$root" });
+		if(asTagSchema) {
+			return new TagSchema(root, { alias: "$root" });
 		}
 
 		return root;
 	},
-	FromAliasSchema: (schema = {}, asTagGroup = true) => {
+	FromAliasSchema: (schema = {}, asTagSchema = true) => {
 		let root = [];
 
 		for(let [ alias, dtype ] of Object.entries(schema)) {
@@ -101,8 +102,8 @@ export const Builder = {
 			root.push(tag);
 		}
 
-		if(asTagGroup) {
-			return new TagGroup(root, { alias: "$root" });
+		if(asTagSchema) {
+			return new TagSchema(root, { alias: "$root" });
 		}
 
 		return root;
@@ -111,7 +112,7 @@ export const Builder = {
 	ToArrayObject(tag) {
 		let arr = [];
 
-		if([ Tag.Type.GROUP, Tag.Type.ARRAY ].includes(tag.dtype)) {
+		if([ Tag.Type.GROUP, Tag.Type.ARRAY, Tag.Type.SCHEMA ].includes(tag.dtype)) {
 			for(let child of tag.value) {
 				arr.push(Builder.ToArrayObject(child));
 			}
@@ -126,7 +127,7 @@ export const Builder = {
 		return arr;
 	},
 	ToAliasSchema(tag, obj = {}) {
-		if([ Tag.Type.GROUP, Tag.Type.ARRAY ].includes(tag.dtype)) {
+		if([ Tag.Type.GROUP, Tag.Type.ARRAY, Tag.Type.SCHEMA ].includes(tag.dtype)) {
 			for(let child of tag.value) {
 				obj[ child.alias ] = Builder.ToAliasSchema(child);
 			}

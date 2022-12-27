@@ -18,7 +18,7 @@ const sqlConfig = {
 	},
 };
 
-export async function Create({ tag, parent }) {
+export async function Create({ tag }) {
 	if(tag.dtype === EnumTagType.SCHEMA) {
 		try {
 			SQL.connect(sqlConfig).then(async (pool) => {
