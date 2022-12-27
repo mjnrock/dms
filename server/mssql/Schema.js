@@ -28,8 +28,8 @@ export async function Create({ tag, parent }) {
 						sql = ``;
 
 					let fields = tagHierarchy.map(([ id, pid, alias, dtype, state, path ]) => {
-						return `INSERT INTO [Node].Tag (UUID, ParentUUID, EnumTagTypeID, [Value], Opts)
-						VALUES ('${ id.toUpperCase() }', ${ pid ? `'${ pid }'` : 'NULL' }, [Node].GetEnumTagType('${ dtype }', 2, 0), NULL, '${ JSON.stringify(opts) }');`;
+						return `INSERT INTO [Node].Tag (UUID, ParentUUID, EnumTagTypeID, Alias, [Value], Opts)
+						VALUES ('${ id.toUpperCase() }', ${ pid ? `'${ pid }'` : 'NULL' }, [Node].GetEnumTagType('${ dtype }', 2, 0), '${ alias }', NULL, '${ JSON.stringify(opts) }');`;
 					});
 					sql += fields.join("");
 

@@ -7,6 +7,7 @@ GO
 
 IF OBJECT_ID('[Node].GetEnumTagType') IS NOT NULL DROP FUNCTION [Node].GetEnumTagType;
 IF OBJECT_ID('[Node].GetEnumTagSQLType') IS NOT NULL DROP FUNCTION [Node].GetEnumTagSQLType;
+IF OBJECT_ID('[Node].CreateSchemaTable') IS NOT NULL DROP PROCEDURE [Node].CreateSchemaTable;
 GO
 
 
@@ -102,5 +103,57 @@ BEGIN
 
 	RETURN @Return
 
+END
+GO
+
+CREATE PROCEDURE [Node].CreateSchemaTable
+	@UUID VARCHAR(255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	DECLARE @SQL VARCHAR(MAX) = 'CREATE TABLE [Node].[' + @UUID + '] (
+		$RecordID INT IDENTITY(1,1) PRIMARY KEY,' + CHAR(13) + CHAR(10);
+
+	DECLARE @Table TABLE (ID INT IDENTITY, Alias VARCHAR(255), SQLType VARCHAR(255));
+
+	INSERT INTO @Table (Alias, SQLType)
+	SELECT
+		COALESCE(t.Alias, CAST(t.UUID AS VARCHAR(255))) AS Alias,
+		t.SQLType
+	FROM
+		[Node].Field f
+		INNER JOIN [Node].[Schema] s
+			ON f.SchemaID = s.SchemaID
+		INNER JOIN [Node].vwTagHierarchy t
+			ON f.TagUUID = t.UUID
+	WHERE
+		s.TagUUID = @UUID
+		AND t.EnumTagTypeID != [Node].GetEnumTagType('SCHEMA', 1, 0)
+
+	SELECT CONCAT(Alias, ' ', SQLType, ' NULL') FROM @Table
+		
+	DECLARE @i INT = 0;
+	DECLARE @size INT = (SELECT COUNT(*) FROM @Table);
+
+	IF @size < 1 RETURN 0;
+
+	WHILE @i < @size
+		BEGIN
+			SELECT @SQL = @SQL + CONCAT(CHAR(9), CHAR(9), '[', Alias, '] ', SQLType, ' NULL', ',', CHAR(13), CHAR(10)) FROM @Table WHERE ID = @i;
+
+			SET @i = @i + 1;
+		END
+
+	SET @SQL = @SQL + '		$CreatedDT DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		$ModifiedDT DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		$DeactivatedDT DATETIME2 NULL
+	);';
+	
+    EXEC (@SQL);
+
+	SET @SQL = 'SELECT * FROM [Node].[' + @UUID + ']';
+	
+    EXEC (@SQL);
 END
 GO

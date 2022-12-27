@@ -1,16 +1,53 @@
 USE DMS
 GO
 
+IF OBJECT_ID('[Node].vwInformationSchema') IS NOT NULL DROP VIEW [Node].vwInformationSchema
 IF OBJECT_ID('[Node].vwTagHierarchy') IS NOT NULL DROP VIEW [Node].vwTagHierarchy
+GO
+
+CREATE VIEW [Node].[vwInformationSchema] AS
+SELECT
+	c.TABLE_NAME AS [Table],
+	c.COLUMN_NAME AS [Column],
+	UPPER(c.DATA_TYPE) AS DataType,
+	c.ORDINAL_POSITION AS [Order],
+	COALESCE(
+		c.CHARACTER_MAXIMUM_LENGTH,
+		c.NUMERIC_PRECISION,
+		c.DATETIME_PRECISION
+	) AS [Precision],
+	UPPER(c.COLUMN_DEFAULT) AS [Default],
+	CASE 
+		WHEN c.COLUMN_DEFAULT IS NOT NULL THEN 1
+		ELSE 0
+	END AS HasDefault,
+	CASE c.IS_NULLABLE 
+		WHEN 'YES' THEN 1
+		ELSE 0
+	END AS IsNullable,
+	CASE c.CHARACTER_SET_NAME
+		WHEN 'UNICODE' THEN 1
+		WHEN 'iso_1' THEN 0
+		ELSE NULL
+	END AS IsUnicode
+FROM
+	INFORMATION_SCHEMA.COLUMNS c
+	INNER JOIN INFORMATION_SCHEMA.TABLES t
+		ON c.TABLE_SCHEMA = t.TABLE_SCHEMA
+		AND c.TABLE_NAME = t.TABLE_NAME
+WHERE
+	c.TABLE_SCHEMA = 'Node'
+	AND t.TABLE_TYPE = 'BASE TABLE'
 GO
 
 CREATE VIEW [Node].vwTagHierarchy AS
 /* Recursively reconstitute the tag hierarchy */
-WITH RCTE([Level], UUID, ParentUUID, EnumTagTypeID) AS (
+WITH RCTE([Level], UUID, ParentUUID, Alias, EnumTagTypeID) AS (
 	SELECT
 		0,
 		c.UUID,
 		c.ParentUUID,
+		c.Alias,
 		c.EnumTagTypeID
 	FROM
 		[Node].Tag c
@@ -23,6 +60,7 @@ WITH RCTE([Level], UUID, ParentUUID, EnumTagTypeID) AS (
 		[Level] + 1,
 		c.UUID,
 		c.ParentUUID,
+		c.Alias,
 		c.EnumTagTypeID
 	FROM
 		[Node].Tag c
@@ -34,6 +72,7 @@ WITH RCTE([Level], UUID, ParentUUID, EnumTagTypeID) AS (
 		base.[Level],
 		base.UUID,
 		base.ParentUUID,
+		base.Alias,
 		base.EnumTagTypeID,
 		ett.[Key],
 		ett.[Value],
