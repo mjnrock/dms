@@ -3,6 +3,7 @@ import { Events } from "./../util/Events";
 
 export const EnumTagType = {
 	ANY: "any",
+	COMPOUND: "compound",
 	BOOLEAN: "bool",
 	UINT8: "uint8",
 	UINT16: "uint16",
@@ -18,6 +19,7 @@ export const EnumTagType = {
 	CHARACTER: "char",
 	ARRAY: "array",
 	OBJECT: "object",
+	FUNCTION: "function",
 	// DATE: "date",
 	// TIME: "time",
 	// DATETIME: "datetime",
@@ -25,7 +27,6 @@ export const EnumTagType = {
 	// LIST: "list",
 	// MAP: "map",
 	// REFERENCE: "reference",
-	// FUNCTION: "function",
 	// GEOLOCATION: "geolocation",	// lat, long, alt, acc
 	// UUID: "uuid",
 	NAMESPACE: "namespace",

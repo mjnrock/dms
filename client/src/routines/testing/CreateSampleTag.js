@@ -11,6 +11,8 @@ import { TagUint32 } from "./../../lib/tags/TagUint32";
 import { TagFloat32 } from "./../../lib/tags/TagFloat32";
 import { TagArray } from "./../../lib/tags/TagArray";
 import { TagObject } from "./../../lib/tags/TagObject";
+import { TagCompound } from "./../../lib/tags/TagCompound";
+import { TagFunction } from "./../../lib/tags/TagFunction";
 
 import { TagGroup } from "./../../lib/tags/meta/TagGroup";
 
@@ -25,6 +27,14 @@ export const CreateSampleTag = () => {
 
 	const tagString = new TagString(1 + "Hello World", {
 		alias: "Example Tag String",
+	});
+
+	const tagCompound = new TagCompound([
+		tagBool,
+		tagChar,
+		tagString,
+	], {
+		alias: "Example Tag Compound",
 	});
 
 	const tagUint8 = new TagUint8(94651, {
@@ -67,10 +77,17 @@ export const CreateSampleTag = () => {
 		alias: "Example Tag Object",
 	});
 
+	const tagFunction = new TagFunction((...args) => {
+		console.log("TagFunction", ...args);
+	}, {
+		alias: "Example Tag Function",
+	});
+
+	// let obj = JSON.parse(tagFunction.toString());
+	// console.log(TagFunction.DeserializeFunction(obj, null))
+
 	return new TagGroup([
-		tagBool,
-		tagChar,
-		tagString,
+		tagCompound,
 		tagInt8,
 		tagInt16,
 		tagInt32,
@@ -80,6 +97,7 @@ export const CreateSampleTag = () => {
 		tagFloat,
 		tagArray,
 		tagObject,
+		tagFunction,
 	], {
 		alias: "Example Tag Group",
 	});

@@ -35,12 +35,13 @@
 			"react-app/jest"
 		],
 		"rules": {
-			"no-unused-vars": "off",
-			"no-extend-native": "off",
 			"import/no-anonymous-default-export": "off",
 			"react-hooks/exhaustive-deps": "off",
+			"no-unused-vars": "off",
+			"no-extend-native": "off",
 			"no-useless-concat": "off",
-			"no-empty-pattern": "off"
+			"no-empty-pattern": "off",
+			"no-new-func": "off"
 		}
 	},
 	"browserslist": {
