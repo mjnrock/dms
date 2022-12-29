@@ -5,14 +5,14 @@ export const EnumTagType = {
 	ANY: "any",
 	BOOLEAN: "bool",
 	UINT8: "uint8",
-	// UINT16: "uint16",
-	// UINT32: "uint32",
+	UINT16: "uint16",
+	UINT32: "uint32",
 	// UINT64: "uint64",
 	INT8: "int8",
-	// INT16: "int16",
-	// INT32: "int32",
+	INT16: "int16",
+	INT32: "int32",
 	// INT64: "int64",
-	// FLOAT32: "float32",
+	FLOAT32: "float32",
 	// FLOAT64: "float64",
 	STRING: "string",
 	CHARACTER: "char",
@@ -103,9 +103,15 @@ export class Tag extends Identity {
 					target[ prop ] = value;
 
 					target.events.emit("update", {
+						/* The prop that was updated. */
 						prop,
+
+						/* Relevant value captures. */
 						previous: current,
 						current: value,
+
+						/* Pass an emission callback function, to facilitate cascading events. */
+						dispatch: target.events.emit.bind(target.events),
 					});
 				}
 
