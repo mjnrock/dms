@@ -112,12 +112,13 @@ export class Tag extends Identity {
 
 						/* Pass an emission callback function, to facilitate cascading events. */
 						dispatch: target.events.emit.bind(target.events),
+						emitter: target.id,
 					});
 				}
 
 				return true;
 			}
-		});		
+		});
 
 		proxy.next(value);
 
@@ -129,11 +130,25 @@ export class Tag extends Identity {
 
 		return this;
 	}
+
+	addEncoders(...encoders) {
+		this.encoders.push(...encoders);
+
+		return this;
+	}
+
 	removeEncoder(encoder) {
 		let index = this.encoders.indexOf(encoder);
 
 		if(index > -1) {
 			this.encoders.splice(index, 1);
+		}
+
+		return this;
+	}
+	removeEncoders(...encoders) {
+		for(let encoder of encoders) {
+			this.removeEncoder(encoder);
 		}
 
 		return this;
