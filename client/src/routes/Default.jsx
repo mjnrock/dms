@@ -19,11 +19,13 @@ export function Default() {
 	}, []);
 
 	return (
-		<pre>
-			{
-				JSON.stringify(tag, null, 2)
-			}
-		</pre>
+		<>
+			<pre>
+				{
+					JSON.stringify(tag.toKVP(`alias`, `type`, `value`), null, 2)
+				}
+			</pre>
+		</>
 	);
 };
 

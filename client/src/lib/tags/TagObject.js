@@ -1,8 +1,8 @@
 import { Tag } from "./Tag";
 
-export class TagArray extends Tag {
+export class TagObject extends Tag {
 	static Encoder = ({ current }, next) => {
-		if(Array.isArray(next)) {
+		if(typeof next === "object" && next !== null) {
 			return next;
 		}
 
@@ -14,9 +14,8 @@ export class TagArray extends Tag {
 
 	constructor (value = [], { ...rest } = {}) {
 		super({
-			type: Tag.Type.ARRAY,
-			encoders: [ TagArray.Encoder ],
-
+			type: Tag.Type.OBJECT,
+			encoders: [ TagObject.Encoder ],
 			...rest
 		});
 
@@ -24,4 +23,4 @@ export class TagArray extends Tag {
 	}
 }
 
-export default TagArray;
+export default TagObject;

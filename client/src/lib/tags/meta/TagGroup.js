@@ -1,7 +1,7 @@
-import { EnumTagType, Tag } from "./Tag.js";
+import { Tag } from "../Tag";
 
 export class TagGroup extends Tag {
-	static Encoder = ({ }, next) => {
+	static Encoder = ({ current }, next) => {
 		if(next instanceof Tag) {
 			return [ next ];
 		} else if(!Array.isArray(next)) {
@@ -11,25 +11,23 @@ export class TagGroup extends Tag {
 		return next.filter(item => item instanceof Tag);
 	};
 	static RemoveEncoder = (tag) => {
-		tag.removeReducer(this.Encoder);
+		tag.removeEncoder(this.Encoder);
 	};
 
-	constructor (value = [], { reducers = [], ...rest } = {}) {
+	constructor (value = [], { ...rest } = {}) {
 		super({
-			dtype: Tag.Type.GROUP,
+			type: Tag.Type.GROUP,
+			encoders: [ TagGroup.Encoder ],
 
 			...rest
 		});
 
-		this.addReducer(TagGroup.Encoder);
-		this.addReducers(...reducers);
-
-		this.update(value);
+		this.next(value);
 	}
 
 	addChild(child) {
 		if(child instanceof Tag) {
-			this.update([ ...this.value, child ]);
+			this.next([ ...this.value, child ]);
 
 			return true;
 		}
@@ -38,7 +36,7 @@ export class TagGroup extends Tag {
 	}
 	addChildren(...children) {
 		let results = [];
-		this.update([ ...this.value, ...children.filter(child => {
+		this.next([ ...this.value, ...children.filter(child => {
 			if(child instanceof Tag) {
 				results.push(true);
 
@@ -54,7 +52,7 @@ export class TagGroup extends Tag {
 	}
 	removeChild(child) {
 		if(child instanceof Tag) {
-			this.update(this.value.filter(item => item !== child));
+			this.next(this.value.filter(item => item !== child));
 
 			return true;
 		}
@@ -63,7 +61,7 @@ export class TagGroup extends Tag {
 	}
 	removeChildren(...children) {
 		let results = [];
-		this.update(this.value.filter(item => {
+		this.next(this.value.filter(item => {
 			if(children.includes(item)) {
 				results.push(true);
 
@@ -77,18 +75,36 @@ export class TagGroup extends Tag {
 
 		return results;
 	}
-	
-	swapIndex(child, newChild) {
-		if(child instanceof Tag && newChild instanceof Tag) {
-			let index = this.value.indexOf(child),
-				newIndex = this.value.indexOf(newChild);
 
-			if(index !== -1 && newIndex !== -1) {
-				let value = [ ...this.value ];
-				value[ index ] = newChild;
-				value[ newIndex ] = child;
+	swapChildren(child1, child2) {
+		if(child1 instanceof Tag && child2 instanceof Tag) {
+			let index1 = this.value.indexOf(child1);
+			let index2 = this.value.indexOf(child2);
 
-				this.update(value);
+			if(index1 !== -1 && index2 !== -1) {
+				let value = this.value.slice();
+
+				value[ index1 ] = child2;
+				value[ index2 ] = child1;
+
+				this.next(value);
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+	replaceChild(child1, child2) {
+		if(child1 instanceof Tag && child2 instanceof Tag) {
+			let index = this.value.indexOf(child1);
+
+			if(index !== -1) {
+				let value = this.value.slice();
+
+				value[ index ] = child2;
+
+				this.next(value);
 
 				return true;
 			}
@@ -97,30 +113,31 @@ export class TagGroup extends Tag {
 		return false;
 	}
 
-	replaceChild(child, newChild, convert = true) {
-		if(child instanceof Tag && newChild instanceof Tag) {
-			if(convert) {
-				newChild.id = child.id;
-				newChild.alias = child.alias;
-
-				if([ EnumTagType.GROUP, EnumTagType.ARRAY ].includes(child.dtype && newChild.dtype)) {
-					newChild.state = child.state;
-				}
-			}
-
-			this.update(this.value.map(item => item === child ? newChild : item));
-
-			return true;
-		}
-
-		return false;
-	}
-
 	toObject(verbose = false) {
 		let obj = {
 			...super.toObject(verbose),
-			value: this.state.map(child => child.toObject(verbose)),
+			value: this.value.map(child => child.toObject(verbose)),
 		};
+
+		return obj;
+	}
+	toJson(verbose = false) {
+		return JSON.stringify(this.value.map(child => child.toObject(verbose)));
+	}
+	toString(verbose = false) {
+		return this.toJson(verbose);
+	}
+	toKVP(...props) {
+		let obj = {};
+
+		for(let prop of props) {
+			if(prop === "value") {
+				obj.value = this.value.map(child => child.toKVP(...props));
+			} else {
+				obj[ prop ] = this[ prop ];
+			}
+		}
+
 
 		return obj;
 	}

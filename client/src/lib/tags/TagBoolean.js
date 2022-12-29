@@ -1,21 +1,22 @@
-import { Tag } from "./Tag.js";
+import { Tag } from "./Tag";
 
 export class TagBoolean extends Tag {
 	static Encoder = ({ }, next) => {
 		return !!next;
 	};
 	static RemoveEncoder = (tag) => {
-		tag.removeReducer(this.Encoder);
+		tag.removeEncoder(this.Encoder);
 	};
 
 	constructor (value, { ...rest } = {}) {
 		super({
 			type: Tag.Type.BOOLEAN,
 			encoders: [ TagBoolean.Encoder ],
-			value,
 
 			...rest
 		});
+
+		this.next(value);
 	}
 }
 

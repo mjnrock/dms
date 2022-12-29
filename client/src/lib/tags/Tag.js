@@ -3,8 +3,6 @@ import { Events } from "./../util/Events";
 
 export const EnumTagType = {
 	ANY: "any",
-	NAMESPACE: "namespace",
-	GROUP: "group",
 	BOOLEAN: "bool",
 	UINT8: "uint8",
 	// UINT16: "uint16",
@@ -19,7 +17,7 @@ export const EnumTagType = {
 	STRING: "string",
 	CHARACTER: "char",
 	ARRAY: "array",
-	// OBJECT: "object",
+	OBJECT: "object",
 	// DATE: "date",
 	// TIME: "time",
 	// DATETIME: "datetime",
@@ -30,6 +28,8 @@ export const EnumTagType = {
 	// FUNCTION: "function",
 	// GEOLOCATION: "geolocation",	// lat, long, alt, acc
 	// UUID: "uuid",
+	NAMESPACE: "namespace",
+	GROUP: "group",
 	SCHEMA: "schema",
 };
 
@@ -61,6 +61,7 @@ export class Tag extends Identity {
 	static Encoder = ({ current }, next) => {
 		if(next !== void 0) {
 			if(next === null) {
+				/* This may initially seem pointless, but prevents things like TagBoolean from coercing null into false, etc. */
 				return null;
 			}
 
@@ -70,7 +71,7 @@ export class Tag extends Identity {
 		return current;
 	};
 	static RemoveEncoder = (tag) => {
-		tag.removeReducer(this.Encoder);
+		tag.removeEncoder(this.Encoder);
 	};
 
 	static Type = EnumTagType;
@@ -91,11 +92,10 @@ export class Tag extends Identity {
 		 * allow for direct assignment.
 		 */
 		this.encoders = [ Tag.Encoder, ...encoders ];
-		this.value = value;
 
 		this.events = new Events(events);
 
-		return new Proxy(this, {
+		let proxy = new Proxy(this, {
 			set: (target, prop, value) => {
 				let current = target[ prop ];
 
@@ -111,7 +111,26 @@ export class Tag extends Identity {
 
 				return true;
 			}
-		});
+		});		
+
+		proxy.next(value);
+
+		return proxy;
+	}
+
+	addEncoder(encoder) {
+		this.encoders.push(encoder);
+
+		return this;
+	}
+	removeEncoder(encoder) {
+		let index = this.encoders.indexOf(encoder);
+
+		if(index > -1) {
+			this.encoders.splice(index, 1);
+		}
+
+		return this;
 	}
 
 	next(value) {
@@ -131,18 +150,18 @@ export class Tag extends Identity {
 
 	toObject(verbose = false) {
 		let obj = {
-			dtype: this.dtype,
-			value: this.state,
+			id: this.id,
 			alias: this.alias,
+			type: this.type,
+			value: this.value,
 		};
 
 		if(verbose) {
 			obj = {
-				id: this.id,
 				...obj,
 				events: [ this.events.size, ...this.events.keys ],
-				reducers: this.encoders.length,
-				meta: this.meta,
+				encoders: this.encoders.length,
+				tokens: [ ...this.tokens ],
 			};
 		}
 
@@ -154,11 +173,14 @@ export class Tag extends Identity {
 	toString(verbose = false) {
 		return this.toJson(verbose);
 	}
+	toKVP(...props) {
+		let obj = {};
 
-	modify(prop, value) {
-		this[ prop ] = value;
+		for(let prop of props) {
+			obj[ prop ] = this[ prop ];
+		}
 
-		return this;
+		return obj;
 	}
 }
 

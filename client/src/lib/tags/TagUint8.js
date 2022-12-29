@@ -1,4 +1,4 @@
-import { Tag } from "./Tag.js";
+import { Tag } from "./Tag";
 
 export class TagUint8 extends Tag {
 	static MIN_VALUE = 0;
@@ -18,20 +18,18 @@ export class TagUint8 extends Tag {
 		return value;
 	};
 	static RemoveEncoder = (tag) => {
-		tag.removeReducer(this.Encoder);
+		tag.removeEncoder(this.Encoder);
 	};
 
-	constructor (value, { reducers = [], ...rest } = {}) {
+	constructor (value, { ...rest } = {}) {
 		super({
-			dtype: Tag.Type.UINT8,
+			type: Tag.Type.UINT8,
+			encoders: [ TagUint8.Encoder ],
 
-			...rest
+			...rest,
 		});
 
-		this.addReducer(TagUint8.Encoder);
-		this.addReducers(...reducers);
-
-		this.update(value);
+		this.next(value);
 	}
 }
 
