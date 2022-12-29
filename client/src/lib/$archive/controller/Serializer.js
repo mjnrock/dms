@@ -1,4 +1,4 @@
-import { EnumTagType } from "../Tag";
+import { EnumTagType } from "../tags/Tag";
 
 /**
  ** Standard Order: 
