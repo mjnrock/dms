@@ -10,23 +10,23 @@ import { TagObject } from "./../../lib/tags/TagObject";
 import { TagGroup } from "./../../lib/tags/meta/TagGroup";
 
 export const CreateSampleTag = () => {
-	const tagBool = new TagBoolean(true, {
+	const tagBool = new TagBoolean(1, {
 		alias: "Example Tag",
 	});
 
-	const tagChar = new TagCharacter("A", {
+	const tagChar = new TagCharacter("Agdf34", {
 		alias: "Example Tag Character",
 	});
 
-	const tagString = new TagString("Hello World", {
+	const tagString = new TagString(1 + "Hello World", {
 		alias: "Example Tag String",
 	});
 
-	const tagUint8 = new TagUint8(255, {
+	const tagUint8 = new TagUint8(94651, {
 		alias: "Example Tag Uint8",
 	});
 
-	const tagInt8 = new TagInt8(-128, {
+	const tagInt8 = new TagInt8(-89465315, {
 		alias: "Example Tag Int8",
 	});
 
