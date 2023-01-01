@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 export function useTagEvent(event, tag, effect) {
-	const [ refresh, setRefresh ] = useState();
+	const [ refresh, setRefresh ] = useState(0);
 
 	useEffect(() => {
 		let fn = ({ prop, current, previous }) => {

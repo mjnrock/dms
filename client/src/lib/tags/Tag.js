@@ -156,17 +156,18 @@ export class Tag extends Identity {
 	}
 
 	next(value) {
-		let previous = this.value;
+		let previous = this.value,
+			next = value;
 
 		for(let reducer of this.encoders) {
-			value = reducer(this, value);
+			next = reducer(this, next);
 		}
 
-		this.value = value;
+		this.value = next;
 
 		return {
 			previous,
-			current: value,
+			current: next,
 		};
 	}
 

@@ -1,4 +1,4 @@
-import {TagSchema} from "./../TagSchema";
+import { TagSchema } from "./../TagSchema";
 import { Tag } from "./../Tag";
 import { TagArray } from "./../TagArray";
 import { TagBoolean } from "./../TagBoolean";
