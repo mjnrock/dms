@@ -8,6 +8,23 @@ import { Meta as EditMeta } from "./../components/EditMeta";
 import { Meta as ViewMeta } from "./../components/ViewMeta";
 import { useTagEvent } from "../lib/react/useTagEvent";
 
+import Builder from "./../lib/controllers/Builder";
+import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
+
+function sendTagToServer(tag) {
+	// console.log(Builder.ToAliasSchema(tag))
+	fetch(`http://localhost:3001`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(Builder.ToAliasSchema(tag)),
+	})
+		.then(res => res.json())
+		.then(res => console.log(res))
+		.catch(err => console.error(err));
+};
+
 let baseTag = CreateSampleTag();
 
 export function Default() {
@@ -18,9 +35,13 @@ export function Default() {
 		<DndProvider backend={ HTML5Backend }>
 			<div className={ `p-2` }>
 				<div className="flex flex-row">
-					<div className="flex flex-col basis-full">
+					<div className="flex flex-col basis-full">						
 						<div className={ `` }>
 							<MiniViewMeta tag={ tag } size={ 35 } displayGroup={ true } />
+						</div>
+
+						<div className={ `` }>
+							<PaperAirplaneIcon className="text-gray-600 w-[32px] h-[32px] mt-auto mb-auto text-center cursor-pointer" onClick={ e => sendTagToServer(tag) } />
 						</div>
 
 						<div className={ `border border-solid border-neutral-100 mt-2 mb-1` } />

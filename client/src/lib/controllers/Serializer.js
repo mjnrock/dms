@@ -1,11 +1,11 @@
-import { EnumTagType } from "../Tag";
+import { EnumTagType } from "../tags/Tag";
 
 /**
  ** Standard Order: 
  ** 1. id
  ** 2. pid
  ** 3. alias
- ** 4. dtype
+ ** 4. type
  ** 5. value
  ** 6. path
  */
@@ -16,8 +16,8 @@ const Helpers = {
 			tag.id,
 			parent.id || null,
 			tag.alias,
-			tag.dtype,
-			isGroup ? null : tag.state,
+			tag.type,
+			isGroup ? null : tag.value,
 			index,
 		];
 	},
@@ -27,7 +27,7 @@ export const Serializer = {
 	ToHierarchy: (tag, { parent = {}, index = "0" } = {}) => {
 		let hierarchy = [];
 
-		if([ EnumTagType.GROUP, EnumTagType.ARRAY, EnumTagType.NAMESPACE, EnumTagType.SCHEMA ].includes(tag.dtype)) {
+		if([ EnumTagType.GROUP, EnumTagType.COMPOUND ].includes(tag.type)) {
 			hierarchy.push(Helpers.createHierarchyRow(tag, parent, index, true));
 
 			let lindex = -1;
@@ -58,7 +58,7 @@ export const Serializer = {
 			id: h[ 0 ],
 			pid: h[ 1 ],
 			alias: h[ 2 ],
-			dtype: h[ 3 ],
+			type: h[ 3 ],
 			value: h[ 4 ],
 			path: h[ 5 ],
 		}));

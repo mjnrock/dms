@@ -103,7 +103,7 @@ export const Builder = {
 		for(let [ alias, type ] of Object.entries(schema)) {
 			let tag;
 			if(typeof type === "object") {
-				let clazz = TypeToClass.get("group");
+				let clazz = TypeToClass.get("compound");
 				let children = Builder.FromAliasSchema(type, false);
 
 				tag = new clazz(children, { alias });

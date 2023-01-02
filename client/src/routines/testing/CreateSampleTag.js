@@ -65,6 +65,18 @@ export const CreateSampleTag = () => {
 		alias: "Example Tag Float",
 	});
 
+	const tagCompoundNumbers = new TagCompound([
+		tagInt8,
+		tagInt16,
+		tagInt32,
+		tagUint8,
+		tagUint16,
+		tagUint32,
+		tagFloat,
+	], {
+		alias: "Example Tag Compound Numbers",
+	});
+
 	const tagArray = new TagArray([ 1, 2, 3 ], {
 		alias: "Example Tag Array",
 	});
@@ -83,21 +95,21 @@ export const CreateSampleTag = () => {
 		alias: "Example Tag Function",
 	});
 
+	const tagCompoundOther = new TagCompound([
+		tagArray,
+		tagObject,
+		tagFunction,
+	], {
+		alias: "Example Tag Compound Other",
+	});
+
 	// let obj = JSON.parse(tagFunction.toString());
 	// console.log(TagFunction.DeserializeFunction(obj, null))
 
 	return new TagGroup([
 		tagCompound,
-		tagInt8,
-		tagInt16,
-		tagInt32,
-		tagUint8,
-		tagUint16,
-		tagUint32,
-		tagFloat,
-		tagArray,
-		tagObject,
-		tagFunction,
+		tagCompoundNumbers,
+		tagCompoundOther,
 	], {
 		alias: "Example Tag Group",
 	});

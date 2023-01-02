@@ -1,3 +1,6 @@
+USE DMS
+GO
+
 SELECT
 	*
 FROM

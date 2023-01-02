@@ -1,5 +1,5 @@
-import { EnumTagType } from "../../client/src/lib/dms/tags/Tag";
-import Serializer from "../../client/src/lib/dms/tags/controller/Serializer";
+import { EnumTagType } from "./../../client/src/lib/tags/Tag";
+import Serializer from "./../../client/src/lib/controllers/Serializer";
 
 const SQL = require("mssql");
 const sqlConfig = {
@@ -19,7 +19,7 @@ const sqlConfig = {
 };
 
 export async function Create({ tag }) {
-	if(tag.dtype === EnumTagType.SCHEMA) {
+	if(tag.type === EnumTagType.GROUP) {
 		try {
 			SQL.connect(sqlConfig).then(async (pool) => {
 				//TODO: Make this a single transaction to allow full rollbacks
@@ -27,11 +27,12 @@ export async function Create({ tag }) {
 				// await tx.begin();
 
 				let tagHierarchy = Serializer.ToHierarchy(tag);
-				let fields = tagHierarchy.map(([ id, pid, alias, dtype, state, path ]) => {
-					return `INSERT INTO [Node].Tag (UUID, ParentUUID, EnumTagTypeID, Alias, [Value], Opts)`
-						+ `VALUES ('${ id.toUpperCase() }', ${ pid ? `'${ pid }'` : 'NULL' }, [Node].GetEnumTagType('${ dtype }', 2, 0), '${ alias }', NULL, NULL);`;
+				let fields = tagHierarchy.map(([ id, pid, alias, type, state, path ]) => {
+					return `INSERT INTO [Node].Tag (UUID, ParentUUID, EnumTagTypeID, Alias, [Value], Opts) `
+						+ `VALUES ('${ id.toUpperCase() }', ${ pid ? `'${ pid }'` : 'NULL' }, [Node].GetEnumTagType('${ type }', 2, 0), '${ alias }', NULL, NULL);`;
 				});
 
+				// console.log(fields.join("\r\n"))
 				await pool.request().query(fields.join(""));
 
 				let schemaId = await pool.request()

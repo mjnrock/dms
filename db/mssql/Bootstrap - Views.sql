@@ -3,6 +3,7 @@ GO
 
 IF OBJECT_ID('[Node].vwInformationSchema') IS NOT NULL DROP VIEW [Node].vwInformationSchema
 IF OBJECT_ID('[Node].vwTagHierarchy') IS NOT NULL DROP VIEW [Node].vwTagHierarchy
+IF OBJECT_ID('[Node].vwTagSQLType') IS NOT NULL DROP VIEW [Node].vwTagSQLType
 GO
 
 CREATE VIEW [Node].[vwInformationSchema] AS
@@ -108,3 +109,28 @@ SELECT
 	*
 FROM
 	Hierarchy
+GO
+
+
+CREATE VIEW [Node].vwTagSQLType AS
+SELECT
+	s.EnumTagSQLTypeID,
+	s.EnumTagTypeID,
+	t.[Key] AS TypeKey,
+	t.[Value] AS TypeValue,
+	s.[Value],
+	s.Data1,
+	s.Data2,
+	s.Data3,
+	CASE
+		WHEN s.Data2 IS NOT NULL THEN CONCAT(s.[Value], '(', s.Data1, ',', s.Data2, ')')
+		WHEN s.Data1 IS NOT NULL THEN CONCAT(s.[Value], '(', s.Data1, ')')
+		ELSE s.[Value]
+	END AS SQLTypeFull
+FROM
+	[Node].EnumTagSQLType s
+	INNER JOIN [Node].EnumTagType t
+		ON s.EnumTagTypeID = t.EnumTagTypeID
+WHERE
+	s.DeactivatedDT IS NULL
+GO

@@ -1,3 +1,6 @@
+USE DMS
+GO
+
 /* Recursively reconstitute the tag hierarchy */
 WITH RCTE([Level], UUID, ParentUUID, EnumTagTypeID) AS (
 	SELECT
