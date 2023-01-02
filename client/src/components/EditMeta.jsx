@@ -29,7 +29,7 @@ export function Meta({ tag, parent }) {
 			},
 		}), [ tag ]);
 
-		let [ color, magnitude ] = TypeColor(tag.type);
+	let [ color, magnitude ] = TypeColor(tag.type);
 
 	if(isDragging) {
 		return (
@@ -45,6 +45,11 @@ export function Meta({ tag, parent }) {
 			<InfoBar tag={ tag } parent={ parent } ondrag={ v => setIsDragging(v) } />
 			<>
 				{
+					/**
+					 * FIXME: There is a 0-index initialization bug here
+					 * If you try to move in/out of index=0, it will not work until
+					 * the React component has been re-rendered at least once.
+					 */
 					[ EnumTagType.COMPOUND, EnumTagType.GROUP ].includes(tag.type)
 						? tag.value.map((child, index) => {
 							if(isDragging) {
