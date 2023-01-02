@@ -11,6 +11,19 @@ import { useTagEvent } from "../lib/react/useTagEvent";
 import Builder from "./../lib/controllers/Builder";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 
+//IDEA: As a general paradigm, TagSchema feels more appropriate than TagGroup for the root tag for DMS
+// TagGroup should instead be returned to the idea of dynamic/programmatic/rule-based grouping of tags, whereas TagCompound is a static grouping of tags
+/**
+ * TagCompound - statically or dynamically defined grouping of tags (e.g. predefined List, functionally defined List, typed list, etc.)
+ * 
+ * These should be considered hyper tags:
+ * TagNamespace - the main "hyper" meta-group tag, which is a purely definitional structure to represent namespaces
+ * TagGroup - the main "hyper" group tag, allowing arbitrary grouping of tags
+ * * Namespaces should be used more for general namespace-related groupings (e.g. domains and organizational structures), while Groups should be more implementation-specific (e.g. components within an Entity)
+ * TagSchema - root tag for DMS, indicating that the tag contents represent a data model
+ * TagRecord - a data record, indicating that the tag contents represent a data related to a schema
+ */
+
 function sendTagToServer(tag) {
 	// console.log(Builder.ToAliasSchema(tag))
 	fetch(`http://localhost:3001`, {
@@ -26,6 +39,7 @@ function sendTagToServer(tag) {
 };
 
 let baseTag = CreateSampleSchema();
+console.log(Builder.ToAliasSchema(baseTag));
 // let baseTag = CreateSampleTag();
 
 export function Default() {

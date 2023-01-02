@@ -48,6 +48,8 @@ export function PromoteToTagGroup(tag) {
 	return tag;
 };
 
+//FIXME: This suite is not currently designed to deal with TagGroup as a root-level tag
+
 export const Builder = {
 	Factory: (type, value = null, { ...args }) => {
 		let clazz = TypeToClass.get(type);
@@ -170,6 +172,8 @@ export const Builder = {
 
 		return arr;
 	},
+	//FIXME: This currently doesn't include the "root" tag (e.g. TagGroup)
+	//! Be cautious of pseudo-reserved keys (e.g. "type", "value", "alias"), such as from CreateSampleSchema()
 	ToAliasSchema(tag, obj = {}) {
 		if([ Tag.Type.COMPOUND, Tag.Type.GROUP ].includes(tag.type)) {
 			for(let child of tag.value) {
