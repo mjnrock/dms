@@ -86,7 +86,7 @@ export class Tag extends Identity {
 
 		this.type = type || Tag.Type.ANY;
 
-		this.alias = alias;
+		this.alias = alias || this.id;
 
 		/**
 		 * Allow a Tag's value to be controlled by reducers, but also

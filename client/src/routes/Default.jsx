@@ -14,10 +14,14 @@ export function Default() {
 	const { prop, current, previous } = useTagEvent(`update`, tag);
 
 	return (
-		<>
-			<DndProvider backend={ HTML5Backend }>
-				<EditMeta tag={ tag } />
+		<DndProvider backend={ HTML5Backend }>
+			<div className={ `w-full` }>
 				<MiniViewMeta tag={ tag } size={ 35 } />
+			</div>
+
+			<div className={ `` }>
+				<EditMeta tag={ tag } />
+
 				<pre>
 					{
 						//TODO: Create a KVP filter selector to dynamically display selected keys (also show children always, not just when `value` is added)
@@ -25,8 +29,8 @@ export function Default() {
 						// JSON.stringify(tag.toKVP(`alias`, `type`, `value`), null, 2)
 					}
 				</pre>
-			</DndProvider>
-		</>
+			</div>
+		</DndProvider>
 	);
 };
 

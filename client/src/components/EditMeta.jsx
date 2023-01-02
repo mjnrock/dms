@@ -66,7 +66,7 @@ export function Meta({ tag, parent }) {
 								tag={ tag }
 								callback={ type => {
 									tag.addChild(Builder.Factory(type, null, {
-										alias: true,
+										// opts
 									}));
 								} }
 								text={ (
