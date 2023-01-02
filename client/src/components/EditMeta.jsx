@@ -40,7 +40,7 @@ export function Meta({ tag, parent }) {
 	return (
 		<div
 			ref={ (node) => drop(node) }
-			className={ `m-2 p-2 border border-l-4 border-${ color }-200 hover:border-${ color }-400 border-solid rounded flex flex-col shadow-md` }
+			className={ `m-2 p-2 border border-l-4 border-b-[2px] border-${ color }-200 hover:border-${ color }-400 border-solid rounded flex flex-col shadow-md` }
 		>
 			<InfoBar tag={ tag } parent={ parent } ondrag={ v => setIsDragging(v) } />
 			<>

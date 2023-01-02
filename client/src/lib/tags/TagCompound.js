@@ -76,6 +76,71 @@ export class TagCompound extends Tag {
 		return results;
 	}
 
+	addChildAt(index, ...children) {
+		let results = [],
+			value = this.value.slice();
+
+		value.splice(index, 0, ...children.filter(child => {
+			if(child instanceof Tag) {
+				results.push(true);
+
+				return true;
+			}
+
+			results.push(false);
+
+			return false;
+		}));
+
+		this.next(value);
+
+		return results;
+	}
+	removeChildAt(...indexes) {
+		let results = [],
+			value = this.value.slice();
+
+		value = value.filter((item, index) => {
+			if(indexes.includes(index)) {
+				results.push(true);
+
+				return false;
+			}
+
+			results.push(false);
+
+			return true;
+		});
+
+		this.next(value);
+
+		return results;
+	}
+	replaceChildAt(index, ...children) {
+		if(index instanceof Tag) {
+			index = this.value.indexOf(index);
+		}
+
+		let results = [],
+			value = this.value.slice();
+
+		value.splice(index, 1, ...children.filter(child => {
+			if(child instanceof Tag) {
+				results.push(true);
+
+				return true;
+			}
+
+			results.push(false);
+
+			return false;
+		}));
+
+		this.next(value);
+
+		return results;
+	}
+
 	swapChildren(child1, child2) {
 		if(child1 instanceof Tag && child2 instanceof Tag) {
 			let index1 = this.value.indexOf(child1);

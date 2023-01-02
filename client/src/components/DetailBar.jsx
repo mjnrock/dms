@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "semantic-ui-react";
 
 
-import { EnumTypeColor } from "./EnumTypeColor";
+import { EnumTypeColor, TypeColor } from "./EnumTypeColor";
 
 export function DetailBar({ tag }) {
 	const [ setting, setSetting ] = useState({
@@ -17,7 +17,7 @@ export function DetailBar({ tag }) {
 		});
 	}
 
-	let [ color, magnitude ] = EnumTypeColor.get(tag.dtype);
+	let [ color, magnitude ] = TypeColor(tag.type);
 	magnitude += 100;
 
 	return (

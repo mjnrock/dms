@@ -5,7 +5,8 @@ import { DndProvider } from "react-dnd";
 import { CreateSampleTag } from "../routines/testing/CreateSampleTag";
 import { Meta as MiniViewMeta } from "./../components/MiniViewMeta";
 import { Meta as EditMeta } from "./../components/EditMeta";
-import useTagEvent from "../lib/react/useTagEvent";
+import { Meta as ViewMeta } from "./../components/ViewMeta";
+import { useTagEvent } from "../lib/react/useTagEvent";
 
 let baseTag = CreateSampleTag();
 
@@ -15,12 +16,25 @@ export function Default() {
 
 	return (
 		<DndProvider backend={ HTML5Backend }>
-			<div className={ `w-full` }>
-				<MiniViewMeta tag={ tag } size={ 35 } />
-			</div>
+			<div className={ `p-2` }>
+				<div className="flex flex-row">
+					<div className="flex flex-col basis-full">
+						<div className={ `` }>
+							<MiniViewMeta tag={ tag } size={ 35 } />
+						</div>
 
-			<div className={ `` }>
-				<EditMeta tag={ tag } />
+						<div className={ `border border-solid border-neutral-100 mt-2 mb-1` } />
+
+						<div className="flex flex-row">
+							<div className="basis-1/4">
+								<ViewMeta tag={ tag } solid={ false } />
+							</div>
+							<div className="basis-3/4">
+								<EditMeta tag={ tag } />
+							</div>
+						</div>
+					</div>
+				</div>
 
 				<pre>
 					{

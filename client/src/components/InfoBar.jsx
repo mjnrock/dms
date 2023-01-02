@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Bars3Icon, PlusIcon, MinusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, PlusIcon, MinusIcon, TrashIcon, ArrowUturnUpIcon } from "@heroicons/react/24/outline";
 import { useDrag } from "react-dnd";
 
 import Builder from "./../lib/controllers/Builder";
@@ -41,20 +41,31 @@ export function InfoBar({ tag, parent, ondrag }) {
 			alias: tag.alias,
 		}));
 	}
-	function removeTag() {
-		parent.removeChild(tag);
+	function removeTag(mergeUp = false) {
+		if(mergeUp) {
+			if(tag.type === EnumTagType.COMPOUND) {
+				parent.replaceChildAt(tag, ...tag.value);
+			}
+		} else {
+			parent.removeChild(tag);
+		}
 	}
 
-	//NOTE: The `tag.type === EnumTagType.SCHEMA` enforce "no change" rules for the root schema tag
+	//NOTE: The `tag.type === EnumTagType.GROUP` enforce "no change" rules for the root group tag
 	//FIXME: When you replace a tag, the React is not connecting the new Component correctly, causing missed updates and errors
 	const opacity = isDragging ? 0 : 1;
 	return (
 		<div className="flex flex-col" style={ { opacity } }>
 			<div className="flex flex-row">
 				{/* Reorder handle icon */ }
-				<div className="mt-auto mb-auto" ref={ (node) => drag(node) }>
-					<Bars3Icon className={ `w-6 h-6 text-${ color }-400 cursor-grab` } />
-				</div>
+				{
+					tag.type !== EnumTagType.GROUP
+						? (
+							<div className="mt-auto mb-auto" ref={ (node) => drag(node) }>
+								<Bars3Icon className={ `w-6 h-6 text-${ color }-400 cursor-grab` } />
+							</div>
+						) : null
+				}
 
 				{/* Alias */ }
 				<input className={ `basis-1/2 ml-2 p-2 border rounded border-transparent hover:rounded hover:border hover:border-${ color }-${ 200 } hover:rounded` } value={ tag.alias } onChange={ e => editAlias(e.target.value) } />
@@ -62,7 +73,7 @@ export function InfoBar({ tag, parent, ondrag }) {
 
 				{/* Type */ }
 				{
-					tag.type === EnumTagType.SCHEMA
+					tag.type === EnumTagType.GROUP
 						? <div className={ `basis-1/2 p-2 ml-2 font-mono font-bold text-${ color }-${ magnitude } border border-solid border-transparent` }>{ tag.type }</div>
 						: <DropdownDType tag={ tag } callback={ editType } />
 				}
@@ -79,7 +90,16 @@ export function InfoBar({ tag, parent, ondrag }) {
 					}
 				</div>
 				{
-					tag.type === EnumTagType.SCHEMA
+					tag.type === EnumTagType.COMPOUND
+						? (
+							<div className="mt-auto mb-auto">
+								<ArrowUturnUpIcon className={ `w-6 h-6 ml-2 text-gray-300 hover:text-gray-500 cursor-pointer` } onClick={ e => removeTag(true) } />
+							</div>
+						)
+						: null
+				}
+				{
+					tag.type === EnumTagType.GROUP
 						? null
 						: (
 							<div className="mt-auto mb-auto">
