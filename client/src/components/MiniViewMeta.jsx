@@ -3,12 +3,22 @@ import { useTagEvent } from "./../lib/react/useTagEvent";
 
 import { EnumTagType } from "./../lib/tags/Tag";
 
-import { EnumTypeColor } from "./EnumTypeColor";
+import { TypeColor } from "./EnumTypeColor";
 
-export function Meta({ tag, parent, offset = 0, size = 10, isVertical = false, ...rest }) {
+export function Meta({ tag, parent, offset = 0, size = 10, isVertical = false, displayGroup = false, ...rest }) {
 	const { prop, current, previous } = useTagEvent("update", tag);
 
-	let [ color, magnitude ] = EnumTypeColor.get(tag.type) || [ `gray`, 200 ];
+	if(displayGroup === false && EnumTagType.GROUP === tag.type) {
+		/** Short-circuit execution and only render the children */
+		return tag.value.map((child, index) => {
+			return (
+				<Meta key={ `meta:${ child.id }` } tag={ child } parent={ tag } offset={ offset } isVertical={ isVertical } size={ size } />
+			);
+		})
+	}
+
+	let [ color, magnitude ] = TypeColor(tag.type);
+
 	return (
 		<div className={ `inline-flex ${ isVertical ? `flex-col` : `` } ${ rest.className ? rest.className : "" }` }>
 			<div className={ `inline-flex ${ isVertical ? `` : `flex-col` }` }>

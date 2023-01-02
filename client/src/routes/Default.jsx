@@ -20,7 +20,7 @@ export function Default() {
 				<div className="flex flex-row">
 					<div className="flex flex-col basis-full">
 						<div className={ `` }>
-							<MiniViewMeta tag={ tag } size={ 35 } />
+							<MiniViewMeta tag={ tag } size={ 35 } displayGroup={ true } />
 						</div>
 
 						<div className={ `border border-solid border-neutral-100 mt-2 mb-1` } />
