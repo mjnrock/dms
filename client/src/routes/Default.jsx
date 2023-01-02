@@ -1,10 +1,24 @@
 import { useState, useEffect } from "react";
 
-import { Default as TagDefault } from "./../modules/tags/routes/Default";
-
 export function Default() {
+	const modules = [
+		[ `/tags`, `Tags` ],
+		[ `/remind`, `Remind` ]
+	]
 	return (
-		<TagDefault />
+		<div>
+			<h1>Select a Module</h1>
+
+			<ul>
+				{
+					modules.map(([ uri, label ], index) => (
+						<li key={ index }>
+							<a href={ uri }>{ label }</a>
+						</li>
+					))
+				}
+			</ul>
+		</div>
 	);
 };
 
