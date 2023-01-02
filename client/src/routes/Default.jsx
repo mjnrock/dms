@@ -5,21 +5,13 @@ import { DndProvider } from "react-dnd";
 import { CreateSampleTag } from "../routines/testing/CreateSampleTag";
 import { Meta as MiniViewMeta } from "./../components/MiniViewMeta";
 import { Meta as EditMeta } from "./../components/EditMeta";
+import useTagEvent from "../lib/react/useTagEvent";
 
 let baseTag = CreateSampleTag();
 
 export function Default() {
-	const [ tag, setTag ] = useState(baseTag);
-
-	useEffect(() => {
-		let fn = (...args) => console.log(...args);
-
-		tag.events.on("update", fn);
-
-		return () => {
-			tag.events.off("update", fn);
-		};
-	}, []);
+	const tag = baseTag;
+	const { prop, current, previous } = useTagEvent(`update`, tag);
 
 	return (
 		<>
@@ -28,7 +20,8 @@ export function Default() {
 				<MiniViewMeta tag={ tag } size={ 35 } />
 				<pre>
 					{
-						JSON.stringify(tag.toKVP(`value`), null, 2)
+						//TODO: Create a KVP filter selector to dynamically display selected keys (also show children always, not just when `value` is added)
+						JSON.stringify(tag.toKVP(`id`, `alias`, `type`, `value`), null, 2)
 						// JSON.stringify(tag.toKVP(`alias`, `type`, `value`), null, 2)
 					}
 				</pre>
