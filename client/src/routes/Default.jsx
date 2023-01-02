@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DndProvider } from "react-dnd";
 
-import { CreateSampleTag } from "../routines/testing/CreateSampleTag";
+import { CreateSampleTag, CreateSampleSchema } from "../routines/testing/SampleTags";
 import { Meta as MiniViewMeta } from "./../components/MiniViewMeta";
 import { Meta as EditMeta } from "./../components/EditMeta";
 import { Meta as ViewMeta } from "./../components/ViewMeta";
@@ -25,7 +25,8 @@ function sendTagToServer(tag) {
 		.catch(err => console.error(err));
 };
 
-let baseTag = CreateSampleTag();
+let baseTag = CreateSampleSchema();
+// let baseTag = CreateSampleTag();
 
 export function Default() {
 	const tag = baseTag;

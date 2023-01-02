@@ -1,6 +1,6 @@
 import { useTagEvent } from "./../lib/react/useTagEvent";
 
-import { EnumTagType } from "./../lib/tags/Tag";
+import Tag, { EnumTagType } from "./../lib/tags/Tag";
 
 import { TypeColor } from "./EnumTypeColor";
 
@@ -9,6 +9,8 @@ export function Meta({ tag, parent, solid = false } = {}) {
 
 	let [ color, magnitude ] = TypeColor(tag.type);
 
+	// let backgroundColor = (solid && tag.type !== EnumTagType.GROUP && tag.type !== EnumTagType.COMPOUND) ? `${ color }-${ magnitude }` : `white`,
+	// 	backgroundBorderColor = (solid && tag.type !== EnumTagType.GROUP && tag.type !== EnumTagType.COMPOUND)  ? `${ color }-${ magnitude }` : `white`;
 	let backgroundColor = solid ? `${ color }-${ magnitude }` : `white`,
 		backgroundBorderColor = solid ? `${ color }-${ magnitude }` : `white`;
 

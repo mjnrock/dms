@@ -3,7 +3,7 @@ import { Events } from "./../util/Events";
 
 export const EnumTagType = {
 	ANY: "any",
-	COMPOUND: "compound",
+	COMPOUND: "comp",
 	BOOLEAN: "bool",
 	UINT8: "uint8",
 	UINT16: "uint16",

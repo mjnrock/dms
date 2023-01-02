@@ -76,6 +76,13 @@ export class TagCompound extends Tag {
 		return results;
 	}
 
+	size() {
+		return this.value.length;
+	}
+	getChildAt(index) {
+		return this.value[ index ];
+	}
+
 	addChildAt(index, ...children) {
 		let results = [],
 			value = this.value.slice();

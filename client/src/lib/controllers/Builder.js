@@ -35,6 +35,19 @@ export const TypeToClass = new Map([
 	[ Tag.Type.GROUP, TagGroup ],
 ]);
 
+/**
+ * Helper function to "promote" a TagCompound to a TagGroup
+ */
+export function PromoteToTagGroup(tag) {
+	if(tag instanceof TagCompound) {
+		let children = tag.value;
+
+		tag = new TagGroup(children, { alias: tag.alias });
+	}
+
+	return tag;
+};
+
 export const Builder = {
 	Factory: (type, value = null, { ...args }) => {
 		let clazz = TypeToClass.get(type);
@@ -66,7 +79,12 @@ export const Builder = {
 		}
 
 		if(asTagGroup) {
-			return new TagGroup(root, { alias: "$root" });
+			let tag = new TagGroup(root, { alias: "$root" });
+
+			/* This is not robustly implemented, but the idea is that it "converts" the group-level TagCompound into a TagGroup */
+			if(tag.size() === 1 && tag.getChildAt(0).type === Tag.Type.COMPOUND) {
+				return PromoteToTagGroup(tag.getChildAt(0));
+			}
 		}
 
 		return root;
@@ -92,7 +110,12 @@ export const Builder = {
 		}
 
 		if(asTagGroup) {
-			return new TagGroup(root, { alias: "$root" });
+			let tag = new TagGroup(root, { alias: "$root" });
+
+			/* This is not robustly implemented, but the idea is that it "converts" the group-level TagCompound into a TagGroup */
+			if(tag.size() === 1 && tag.getChildAt(0).type === Tag.Type.COMPOUND) {
+				return PromoteToTagGroup(tag.getChildAt(0));
+			}
 		}
 
 		return root;
@@ -103,7 +126,7 @@ export const Builder = {
 		for(let [ alias, type ] of Object.entries(schema)) {
 			let tag;
 			if(typeof type === "object") {
-				let clazz = TypeToClass.get("compound");
+				let clazz = TypeToClass.get("comp");
 				let children = Builder.FromAliasSchema(type, false);
 
 				tag = new clazz(children, { alias });
@@ -119,7 +142,12 @@ export const Builder = {
 		}
 
 		if(asTagGroup) {
-			return new TagGroup(root, { alias: "$root" });
+			let tag = new TagGroup(root, { alias: "$root" });
+
+			/* This is not robustly implemented, but the idea is that it "converts" the single-child, group-level TagCompound into a TagGroup */
+			if(tag.size() === 1 && tag.getChildAt(0).type === Tag.Type.COMPOUND) {
+				return PromoteToTagGroup(tag.getChildAt(0));
+			}
 		}
 
 		return root;

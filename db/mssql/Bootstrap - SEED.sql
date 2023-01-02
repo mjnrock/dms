@@ -8,7 +8,7 @@ VALUES
 	('SCHEMA', 'schema', 1),
 
 	('ANY', 'any', 0),
-	('COMPOUND', 'compound', 0),
+	('COMPOUND', 'comp', 0),
 	('BOOLEAN', 'bool', 0),
 	('UINT8', 'uint8', 0),
 	('UINT16', 'uint16', 0),
@@ -21,7 +21,7 @@ VALUES
 	('CHARACTER', 'char', 0),
 	('ARRAY', 'array', 0),
 	('OBJECT', 'object', 0),
-	('FUNCTION', 'function', 0);
+	('FUNCTION', 'fn', 0);
 
 INSERT INTO [Node].EnumTagSQLType (EnumTagTypeID, [Value], Data1)
 VALUES

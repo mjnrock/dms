@@ -1,20 +1,61 @@
-import { Tag } from "./../../lib/tags/Tag";
-import { TagBoolean } from "./../../lib/tags/TagBoolean";
-import { TagCharacter } from "./../../lib/tags/TagCharacter";
-import { TagString } from "./../../lib/tags/TagString";
-import { TagInt8 } from "./../../lib/tags/TagInt8";
-import { TagInt16 } from "./../../lib/tags/TagInt16";
-import { TagInt32 } from "./../../lib/tags/TagInt32";
-import { TagUint8 } from "./../../lib/tags/TagUint8";
-import { TagUint16 } from "./../../lib/tags/TagUint16";
-import { TagUint32 } from "./../../lib/tags/TagUint32";
-import { TagFloat32 } from "./../../lib/tags/TagFloat32";
-import { TagArray } from "./../../lib/tags/TagArray";
-import { TagObject } from "./../../lib/tags/TagObject";
-import { TagCompound } from "./../../lib/tags/TagCompound";
-import { TagFunction } from "./../../lib/tags/TagFunction";
+import { Tag } from "../../lib/tags/Tag";
+import { TagBoolean } from "../../lib/tags/TagBoolean";
+import { TagCharacter } from "../../lib/tags/TagCharacter";
+import { TagString } from "../../lib/tags/TagString";
+import { TagInt8 } from "../../lib/tags/TagInt8";
+import { TagInt16 } from "../../lib/tags/TagInt16";
+import { TagInt32 } from "../../lib/tags/TagInt32";
+import { TagUint8 } from "../../lib/tags/TagUint8";
+import { TagUint16 } from "../../lib/tags/TagUint16";
+import { TagUint32 } from "../../lib/tags/TagUint32";
+import { TagFloat32 } from "../../lib/tags/TagFloat32";
+import { TagArray } from "../../lib/tags/TagArray";
+import { TagObject } from "../../lib/tags/TagObject";
+import { TagCompound } from "../../lib/tags/TagCompound";
+import { TagFunction } from "../../lib/tags/TagFunction";
 
-import { TagGroup } from "./../../lib/tags/meta/TagGroup";
+import { TagGroup } from "../../lib/tags/meta/TagGroup";
+import Builder from "../../lib/controllers/Builder";
+
+export const CreateSampleSchema = () => {	
+	return Builder.FromAliasSchema({
+		entity: {
+			type: "string",
+			geo: {
+				x: "int16",
+				y: "int16",
+				z: "int16",
+			},
+			physics: {
+				velocity: {
+					x: "int16",
+					y: "int16",
+					z: "int16",
+				},
+				acceleration: {
+					x: "int16",
+					y: "int16",
+					z: "int16",
+				},
+			},
+			model: {
+				shape: {
+					type: "string",
+					radius: "uint16",
+					offset: {
+						x: "int16",
+						y: "int16",
+						z: "int16",
+					},
+				},
+				render: {
+					canvas: "object",
+					sprite: "object",
+				},
+			}
+		},
+	});
+}
 
 export const CreateSampleTag = () => {
 	const tagBool = new TagBoolean(1, {
