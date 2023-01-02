@@ -1,4 +1,5 @@
 import { Tag } from "../../lib/tags/Tag";
+import { TagAny } from "../../lib/tags/TagAny";
 import { TagBoolean } from "../../lib/tags/TagBoolean";
 import { TagCharacter } from "../../lib/tags/TagCharacter";
 import { TagString } from "../../lib/tags/TagString";
@@ -20,6 +21,7 @@ import Builder from "../../lib/controllers/Builder";
 export const CreateSampleSchema = () => {	
 	return Builder.FromAliasSchema({
 		entity: {
+			catmeow: "any",
 			type: "string",
 			geo: {
 				x: "int16",

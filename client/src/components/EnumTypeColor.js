@@ -1,7 +1,7 @@
 import { EnumTagType } from "../lib/tags/Tag";
 
 export const EnumTypeColor = new Map([
-	[ EnumTagType.ANY, [ `gray`, 200 ] ],
+	[ EnumTagType.ANY, [ `pink`, 200 ] ],
 	[ EnumTagType.BOOLEAN, [ `purple`, 200 ] ],
 	[ EnumTagType.INT8, [ `blue`, 200 ] ],
 	[ EnumTagType.INT16, [ `blue`, 300 ] ],

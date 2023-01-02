@@ -1,4 +1,5 @@
 import { Tag } from "./../tags/Tag";
+import { TagAny } from "./../tags/TagAny";
 import { TagArray } from "./../tags/TagArray";
 import { TagBoolean } from "./../tags/TagBoolean";
 import { TagCharacter } from "./../tags/TagCharacter";
@@ -17,6 +18,7 @@ import { TagUint32 } from "./../tags/TagUint32";
 import { TagGroup } from "../tags/meta/TagGroup";
 
 export const TypeToClass = new Map([
+	[ Tag.Type.ANY, TagAny ],
 	[ Tag.Type.ARRAY, TagArray ],
 	[ Tag.Type.BOOLEAN, TagBoolean ],
 	[ Tag.Type.CHARACTER, TagCharacter ],
