@@ -39,7 +39,7 @@ function sendTagToServer(tag) {
 };
 
 let baseTag = CreateSampleSchema();
-console.log(Builder.ToAliasSchema(baseTag));
+// console.log(Builder.ToAliasSchema(baseTag));
 // let baseTag = CreateSampleTag();
 
 export function Default() {
