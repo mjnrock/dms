@@ -18,7 +18,11 @@ export class Node extends Identity {
 		/**
 		 * A standard event emitting system; this should use the Events class.
 		 */
-		this.events = new Events(events, eventOpts);
+		if(events instanceof Events) {
+			this.events = events;
+		} else {
+			this.events = new Events(events, eventOpts);
+		}
 
 		for(let [ component, state ] of Object.entries(shared)) {
 			this.set(component, state);
@@ -33,11 +37,14 @@ export class Node extends Identity {
 
 		this.shared[ component ] = state;
 
-		return {
+		let payload = {
+			emitter: this,
 			component,
 			previous: oldState,
 			current: state,
 		};
+
+		return payload;
 	}
 	remove(component) {
 		delete this.shared[ component ];
