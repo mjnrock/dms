@@ -6,6 +6,7 @@ import { useNodeEvent } from "./../useNodeEvent";
 
 import { Complete } from "./../../systems/Complete";
 import { Markdown } from "./../../systems/Markdown";
+import { ItemGroup as ItemGroupSys } from "./../../systems/ItemGroup";
 
 import { Item as ItemJS } from "./../../lib/Item";
 import { ItemGroup as ItemGroupJS } from "./../../lib/ItemGroup";
@@ -47,6 +48,31 @@ export function Item({ item }) {
 						)
 					})
 				}
+				<div className="flex flex-row">
+					<button onClick={ e => {
+						let next = new ItemJS({
+							shared: {
+								complete: false,
+							},
+						});
+
+						ItemGroupSys.addChild(baseItem, next);
+
+						setBaseItem(baseItem);
+					} }>Add Item</button>
+
+					<button onClick={ e => {
+						let next = new ItemGroupJS({
+							shared: {
+								complete: false,
+							},
+						});
+
+						ItemGroupSys.addChild(baseItem, next);
+
+						setBaseItem(baseItem);
+					} }>Add Group Item</button>
+				</div>
 			</div>
 		);
 	}
@@ -62,8 +88,17 @@ export function Item({ item }) {
 						editMode
 							? (
 								<>
-									<textarea className="w-full" value={ item.state } onChange={ onMarkdownEvent } />
-									<button onClick={ e => setEditMode(false) }>Save</button>
+									<textarea
+										className={ `w-full border border-solid rounded border-black min-h-[150px]` }
+										value={ item.state }
+										onChange={ onMarkdownEvent }
+										onBlur={ e => setEditMode(false) }
+										onKeyUp={ e => {
+											if(e.key === "Escape") {
+												setEditMode(false);
+											}
+										} }
+									/>
 								</>
 							) : (
 								<ReactMarkdown children={ item.state } remarkPlugins={ [ remarkGfm ] } />
@@ -71,11 +106,11 @@ export function Item({ item }) {
 					}
 				</div>
 			</div>
-			<pre>
+			{/* <pre>
 				{
 					JSON.stringify(item.toObject(), null, 2)
 				}
-			</pre>
+			</pre> */}
 		</div>
 	);
 };

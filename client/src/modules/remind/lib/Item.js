@@ -1,9 +1,10 @@
 import { Node } from "./Node";
 
 export class Item extends Node {
-	constructor ({ ...rest } = {}) {
+	constructor ({ state = "", ...rest } = {}) {
 		super({ ...rest });
 
+		this.state = state;
 		this.shared.item = {};
 	}
 
