@@ -17,8 +17,7 @@ export function Item({ item }) {
 	const [ baseItem, setBaseItem ] = useState(item);
 	const [ editMode, setEditMode ] = useState(false);
 
-	const a = useNodeEvent("update", baseItem);
-	const { emitter, current } = a;
+	const { emitter, current } = useNodeEvent("update", baseItem);
 
 	//FIXME: @current is an OBJECT, not a NODE --> need to convert to NODE, but need a more programmatic way to do this than the below
 	useEffect(() => {
