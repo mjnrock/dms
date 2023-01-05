@@ -1,11 +1,14 @@
 import { Item } from "./Item";
+import { ItemGroup } from "./ItemGroup";
 
-export class ItemCollection extends Item {
-	constructor ({ register = [], factory = {}, systems = {}, components = {}, jsx = {}, state = {}, ...rest } = {}) {
+export class ItemCollection extends ItemGroup {
+	constructor ({ register = [], registry, factory = {}, systems = {}, components = {}, jsx = {}, state = {}, ...rest } = {}) {
 		super({ ...rest });
 
 		this.state = {
-			registry: new Map(),
+			...this.state,
+
+			registry: registry || new Map(),
 			factory: {
 				...factory,
 			},
@@ -39,6 +42,18 @@ export class ItemCollection extends Item {
 		}
 
 		return Object.fromEntries(this.state.registry.entries());
+	}
+
+	toObject({ components = [] } = {}) {
+		let obj = super.toObject({ components });
+
+		obj.state.registry = Array.from(this.state.registry.values()).map((item) => `@${ item.id }`);
+		obj.state.factory = Object.fromEntries(Object.entries(this.state.factory).map(([ key, value ]) => [ key, (value.name || "").replace("bound ", "") ]));
+		obj.state.systems = Object.fromEntries(Object.entries(this.state.systems).map(([ key, value ]) => [ key, (value.name || "").replace("bound ", "") ]));
+		obj.state.components = Object.fromEntries(Object.entries(this.state.components).map(([ key, value ]) => [ key, (value.name || "").replace("bound ", "") ]));
+		obj.state.jsx = Object.fromEntries(Object.entries(this.state.jsx).map(([ key, value ]) => [ key, (value.name || "").replace("bound ", "") ]));
+
+		return obj;
 	}
 };
 

@@ -9,6 +9,15 @@ export class ItemGroup extends Item {
 			children,
 		};
 	}
+
+	toObject({ components = [] } = {}) {
+		let obj = super.toObject({ components });
+
+		obj.state.parent = this.state.parent ? `@${ this.state.parent.id }` : null;
+		obj.state.children = this.state.children.map((item) => `@${ item.id }`);
+
+		return obj;
+	}
 };
 
 export default ItemGroup;

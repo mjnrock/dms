@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 
 export function useNodeEvent(event, node, effect) {
-	const [ refresh, setRefresh ] = useState(0);
+	const [ refresh, setRefresh ] = useState({ emitter: node, prop: null, current: null, previous: null });
 
 	useEffect(() => {
 		let fn = ({ prop, current, previous }) => {
 			if(effect) {
-				effect({ prop, current, previous });
+				effect({ emitter: node, prop, current, previous });
 			}
 
-			setRefresh({ prop, current, previous });
+			setRefresh({ emitter: node, prop, current, previous });
 		};
 
 		node.events.on(event, fn);

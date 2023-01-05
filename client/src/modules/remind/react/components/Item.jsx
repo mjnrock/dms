@@ -1,7 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNodeEvent } from "./../useNodeEvent";
 
 import { Status as SysStatus } from "../../systems/Status";
@@ -10,11 +10,30 @@ import { ItemGroup as SysItemGroup } from "./../../systems/class/ItemGroup";
 
 import { Item as ItemJS } from "./../../lib/Item";
 import { ItemGroup as ItemGroupJS } from "./../../lib/ItemGroup";
+import { ItemCollection as ItemCollectionJS } from "./../../lib/ItemCollection";
+import { Node as NodeJS } from "../../lib/Node";
 
 export function Item({ item }) {
 	const [ baseItem, setBaseItem ] = useState(item);
 	const [ editMode, setEditMode ] = useState(false);
-	const { } = useNodeEvent("update", baseItem);
+
+	const a = useNodeEvent("update", baseItem);
+	const { emitter, current } = a;
+
+	//FIXME: @current is an OBJECT, not a NODE --> need to convert to NODE, but need a more programmatic way to do this than the below
+	useEffect(() => {
+		if(typeof current !== "object" || current == null) {
+			return;
+		}
+
+		if(current.state.children) {
+			setBaseItem(new ItemGroupJS(current));
+		} else if(current.state.systems) {
+			setBaseItem(new ItemCollectionJS(current));
+		} else {
+			setBaseItem(new ItemJS(current));
+		}
+	}, [ current ]);
 
 	function onCompleteEvent(e) {
 		let next = SysStatus.toggle(baseItem);
@@ -73,7 +92,7 @@ export function Item({ item }) {
 		<div className={ `p-2 rounded border border-solid border-black w-full` }>
 			<div className="flex flex-row">
 				<div className="basis-1/12">
-					<div className={ `${ item.get("complete") ? `bg-green-600` : `bg-red-600` }` } onClick={ onCompleteEvent }>&nbsp;</div>
+					<div className={ `${ baseItem.get("complete") ? `bg-green-600` : `bg-red-600` }` } onClick={ onCompleteEvent }>&nbsp;</div>
 				</div>
 				<div className="basis-11/12" onClick={ enableEditMode }>
 					{
@@ -98,11 +117,6 @@ export function Item({ item }) {
 					}
 				</div>
 			</div>
-			{/* <pre>
-				{
-					JSON.stringify(item.toObject(), null, 2)
-				}
-			</pre> */}
 		</div>
 	);
 };
