@@ -11,14 +11,21 @@ export class Item extends Node {
 		this.shared.status = ComponentStatus.Create({ ...status });
 	}
 
-	static Factory(qty = 1, { ...args } = {}) {
+	static Factory(qty = 1, input = {}) {
 		const items = [];
 
 		for(let i = 0; i < qty; i++) {
-			items.push(new this({ ...args }));
+			if(typeof input === "function") {
+				items.push(new this(input(i)));
+			} else {
+				items.push(new this(input));
+			}
 		}
 
 		return items;
+	}
+	static Generate(input = {}) {
+		return this.Factory(1, input)[ 0 ];
 	}
 };
 

@@ -1,10 +1,10 @@
 import { dispatch } from "./../ASystem";
 
 export const Item = {
-	update(emitter, markdown) {
-		emitter.shared.item.markdown = markdown;
+	update(emitter, content) {
+		emitter.shared.item.content = content;
 
-		dispatch(emitter, "update", emitter.shared.item.markdown);
+		dispatch(emitter, "update", emitter.shared.item.content);
 
 		return emitter;
 	},

@@ -24,6 +24,10 @@ export class ItemCollection extends Item {
 			...state,
 		};
 
+		for(let [ key, value ] of Object.entries(this.state.factory)) {
+			this.state.factory[ key ] = value.Factory.bind(value);
+		}
+
 		for(let item of register) {
 			this.state.registry.set(item.id, item);
 		}

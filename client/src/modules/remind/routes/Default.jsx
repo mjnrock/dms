@@ -28,31 +28,12 @@ A table:
 | 123 | 423 |
 `;
 
-const baseItem = new Item({
-	state: exampleMarkdown,
-});
-const baseItem2 = new Item({
-	state: exampleMarkdown,
-});
-
-const baseItemGroup = new ItemGroup({
-	parent: null,
-	children: [
-		baseItem,
-		baseItem2,
-	],
-});
-
 const baseItemCollection = new ItemCollection({
-	register: [
-		baseItem,
-		baseItem2,
-		baseItemGroup,
-	],
+	// register: [],
 	factory: {
-		Item: Item.Factory,
-		ItemGroup: ItemGroup.Factory,
-		ItemCollection: ItemCollection.Factory,
+		Item,
+		ItemGroup,
+		ItemCollection,
 	},
 	systems: {
 		Item: SysItem,
@@ -67,6 +48,36 @@ const baseItemCollection = new ItemCollection({
 		Item: ItemJSX,
 	},
 });
+
+const [ baseItem ] = baseItemCollection.state.factory.Item(1, {
+	item: {
+		title: `Meow`,
+		content: `**woof**`,
+	},
+	status: {
+		complete: false,
+	},
+});
+const [ baseItem2 ] = baseItemCollection.state.factory.Item(1, {
+	item: {
+		content: `# Hello World`,
+	},
+	status: {
+		complete: true,
+	},
+});
+
+const [ baseItemGroup ] = baseItemCollection.state.factory.ItemGroup(1, {
+	parent: null,
+	children: [
+		baseItem,
+		baseItem2,
+	],
+});
+
+SysItemCollection.register(baseItemCollection, baseItem);
+SysItemCollection.register(baseItemCollection, baseItem2);
+SysItemCollection.register(baseItemCollection, baseItemGroup);
 
 console.log(baseItem);
 console.log(baseItemGroup);

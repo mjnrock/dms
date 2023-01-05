@@ -76,26 +76,29 @@ export function Item({ item }) {
 					<div className={ `${ item.get("complete") ? `bg-green-600` : `bg-red-600` }` } onClick={ onCompleteEvent }>&nbsp;</div>
 				</div>
 				<div className="basis-11/12" onClick={ enableEditMode }>
-					{
-						editMode
-							? (
-								<>
-									<textarea
-										className={ `w-full border border-solid rounded border-black min-h-[150px]` }
-										value={ item.shared.item.markdown }
-										onChange={ onMarkdownEvent }
-										onBlur={ e => setEditMode(false) }
-										onKeyUp={ e => {
-											if(e.key === "Escape") {
-												setEditMode(false);
-											}
-										} }
-									/>
-								</>
-							) : (
-								<ReactMarkdown children={ item.shared.item.markdown } remarkPlugins={ [ remarkGfm ] } />
-							)
-					}
+					<div className="flex flex-col">
+						<div className={ `text-2xl text-center` }>{ item.shared.item.title }</div>
+						{
+							editMode
+								? (
+									<>
+										<textarea
+											className={ `w-full border border-solid rounded border-black min-h-[150px]` }
+											value={ item.shared.item.content }
+											onChange={ onMarkdownEvent }
+											onBlur={ e => setEditMode(false) }
+											onKeyUp={ e => {
+												if(e.key === "Escape") {
+													setEditMode(false);
+												}
+											} }
+										/>
+									</>
+								) : (
+									<ReactMarkdown children={ item.shared.item.content } remarkPlugins={ [ remarkGfm ] } />
+								)
+						}
+					</div>
 				</div>
 			</div>
 			{/* <pre>

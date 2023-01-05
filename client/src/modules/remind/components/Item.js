@@ -3,7 +3,7 @@ export const Name = `item`;
 export function Create({ ...rest } = {}) {
 	return {
 		title: null,
-		makrdown: ``,
+		content: ``,
 		position: 0,
 
 		...rest,
