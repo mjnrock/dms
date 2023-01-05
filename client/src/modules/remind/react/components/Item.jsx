@@ -5,8 +5,8 @@ import { useState } from "react";
 import { useNodeEvent } from "./../useNodeEvent";
 
 import { Status as SysStatus } from "../../systems/Status";
-import { Item as SysItem } from "../../systems/Item";
-import { ItemGroup as SysItemGroup } from "./../../systems/ItemGroup";
+import { Item as SysItem } from "../../systems/class/Item";
+import { ItemGroup as SysItemGroup } from "./../../systems/class/ItemGroup";
 
 import { Item as ItemJS } from "./../../lib/Item";
 import { ItemGroup as ItemGroupJS } from "./../../lib/ItemGroup";
