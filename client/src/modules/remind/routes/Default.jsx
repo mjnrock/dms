@@ -23,15 +23,9 @@ A table:
 
 const baseItem = new Item({
 	state: exampleMarkdown,
-	shared: {
-		complete: false,
-	},
 });
 const baseItem2 = new Item({
 	state: exampleMarkdown,
-	shared: {
-		complete: false,
-	},
 });
 
 const baseItemGroup = new ItemGroup({
@@ -40,9 +34,6 @@ const baseItemGroup = new ItemGroup({
 		baseItem,
 		baseItem2,
 	],
-	shared: {
-		complete: false,
-	},
 });
 
 console.log(baseItem);

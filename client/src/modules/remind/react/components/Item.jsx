@@ -4,9 +4,9 @@ import remarkGfm from "remark-gfm";
 import { useState } from "react";
 import { useNodeEvent } from "./../useNodeEvent";
 
-import { Complete } from "./../../systems/Complete";
-import { Markdown } from "./../../systems/Markdown";
-import { ItemGroup as ItemGroupSys } from "./../../systems/ItemGroup";
+import { Status as SysStatus } from "../../systems/Status";
+import { Item as SysItem } from "../../systems/Item";
+import { ItemGroup as SysItemGroup } from "./../../systems/ItemGroup";
 
 import { Item as ItemJS } from "./../../lib/Item";
 import { ItemGroup as ItemGroupJS } from "./../../lib/ItemGroup";
@@ -17,14 +17,14 @@ export function Item({ item }) {
 	const { } = useNodeEvent("update", baseItem);
 
 	function onCompleteEvent(e) {
-		let next = Complete.toggle(baseItem);
+		let next = SysStatus.toggle(baseItem);
 
 		// setItem(new Item(next));
 		setBaseItem(next);
 	}
 
 	function onMarkdownEvent(e) {
-		let next = Markdown.update(baseItem, e.target.value);
+		let next = SysItem.update(baseItem, e.target.value);
 
 		// setItem(new Item(next));
 		setBaseItem(next);
@@ -50,25 +50,17 @@ export function Item({ item }) {
 				}
 				<div className="flex flex-row">
 					<button onClick={ e => {
-						let next = new ItemJS({
-							shared: {
-								complete: false,
-							},
-						});
+						let next = new ItemJS();
 
-						ItemGroupSys.addChild(baseItem, next);
+						SysItemGroup.addChild(baseItem, next);
 
 						setBaseItem(baseItem);
 					} }>Add Item</button>
 
 					<button onClick={ e => {
-						let next = new ItemGroupJS({
-							shared: {
-								complete: false,
-							},
-						});
+						let next = new ItemGroupJS();
 
-						ItemGroupSys.addChild(baseItem, next);
+						SysItemGroup.addChild(baseItem, next);
 
 						setBaseItem(baseItem);
 					} }>Add Group Item</button>
@@ -90,7 +82,7 @@ export function Item({ item }) {
 								<>
 									<textarea
 										className={ `w-full border border-solid rounded border-black min-h-[150px]` }
-										value={ item.state }
+										value={ item.shared.item.markdown }
 										onChange={ onMarkdownEvent }
 										onBlur={ e => setEditMode(false) }
 										onKeyUp={ e => {
@@ -101,7 +93,7 @@ export function Item({ item }) {
 									/>
 								</>
 							) : (
-								<ReactMarkdown children={ item.state } remarkPlugins={ [ remarkGfm ] } />
+								<ReactMarkdown children={ item.shared.item.markdown } remarkPlugins={ [ remarkGfm ] } />
 							)
 					}
 				</div>
