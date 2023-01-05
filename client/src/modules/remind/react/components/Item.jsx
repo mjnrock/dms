@@ -39,34 +39,31 @@ export function Item({ item }) {
 	if(baseItem instanceof ItemGroupJS) {
 		return (
 			<div className={ `p-2 rounded border border-solid border-black w-full` }>
-				<div className="flex flex-col">
-					<div className={ `text-2xl text-center` }>{ item.shared.item.title }</div>
-					{
-						baseItem.state.children.map((child, index) => {
-							return (
-								<div key={ index }>
-									<Item item={ child } />
-								</div>
-							)
-						})
-					}
-					<div className="flex flex-row">
-						<button onClick={ e => {
-							let next = new ItemJS();
+				{
+					baseItem.state.children.map((child, index) => {
+						return (
+							<div key={ index }>
+								<Item item={ child } />
+							</div>
+						)
+					})
+				}
+				<div className="flex flex-row">
+					<button onClick={ e => {
+						let next = new ItemJS();
 
-							SysItemGroup.addChild(baseItem, next);
+						SysItemGroup.addChild(baseItem, next);
 
-							setBaseItem(baseItem);
-						} }>Add Item</button>
+						setBaseItem(baseItem);
+					} }>Add Item</button>
 
-						<button onClick={ e => {
-							let next = new ItemGroupJS();
+					<button onClick={ e => {
+						let next = new ItemGroupJS();
 
-							SysItemGroup.addChild(baseItem, next);
+						SysItemGroup.addChild(baseItem, next);
 
-							setBaseItem(baseItem);
-						} }>Add Group Item</button>
-					</div>
+						setBaseItem(baseItem);
+					} }>Add Group Item</button>
 				</div>
 			</div>
 		);
@@ -79,29 +76,26 @@ export function Item({ item }) {
 					<div className={ `${ item.get("complete") ? `bg-green-600` : `bg-red-600` }` } onClick={ onCompleteEvent }>&nbsp;</div>
 				</div>
 				<div className="basis-11/12" onClick={ enableEditMode }>
-					<div className="flex flex-col">
-						<div className={ `text-2xl text-center` }>{ item.shared.item.title }</div>
-						{
-							editMode
-								? (
-									<>
-										<textarea
-											className={ `w-full border border-solid rounded border-black min-h-[150px]` }
-											value={ item.shared.item.content }
-											onChange={ onMarkdownEvent }
-											onBlur={ e => setEditMode(false) }
-											onKeyUp={ e => {
-												if(e.key === "Escape") {
-													setEditMode(false);
-												}
-											} }
-										/>
-									</>
-								) : (
-									<ReactMarkdown children={ item.shared.item.content } remarkPlugins={ [ remarkGfm ] } />
-								)
-						}
-					</div>
+					{
+						editMode
+							? (
+								<>
+									<textarea
+										className={ `w-full border border-solid rounded border-black min-h-[150px]` }
+										value={ item.shared.item.content }
+										onChange={ onMarkdownEvent }
+										onBlur={ e => setEditMode(false) }
+										onKeyUp={ e => {
+											if(e.key === "Escape") {
+												setEditMode(false);
+											}
+										} }
+									/>
+								</>
+							) : (
+								<ReactMarkdown children={ item.shared.item.content } remarkPlugins={ [ remarkGfm ] } />
+							)
+					}
 				</div>
 			</div>
 			{/* <pre>
