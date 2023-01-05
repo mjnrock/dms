@@ -2,7 +2,12 @@ export const Name = `item`;
 
 export function Create({ ...rest } = {}) {
 	return {
+		// V1
 		complete: false,
+
+		// V2
+		current: null,
+		options: [],
 
 		...rest,
 	};

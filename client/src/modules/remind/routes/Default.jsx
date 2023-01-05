@@ -6,6 +6,7 @@ import { ItemCollection } from "../lib/ItemCollection";
 import { Item as SysItem } from "./../systems/class/Item";
 import { ItemGroup as SysItemGroup } from "./../systems/class/ItemGroup";
 import { ItemCollection as SysItemCollection } from "./../systems/class/ItemCollection";
+import { Status as SysStatus } from "./../systems/Status";
 
 import { Create as ComponentItem } from "./../components/Item";
 import { Create as ComponentStatus } from "./../components/Status";
