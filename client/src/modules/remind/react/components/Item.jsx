@@ -17,34 +17,18 @@ export function Item({ item }) {
 	const [ baseItem, setBaseItem ] = useState(item);
 	const [ editMode, setEditMode ] = useState(false);
 
-	const { emitter, current } = useNodeEvent("update", baseItem);
-
-	//FIXME: @current is an OBJECT, not a NODE --> need to convert to NODE, but need a more programmatic way to do this than the below
-	useEffect(() => {
-		if(typeof current !== "object" || current == null) {
-			return;
-		}
-
-		if(current.state.children) {
-			setBaseItem(new ItemGroupJS(current));
-		} else if(current.state.systems) {
-			setBaseItem(new ItemCollectionJS(current));
-		} else {
-			setBaseItem(new ItemJS(current));
-		}
-	}, [ current ]);
+	// const { emitter, prop, current, previous } = useNodeEvent("update", baseItem);
+	const { } = useNodeEvent("update", baseItem);
 
 	function onCompleteEvent(e) {
 		let next = SysStatus.toggle(baseItem);
 
-		// setItem(new Item(next));
 		setBaseItem(next);
 	}
 
 	function onMarkdownEvent(e) {
 		let next = SysItem.update(baseItem, e.target.value);
 
-		// setItem(new Item(next));
 		setBaseItem(next);
 	}
 
