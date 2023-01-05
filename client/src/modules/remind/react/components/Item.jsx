@@ -39,31 +39,34 @@ export function Item({ item }) {
 	if(baseItem instanceof ItemGroupJS) {
 		return (
 			<div className={ `p-2 rounded border border-solid border-black w-full` }>
-				{
-					baseItem.state.children.map((child, index) => {
-						return (
-							<div key={ index }>
-								<Item item={ child } />
-							</div>
-						)
-					})
-				}
-				<div className="flex flex-row">
-					<button onClick={ e => {
-						let next = new ItemJS();
+				<div className="flex flex-col">
+					<div className={ `text-2xl text-center` }>{ item.shared.item.title }</div>
+					{
+						baseItem.state.children.map((child, index) => {
+							return (
+								<div key={ index }>
+									<Item item={ child } />
+								</div>
+							)
+						})
+					}
+					<div className="flex flex-row">
+						<button onClick={ e => {
+							let next = new ItemJS();
 
-						SysItemGroup.addChild(baseItem, next);
+							SysItemGroup.addChild(baseItem, next);
 
-						setBaseItem(baseItem);
-					} }>Add Item</button>
+							setBaseItem(baseItem);
+						} }>Add Item</button>
 
-					<button onClick={ e => {
-						let next = new ItemGroupJS();
+						<button onClick={ e => {
+							let next = new ItemGroupJS();
 
-						SysItemGroup.addChild(baseItem, next);
+							SysItemGroup.addChild(baseItem, next);
 
-						setBaseItem(baseItem);
-					} }>Add Group Item</button>
+							setBaseItem(baseItem);
+						} }>Add Group Item</button>
+					</div>
 				</div>
 			</div>
 		);

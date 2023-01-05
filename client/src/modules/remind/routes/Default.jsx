@@ -73,6 +73,9 @@ const [ baseItemGroup ] = baseItemCollection.state.factory.ItemGroup(1, {
 		baseItem,
 		baseItem2,
 	],
+	item: {
+		title: `Gr00p`,
+	},
 });
 
 SysItemCollection.register(baseItemCollection, baseItem);
