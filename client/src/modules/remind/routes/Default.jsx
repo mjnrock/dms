@@ -94,7 +94,7 @@ export function Default() {
 	let registry = [ ...baseItemCollection.state.registry.values() ];
 
 	return (
-		<div>
+		<div className="m-2">
 			{/* <ItemJSX item={ baseItemGroup } /> */ }
 			<ItemJSX item={ registry[ 2 ] } />
 		</div >

@@ -12,10 +12,12 @@ import { Item as ItemJS } from "./../../lib/Item";
 import { ItemGroup as ItemGroupJS } from "./../../lib/ItemGroup";
 import { ItemCollection as ItemCollectionJS } from "./../../lib/ItemCollection";
 import { Node as NodeJS } from "../../lib/Node";
+import { PencilIcon, PlusIcon, RectangleGroupIcon } from "@heroicons/react/24/outline";
 
 export function Item({ item }) {
 	const [ baseItem, setBaseItem ] = useState(item);
 	const [ editMode, setEditMode ] = useState(false);
+	const [ groupEditMode, setGroupEditMode ] = useState(false);
 
 	// const { emitter, prop, current, previous } = useNodeEvent("update", baseItem);
 	const { } = useNodeEvent("update", baseItem);
@@ -27,7 +29,7 @@ export function Item({ item }) {
 	}
 
 	function onMarkdownEvent(e) {
-		let next = SysItem.update(baseItem, e.target.value);
+		let next = SysItem.update(baseItem, { content: e.target.value });
 
 		setBaseItem(next);
 	}
@@ -40,7 +42,45 @@ export function Item({ item }) {
 
 	if(baseItem instanceof ItemGroupJS) {
 		return (
-			<div className={ `p-2 rounded border border-solid border-black w-full` }>
+			<div className={ `mt-2 pt-0 p-2 rounded border border-solid border-neutral-200 shadow-sm hover:shadow w-full` }>
+				<div className="flex flex-row mt-2">
+					{
+						groupEditMode ? (
+							<input
+								className="w-full p-2 text-lg text-center border border-solid rounded shadow-sm border-neutral-300 hover:shadow"
+								type="text"
+								value={ baseItem.shared.item.title }
+								placeholder="Add a title..."
+								onBlur={ e => setGroupEditMode(false) }
+								onKeyUp={ e => {
+									if(e.key === "Escape") {
+										setGroupEditMode(false);
+									}
+								} }
+								onChange={ e => {
+									let next = SysItem.setTitle(baseItem, e.target.value);
+
+									setBaseItem(next);
+								} } />
+						) : (
+							<div
+								className="w-full p-2 text-lg text-center border border-transparent border-solid rounded"
+								onClick={ e => {
+									setGroupEditMode(!groupEditMode);
+								} }
+							>
+								{
+									baseItem.shared.item.title ? (
+										<ReactMarkdown remarkPlugins={ [ remarkGfm ] }>{ baseItem.shared.item.title }</ReactMarkdown>
+									) : (
+										<div className="text-neutral-400">Add a title...</div>
+									)
+								}
+							</div>
+
+						)
+					}
+				</div>
 				{
 					baseItem.state.children.map((child, index) => {
 						return (
@@ -50,34 +90,42 @@ export function Item({ item }) {
 						)
 					})
 				}
-				<div className="flex flex-row">
-					<button onClick={ e => {
-						let next = new ItemJS();
+				<div className="flex flex-row mt-2">
+					<button
+						className="p-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-green-200 hover:shadow"
+						onClick={ e => {
+							let next = new ItemJS();
 
-						SysItemGroup.addChild(baseItem, next);
+							SysItemGroup.addChild(baseItem, next);
 
-						setBaseItem(baseItem);
-					} }>Add Item</button>
+							setBaseItem(baseItem);
+						} }>
+						<PlusIcon className="w-4 h-4" />
+					</button>
 
-					<button onClick={ e => {
-						let next = new ItemGroupJS();
+					<button
+						className="p-2 ml-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-blue-200 hover:shadow"
+						onClick={ e => {
+							let next = new ItemGroupJS();
 
-						SysItemGroup.addChild(baseItem, next);
+							SysItemGroup.addChild(baseItem, next);
 
-						setBaseItem(baseItem);
-					} }>Add Group Item</button>
+							setBaseItem(baseItem);
+						} }>
+						<RectangleGroupIcon className="w-4 h-4" />
+					</button>
 				</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className={ `p-2 rounded border border-solid border-black w-full` }>
+		<div className={ `mt-2 p-2 rounded border border-solid border-neutral-200 shadow-sm hover:shadow w-full` }>
 			<div className="flex flex-row">
 				<div className="basis-1/12">
 					<div className={ `${ baseItem.get("complete") ? `bg-green-600` : `bg-red-600` }` } onClick={ onCompleteEvent }>&nbsp;</div>
 				</div>
-				<div className="basis-11/12" onClick={ enableEditMode }>
+				<div className="pl-2 basis-11/12" onClick={ enableEditMode }>
 					{
 						editMode
 							? (
