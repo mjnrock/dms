@@ -1,3 +1,5 @@
+import React from "react";
+
 import { Node } from "./../lib/Node";
 import { Item } from "./../lib/Item";
 import { ItemGroup } from "./../lib/ItemGroup";
@@ -110,14 +112,18 @@ SysItemCollection.register(baseItemCollection, baseItemGroup);
 // console.log(baseItemCollection.toObject());
 // console.log(baseItemCollection.toString());
 
+export const RemindContext = React.createContext();
+
 export function Default() {
 	let registry = [ ...baseItemCollection.state.registry.values() ];
 
 	return (
-		<div className="m-2">
-			{/* <ItemJSX item={ baseItemGroup } /> */ }
-			<ItemJSX item={ registry[ 2 ] } />
-		</div >
+		<RemindContext.Provider value={ { stub: true } }>
+			<div className="m-2">
+				{/* <ItemJSX item={ baseItemGroup } /> */ }
+				<ItemJSX item={ registry[ 2 ] } />
+			</div>
+		</RemindContext.Provider>
 	);
 };
 
