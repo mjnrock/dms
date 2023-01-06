@@ -10,7 +10,7 @@ export const Status = {
 		return emitter;
 	},
 	toggle(emitter) {
-		emitter.shared.status.complete = !emitter.shared.status.complete.complete;
+		emitter.shared.status.complete = !emitter.shared.status.complete;
 
 		dispatch(emitter, "update", emitter.shared.status.complete);
 

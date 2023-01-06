@@ -123,7 +123,7 @@ export function Item({ item }) {
 		<div className={ `mt-2 p-2 rounded border border-solid border-neutral-200 shadow-sm hover:shadow w-full` }>
 			<div className="flex flex-row">
 				<div className="basis-1/12">
-					<div className={ `${ baseItem.get("complete") ? `bg-green-600` : `bg-red-600` }` } onClick={ onCompleteEvent }>&nbsp;</div>
+					<div className={ `${ baseItem.shared.status.complete ? `bg-green-600` : `bg-red-600` }` } onClick={ onCompleteEvent }>&nbsp;</div>
 				</div>
 				<div className="pl-2 basis-11/12" onClick={ enableEditMode }>
 					{
