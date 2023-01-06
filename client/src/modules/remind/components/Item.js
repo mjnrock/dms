@@ -4,7 +4,6 @@ export function Create({ ...rest } = {}) {
 	return {
 		title: null,
 		content: ``,
-		position: 0,
 
 		...rest,
 	};

@@ -95,6 +95,7 @@ export class Node extends Identity {
 		if(component.includes(".")) {
 			let { parent, key } = this.__parseComponent(component);
 
+			//? Related to de/serialization testing
 			console.log(99999, parent, key)
 
 			let oldState = parent[ key ];

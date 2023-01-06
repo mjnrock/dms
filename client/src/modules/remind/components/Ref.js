@@ -1,13 +1,8 @@
-export const Name = `status`;
+export const Name = `ref`;
 
 export function Create({ ...rest } = {}) {
 	return {
-		// V1
-		complete: false,
-
-		// V2
-		current: null,
-		options: [],
+		ref: null,
 
 		...rest,
 	};

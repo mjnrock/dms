@@ -1,4 +1,4 @@
-import { dispatch } from "./../ASystem";
+import { dispatch } from "./ASystem";
 
 export const Item = {
 	update(emitter, data = {}) {

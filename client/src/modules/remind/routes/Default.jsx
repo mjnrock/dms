@@ -3,7 +3,7 @@ import { Item } from "./../lib/Item";
 import { ItemGroup } from "./../lib/ItemGroup";
 import { ItemCollection } from "../lib/ItemCollection";
 
-import { Item as SysItem } from "./../systems/class/Item";
+import { Item as SysItem } from "../systems/Item";
 import { ItemGroup as SysItemGroup } from "./../systems/class/ItemGroup";
 import { ItemCollection as SysItemCollection } from "./../systems/class/ItemCollection";
 import { Status as SysStatus } from "./../systems/Status";
