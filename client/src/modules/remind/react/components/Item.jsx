@@ -12,7 +12,7 @@ import { Item as ItemJS } from "./../../lib/Item";
 import { ItemGroup as ItemGroupJS } from "./../../lib/ItemGroup";
 import { ItemCollection as ItemCollectionJS } from "./../../lib/ItemCollection";
 import { Node as NodeJS } from "../../lib/Node";
-import { PencilIcon, PlusIcon, RectangleGroupIcon } from "@heroicons/react/24/outline";
+import { Cog6ToothIcon, LockClosedIcon, LockOpenIcon, PencilIcon, PlusIcon, RectangleGroupIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 export function Item({ item }) {
 	const [ baseItem, setBaseItem ] = useState(item);
@@ -46,38 +46,41 @@ export function Item({ item }) {
 				<div className="flex flex-row mt-2">
 					{
 						groupEditMode ? (
-							<input
-								className="w-full p-2 text-lg text-center border border-solid rounded shadow-sm border-neutral-300 hover:shadow"
-								type="text"
-								value={ baseItem.shared.item.title }
-								placeholder="Add a title..."
-								onBlur={ e => setGroupEditMode(false) }
-								onKeyUp={ e => {
-									if(e.key === "Escape") {
-										setGroupEditMode(false);
-									}
-								} }
-								onChange={ e => {
-									let next = SysItem.setTitle(baseItem, e.target.value);
+							<>
+								<input
+									className="w-full p-2 text-lg text-center border border-solid rounded shadow-sm border-neutral-300 hover:shadow"
+									type="text"
+									value={ baseItem.shared.item.title }
+									placeholder="Add a title..."
+									onBlur={ e => setGroupEditMode(false) }
+									onKeyUp={ e => {
+										if(e.key === "Escape") {
+											setGroupEditMode(false);
+										}
+									} }
+									onChange={ e => {
+										let next = SysItem.setTitle(baseItem, e.target.value);
 
-									setBaseItem(next);
-								} } />
+										setBaseItem(next);
+									} } />
+							</>
 						) : (
-							<div
-								className="w-full p-2 text-lg text-center border border-transparent border-solid rounded"
-								onClick={ e => {
-									setGroupEditMode(!groupEditMode);
-								} }
-							>
-								{
-									baseItem.shared.item.title ? (
-										<ReactMarkdown remarkPlugins={ [ remarkGfm ] }>{ baseItem.shared.item.title }</ReactMarkdown>
-									) : (
-										<div className="text-neutral-400">Add a title...</div>
-									)
-								}
-							</div>
-
+							<>
+								<div
+									className="w-full p-2 text-lg text-center border border-transparent border-solid rounded"
+									onClick={ e => {
+										setGroupEditMode(!groupEditMode);
+									} }
+								>
+									{
+										baseItem.shared.item.title ? (
+											<ReactMarkdown remarkPlugins={ [ remarkGfm ] }>{ baseItem.shared.item.title }</ReactMarkdown>
+										) : (
+											<div className="text-neutral-400">Add a title...</div>
+										)
+									}
+								</div>
+							</>
 						)
 					}
 				</div>
@@ -143,7 +146,9 @@ export function Item({ item }) {
 									/>
 								</>
 							) : (
-								<ReactMarkdown children={ item.shared.item.content } remarkPlugins={ [ remarkGfm ] } />
+								<>
+									<ReactMarkdown children={ item.shared.item.content } remarkPlugins={ [ remarkGfm ] } />
+								</>
 							)
 					}
 				</div>
