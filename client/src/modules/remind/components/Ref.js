@@ -2,7 +2,7 @@ export const Name = `ref`;
 
 export function Create({ ...rest } = {}) {
 	return {
-		ref: null,
+		id: null,
 
 		...rest,
 	};

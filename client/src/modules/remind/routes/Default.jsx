@@ -7,6 +7,7 @@ import { Item as SysItem } from "../systems/Item";
 import { ItemGroup as SysItemGroup } from "./../systems/class/ItemGroup";
 import { ItemCollection as SysItemCollection } from "./../systems/class/ItemCollection";
 import { Status as SysStatus } from "./../systems/Status";
+import { Ref as SysRef } from "./../systems/Ref";
 
 import { Create as ComponentItem } from "./../components/Item";
 import { Create as ComponentStatus } from "./../components/Status";
@@ -51,20 +52,27 @@ const baseItemCollection = new ItemCollection({
 });
 
 const [ baseItem ] = baseItemCollection.state.factory.Item(1, {
-	item: {
-		title: `Meow`,
-		content: `**woof**`,
-	},
-	status: {
-		complete: false,
+	shared: {
+		item: {
+			title: `Meow`,
+			content: `**woof**`,
+		},
+		status: {
+			complete: false,
+		},
 	},
 });
 const [ baseItem2 ] = baseItemCollection.state.factory.Item(1, {
-	item: {
-		content: `# Hello World`,
-	},
-	status: {
-		complete: true,
+	shared: {
+		item: {
+			content: `# Hello World`,
+		},
+		status: {
+			complete: true,
+		},
+		ref: {
+			id: baseItem.id,
+		},
 	},
 });
 
@@ -74,8 +82,10 @@ const [ baseItemGroup ] = baseItemCollection.state.factory.ItemGroup(1, {
 		baseItem,
 		baseItem2,
 	],
-	item: {
-		title: `Gr00p`,
+	shared: {
+		item: {
+			title: `Gr00p`,
+		},
 	},
 });
 
@@ -85,15 +95,19 @@ SysItemCollection.register(baseItemCollection, baseItemGroup);
 
 
 // console.log(baseItem.toObject());
-let item = baseItem.toObject();
-console.log(item.shared.item)
-console.log(Item.Generate(item));
+// console.log(baseItem);
+// console.log(baseItem2);
+// let item = baseItem2.toObject();
+// console.log(Item.Generate(item));
+
+// console.log(SysRef.fetch(Item.Generate(baseItem.toObject()), baseItemCollection));
+// console.log(SysRef.fetch(Item.Generate(baseItem2.toObject()), baseItemCollection));
 
 
 // console.log(baseItem.toString());
-console.log(baseItemGroup.toObject());
+// console.log(baseItemGroup.toObject());
 // console.log(baseItemGroup.toString());
-console.log(baseItemCollection.toObject());
+// console.log(baseItemCollection.toObject());
 // console.log(baseItemCollection.toString());
 
 export function Default() {

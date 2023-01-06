@@ -2,13 +2,15 @@ import { Node } from "./Node";
 
 import ComponentItem from "../components/Item";
 import ComponentStatus from "../components/Status";
+import ComponentRef from "../components/Ref";
 
 export class Item extends Node {
-	constructor ({ item = {}, status = {}, ...rest } = {}) {
+	constructor ({ ...rest } = {}) {
 		super({ ...rest });
 
-		this.shared.item = ComponentItem.Create({ ...item });
-		this.shared.status = ComponentStatus.Create({ ...status });
+		ComponentItem.Attach(this, { ...(rest.shared || {}).item });
+		ComponentStatus.Attach(this, { ...(rest.shared || {}).status });
+		ComponentRef.Attach(this, { ...(rest.shared || {}).ref });
 
 		//? Related to de/serialization testing
 		// this.merge("shared.item", { content: "meowzzz" });
