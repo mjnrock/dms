@@ -83,7 +83,13 @@ SysItemCollection.register(baseItemCollection, baseItem);
 SysItemCollection.register(baseItemCollection, baseItem2);
 SysItemCollection.register(baseItemCollection, baseItemGroup);
 
-console.log(baseItem.toObject());
+
+// console.log(baseItem.toObject());
+let item = baseItem.toObject();
+console.log(item.shared.item)
+console.log(Item.Generate(item));
+
+
 // console.log(baseItem.toString());
 console.log(baseItemGroup.toObject());
 // console.log(baseItemGroup.toString());

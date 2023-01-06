@@ -9,6 +9,10 @@ export class Item extends Node {
 
 		this.shared.item = ComponentItem.Create({ ...item });
 		this.shared.status = ComponentStatus.Create({ ...status });
+
+		// this.merge("shared.item", { content: "meowzzz" });
+		// this.merge("shared.item", { ...(rest.shared || {}).item });
+		// this.merge("shared.status", { ...(rest.shared || {}).status });
 	}
 
 	static Factory(qty = 1, input = {}) {
