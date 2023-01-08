@@ -1,9 +1,12 @@
 import React from "react";
 
+import { Test } from "./../react/components/Test";
+
 import { Node } from "./../lib/Node";
 import { Item } from "./../lib/Item";
 import { ItemGroup } from "./../lib/ItemGroup";
 import { ItemCollection } from "../lib/ItemCollection";
+import { Registry } from "../lib/Registry";
 
 import { Item as SysItem } from "../systems/Item";
 import { ItemGroup as SysItemGroup } from "./../systems/class/ItemGroup";
@@ -53,7 +56,7 @@ const baseItemCollection = new ItemCollection({
 	},
 });
 
-const [ baseItem ] = baseItemCollection.state.factory.Item(1, {
+const [ baseItem ] = baseItemCollection.state.factory.Item({
 	shared: {
 		item: {
 			title: `Meow`,
@@ -64,25 +67,54 @@ const [ baseItem ] = baseItemCollection.state.factory.Item(1, {
 		},
 	},
 });
-const [ baseItem2 ] = baseItemCollection.state.factory.Item(1, {
-	shared: {
-		item: {
-			content: `# Hello World`,
-		},
-		status: {
-			complete: true,
-		},
-		ref: {
-			id: baseItem.id,
+const [ baseItem2, baseItem3 ] = baseItemCollection.state.factory.Item([
+	{
+		shared: {
+			item: {
+				content: `# Hello World`,
+			},
+			status: {
+				complete: true,
+			},
+			ref: {
+				id: baseItem.id,
+			},
 		},
 	},
-});
+	{
+		shared: {
+			item: {
+				content: `# Hello Worldzz`,
+			},
+			status: {
+				complete: true,
+			},
+			ref: {
+				id: baseItem.id,
+			},
+		},
+	},
+]);
+// const [ baseItem2, baseItem3 ] = baseItemCollection.state.factory.Item(2, {
+// 	shared: {
+// 		item: {
+// 			content: `# Hello World`,
+// 		},
+// 		status: {
+// 			complete: true,
+// 		},
+// 		ref: {
+// 			id: baseItem.id,
+// 		},
+// 	},
+// });
 
 const [ baseItemGroup ] = baseItemCollection.state.factory.ItemGroup(1, {
 	parent: null,
 	children: [
 		baseItem,
 		baseItem2,
+		baseItem3,
 	],
 	shared: {
 		item: {
@@ -93,6 +125,7 @@ const [ baseItemGroup ] = baseItemCollection.state.factory.ItemGroup(1, {
 
 SysItemCollection.register(baseItemCollection, baseItem);
 SysItemCollection.register(baseItemCollection, baseItem2);
+SysItemCollection.register(baseItemCollection, baseItem3);
 SysItemCollection.register(baseItemCollection, baseItemGroup);
 
 
@@ -112,16 +145,45 @@ SysItemCollection.register(baseItemCollection, baseItemGroup);
 // console.log(baseItemCollection.toObject());
 // console.log(baseItemCollection.toString());
 
+const registry = new Registry({
+	state: [
+		baseItem,
+		baseItem2,
+		baseItem3,
+		baseItemGroup,
+	],
+});
+
+registry.addAlias(baseItem, `baseItem`);
+registry.addAlias(baseItem2, `baseItem2`);
+registry.addAlias(baseItem3, `baseItem3`);
+registry.addAlias(baseItemGroup, `baseItemGroup`);
+
+console.log(registry);
+
+console.log(registry.findEntry(`baseItem`));
+console.log(registry.findEntry(`baseItem2`));
+console.log(registry.findEntry(`baseItem3`));
+console.log(registry.findEntry(`baseItemGroup`));
+
+registry.setPool(`itemseses`, baseItem, baseItem2, baseItem3);
+console.log(registry.findEntry(`itemseses`));
+registry.addToPool(`itemseses`, baseItemGroup);
+console.log(registry.findEntry(`itemseses`));
+registry.removeFromPool(`itemseses`, baseItem);
+console.log(registry.findEntry(`itemseses`));
+
 export const RemindContext = React.createContext();
 
 export function Default() {
-	let registry = [ ...baseItemCollection.state.registry.values() ];
+	let registry = [ ...baseItemCollection.state.registry.values() ],
+		item = registry[ 3 ];
 
 	return (
 		<RemindContext.Provider value={ { stub: true } }>
 			<div className="m-2">
 				{/* <ItemJSX item={ baseItemGroup } /> */ }
-				<ItemJSX item={ registry[ 2 ] } />
+				<ItemJSX item={ item } />
 			</div>
 		</RemindContext.Provider>
 	);

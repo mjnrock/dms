@@ -3,6 +3,7 @@ import { Node } from "./Node";
 import ComponentItem from "../components/Item";
 import ComponentStatus from "../components/Status";
 import ComponentRef from "../components/Ref";
+import ComponentChecklist from "../components/Checklist";
 
 export class Item extends Node {
 	constructor ({ ...rest } = {}) {
@@ -11,6 +12,7 @@ export class Item extends Node {
 		ComponentItem.Attach(this, { ...(rest.shared || {}).item });
 		ComponentStatus.Attach(this, { ...(rest.shared || {}).status });
 		ComponentRef.Attach(this, { ...(rest.shared || {}).ref });
+		// ComponentChecklist.Attach(this, { ...(rest.shared || {}).checklist });
 
 		//? Related to de/serialization testing
 		// this.merge("shared.item", { content: "meowzzz" });
@@ -19,8 +21,13 @@ export class Item extends Node {
 	}
 
 	static Factory(qty = 1, input = {}) {
-		const items = [];
+		if(Array.isArray(qty)) {
+			return qty.map(qty => this.Factory(1, qty)[ 0 ]);
+		} else if(typeof qty === "object") {
+			return this.Factory(1, qty);
+		}
 
+		const items = [];
 		for(let i = 0; i < qty; i++) {
 			if(typeof input === "function") {
 				items.push(new this(input(i)));

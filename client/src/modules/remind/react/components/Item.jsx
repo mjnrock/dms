@@ -1,3 +1,5 @@
+import { Cog6ToothIcon, ListBulletIcon, LockClosedIcon, LockOpenIcon, PencilIcon, PlusIcon, RectangleGroupIcon, TrashIcon } from "@heroicons/react/24/outline";
+
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -7,12 +9,14 @@ import { useNodeEvent } from "./../useNodeEvent";
 import { Status as SysStatus } from "../../systems/Status";
 import { Item as SysItem } from "../../systems/Item";
 import { ItemGroup as SysItemGroup } from "./../../systems/class/ItemGroup";
+import { Checklist as SysChecklist } from "./../../systems/Checklist";
 
 import { Item as ItemJS } from "./../../lib/Item";
 import { ItemGroup as ItemGroupJS } from "./../../lib/ItemGroup";
 import { ItemCollection as ItemCollectionJS } from "./../../lib/ItemCollection";
 import { Node as NodeJS } from "../../lib/Node";
-import { Cog6ToothIcon, LockClosedIcon, LockOpenIcon, PencilIcon, PlusIcon, RectangleGroupIcon, TrashIcon } from "@heroicons/react/24/outline";
+
+import { Checklist as ChecklistJSX } from "./Checklist";
 
 export function Item({ item }) {
 	const [ baseItem, setBaseItem ] = useState(item);
@@ -93,6 +97,11 @@ export function Item({ item }) {
 						)
 					})
 				}
+				{
+					baseItem.shared.checklist ? (
+						<ChecklistJSX item={ baseItem } />
+					) : null
+				}
 				<div className="flex flex-row mt-2">
 					<button
 						className="p-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-green-200 hover:shadow"
@@ -116,6 +125,14 @@ export function Item({ item }) {
 							setBaseItem(baseItem);
 						} }>
 						<RectangleGroupIcon className="w-4 h-4" />
+					</button>
+
+					<button
+						className="p-2 ml-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-blue-200 hover:shadow"
+						onClick={ e => {
+							SysChecklist.attachChecklist(baseItem);
+						} }>
+						<ListBulletIcon className="w-4 h-4" />
 					</button>
 				</div>
 			</div>
@@ -153,6 +170,21 @@ export function Item({ item }) {
 					}
 				</div>
 			</div>
+			{
+				baseItem.shared.checklist ? (
+					<ChecklistJSX item={ baseItem } />
+				) : (
+					<div className="flex flex-row mt-2">
+						<button
+							className="p-2 ml-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-blue-200 hover:shadow"
+							onClick={ e => {
+								SysChecklist.attachChecklist(baseItem);
+							} }>
+							<ListBulletIcon className="w-4 h-4" />
+						</button>
+					</div>
+				)
+			}
 		</div>
 	);
 };
