@@ -184,7 +184,7 @@ export function Item({ item }) {
 				) : (
 					<div className="flex flex-row mt-2">
 						<button
-							className="p-2 ml-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-blue-200 hover:shadow"
+							className="p-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-blue-200 hover:shadow"
 							onClick={ e => {
 								SysChecklist.attachChecklist(baseItem);
 							} }>
