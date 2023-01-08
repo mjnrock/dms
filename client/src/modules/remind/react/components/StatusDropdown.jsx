@@ -23,14 +23,12 @@ export function StatusDropdown({ item, callback, ...rest } = {}) {
 	return (
 		<div className={ `whitespace-nowrap cursor-pointer relative inline-block` } { ...rest }>
 			<div
-				className={ `flex flex-row p-2 text-center font-bold z-0` }
+				className={ `flex flex-row p-2 text-center font-bold z-0 hover:bg-neutral-50 hover:rounded` }
 				onClick={ e => {
 					setIsOpen(!isOpen);
 				} }
 			>
-				{/* <div className="w-full my-auto">
-				</div> */}
-					<div className={ `w-3 h-3 p-1 rounded-full bg-${ StatusColor[ current ] }` } />
+				<div className={ `w-3 h-3 p-1 rounded-full bg-${ StatusColor[ current ] }` } />
 				<ChevronDownIcon className={ `ml-1 w-3 h-3 my-auto text-neutral-400` } />
 			</div>
 			{
