@@ -145,33 +145,33 @@ SysItemCollection.register(baseItemCollection, baseItemGroup);
 // console.log(baseItemCollection.toObject());
 // console.log(baseItemCollection.toString());
 
-const registry = new Registry({
-	state: [
-		baseItem,
-		baseItem2,
-		baseItem3,
-		baseItemGroup,
-	],
-});
+// const registry = new Registry({
+// 	state: [
+// 		baseItem,
+// 		baseItem2,
+// 		baseItem3,
+// 		baseItemGroup,
+// 	],
+// });
 
-registry.addAlias(baseItem, `baseItem`);
-registry.addAlias(baseItem2, `baseItem2`);
-registry.addAlias(baseItem3, `baseItem3`);
-registry.addAlias(baseItemGroup, `baseItemGroup`);
+// registry.addAlias(baseItem, `baseItem`);
+// registry.addAlias(baseItem2, `baseItem2`);
+// registry.addAlias(baseItem3, `baseItem3`);
+// registry.addAlias(baseItemGroup, `baseItemGroup`);
 
-console.log(registry);
+// console.log(registry);
 
-console.log(registry.findEntry(`baseItem`));
-console.log(registry.findEntry(`baseItem2`));
-console.log(registry.findEntry(`baseItem3`));
-console.log(registry.findEntry(`baseItemGroup`));
+// console.log(registry.findEntry(`baseItem`));
+// console.log(registry.findEntry(`baseItem2`));
+// console.log(registry.findEntry(`baseItem3`));
+// console.log(registry.findEntry(`baseItemGroup`));
 
-registry.setPool(`itemseses`, baseItem, baseItem2, baseItem3);
-console.log(registry.findEntry(`itemseses`));
-registry.addToPool(`itemseses`, baseItemGroup);
-console.log(registry.findEntry(`itemseses`));
-registry.removeFromPool(`itemseses`, baseItem);
-console.log(registry.findEntry(`itemseses`));
+// registry.setPool(`itemseses`, baseItem, baseItem2, baseItem3);
+// console.log(registry.findEntry(`itemseses`));
+// registry.addToPool(`itemseses`, baseItemGroup);
+// console.log(registry.findEntry(`itemseses`));
+// registry.removeFromPool(`itemseses`, baseItem);
+// console.log(registry.findEntry(`itemseses`));
 
 export const RemindContext = React.createContext();
 
