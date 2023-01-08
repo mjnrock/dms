@@ -143,18 +143,15 @@ export function Item({ item }) {
 	return (
 		<div className={ `mt-2 p-2 rounded border border-solid border-neutral-200 shadow-sm hover:shadow w-full` }>
 			<div className="flex flex-row">
-				{/* <div className="basis-1/12">
-					<div className={ `${ baseItem.shared.status.complete ? `bg-green-600` : `bg-red-600` }` } onClick={ onCompleteEvent }>&nbsp;</div>
-				</div> */}
-				<div className="basis-1/12">
+				<div className={ `` }>
 					<StatusDropdown
 						item={ baseItem }
-						callback={ (...args) => {
-							console.log("EVENT: ", ...args);
+						callback={ (status) => {
+							SysStatus.setCurrent(baseItem, status);
 						} }
 					/>
 				</div>
-				<div className="pl-2 basis-11/12" onClick={ enableEditMode }>
+				<div className="w-full pl-2" onClick={ enableEditMode }>
 					{
 						editMode
 							? (

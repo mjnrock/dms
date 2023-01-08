@@ -6,7 +6,7 @@ export function Create({ ...rest } = {}) {
 		complete: false,
 
 		// V2
-		current: null,
+		current: `Not Started`,
 		options: [
 			`Not Started`,
 			`In Progress`,
