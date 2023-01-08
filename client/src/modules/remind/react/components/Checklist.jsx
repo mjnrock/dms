@@ -68,7 +68,7 @@ export function Checklist({ item, ...rest } = {}) {
 
 				<div className={ `flex flew-row` }>
 					<button
-						className="p-2 mt-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-blue-200 hover:shadow"
+						className="p-2 mt-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-neutral-100 hover:shadow"
 						onClick={ e => {
 							setShowCompleted(!showCompleted);
 						} }>
