@@ -5,7 +5,7 @@ import { useNodeEvent } from "../useNodeEvent";
 import { Checklist as SysChecklist } from "../../systems/Checklist";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import ChecklistItem from "../../components/templates/ChecklistItem";
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { CheckCircleIcon, CheckIcon, EyeIcon, EyeSlashIcon, XCircleIcon } from "@heroicons/react/24/outline";
 
 export function Checklist({ item, ...rest } = {}) {
 	const { emitter } = useNodeEvent("update", item);
@@ -24,8 +24,8 @@ export function Checklist({ item, ...rest } = {}) {
 				checklist.filter(v => showCompleted ? true : !v.complete).sort((a, b) => a.order - b.order).map((checklistItem, index) => {
 					return (
 						<div key={ checklistItem.id } className={ `inline-flex p-2 mt-2 mb-0 rounded border border-solid border-neutral-200 shadow-sm hover:shadow` }>
-							<div
-								className={ `w-6 h-6 cursor-pointer border border-solid rounded border-black ${ checklistItem.complete ? `bg-green-300` : `bg-neutral-100` }` }
+							{/* <div
+								className={ `w-4 h-4 my-auto cursor-pointer border border-solid rounded-full border-neutral-200 ${ checklistItem.complete ? `border-emerald-400 bg-emerald-300 hover:bg-rose-100 hover:border-rose-200` : `bg-neutral-50 hover:bg-emerald-100 hover:border-emerald-200` }` }
 								onClick={ e => {
 									SysChecklist.toggleChecklistItem(emitter, checklistItem);
 								} }
@@ -34,15 +34,34 @@ export function Checklist({ item, ...rest } = {}) {
 
 									SysChecklist.removeChecklistItem(emitter, checklistItem);
 								} }
-							/>
-							<ReactMarkdown children={ checklistItem.content } className={ `pl-4` } />
+							/> */}
+							<div
+								className={ `p-2 rounded-full cursor-pointer ${ checklistItem.complete ? `text-emerald-400 hover:text-rose-300 hover:bg-rose-50` : `text-neutral-400 hover:text-emerald-300 hover:bg-emerald-50` }` }
+								onClick={ e => {
+									SysChecklist.toggleChecklistItem(emitter, checklistItem);
+								} }
+								onContextMenu={ e => {
+									e.preventDefault();
+
+									SysChecklist.removeChecklistItem(emitter, checklistItem);
+								} }
+							>
+								{
+									checklistItem.complete ? (
+										<div className={ `w-5 h-5 border-2 border-solid border-emeral-400 bg-emerald-300 hover:bg-rose-100 rounded-full` } />
+									) : (
+										<div className={ `w-5 h-5 border-2 border-solid border-neutral-400 hover:bg-emerald-100 rounded-full` } />
+									)
+								}
+							</div>
+							<ReactMarkdown children={ checklistItem.content } className={ `pl-4 my-auto` } />
 						</div>
 					);
 				})
 			}
 			<div className={ `` }>
 				<input
-					className={ `w-full p-2 border border-solid rounded border-neutral-100 shadow mt-2` }
+					className={ `w-full p-2 border border-solid rounded border-neutral-100 shadow mt-2 focus:outline-neutral-300` }
 					type="text"
 					value={ emitter.content }
 					placeholder="Add an item..."
@@ -59,19 +78,23 @@ export function Checklist({ item, ...rest } = {}) {
 					} }
 				/>
 
-				<button
-					className="p-2 mt-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-blue-200 hover:shadow"
-					onClick={ e => {
-						setShowCompleted(!showCompleted);
-					} }>
-					{
-						showCompleted ? (
-							<EyeIcon className={ `w-4 h-4` } />
-						) : (
-							<EyeSlashIcon className={ `w-4 h-4` } />
-						)
-					}
-				</button>
+				<div className={ `flex flew-row` }>
+					<button
+						className="p-2 mt-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-blue-200 hover:shadow"
+						onClick={ e => {
+							setShowCompleted(!showCompleted);
+						} }>
+						{
+							showCompleted ? (
+								<EyeIcon className={ `w-4 h-4` } />
+							) : (
+								<EyeSlashIcon className={ `w-4 h-4` } />
+							)
+						}
+					</button>
+
+					<div className={ `font-mono my-auto text-neutral-500 text-[10px] ml-2 pt-1` }>{ showCompleted ? checklist.length : checklist.filter(v => !v.complete).length } / { checklist.length }</div>
+				</div>
 			</div>
 		</div>
 	);

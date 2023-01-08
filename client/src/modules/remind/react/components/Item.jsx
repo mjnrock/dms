@@ -146,8 +146,10 @@ export function Item({ item }) {
 				<div className={ `` }>
 					<StatusDropdown
 						item={ baseItem }
-						callback={ (status) => {
-							SysStatus.setCurrent(baseItem, status);
+						callback={ (etype, status) => {
+							if(etype === "select") {
+								SysStatus.setCurrent(baseItem, status);
+							}
 						} }
 					/>
 				</div>

@@ -14,7 +14,7 @@ module.exports = {
 	plugins: [],
 	safelist: [
         {
-            pattern: /(bg|text|border|outline)-(red|gray|orange|purple|blue|teal|pink|neutral)-(50|100|200|300|400|500|600|700|800|900)/,
+            pattern: /(bg|text|border|outline)-(rose|amber|emerald|red|gray|orange|purple|blue|teal|pink|neutral)-(50|100|200|300|400|500|600|700|800|900)/,
             variants: ['hover','focus'],
         },
 	],
