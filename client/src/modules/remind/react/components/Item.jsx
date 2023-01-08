@@ -105,7 +105,7 @@ export function Item({ item }) {
 				}
 				<div className="flex flex-row mt-2">
 					<button
-						className="p-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-green-100 hover:shadow"
+						className="p-2 border border-blue-200 border-solid rounded shadow-sm hover:bg-blue-100 hover:shadow"
 						onClick={ e => {
 							let next = new ItemJS();
 
@@ -113,11 +113,11 @@ export function Item({ item }) {
 
 							setBaseItem(baseItem);
 						} }>
-						<PlusIcon className="w-4 h-4" />
+						<PlusIcon className="w-4 h-4 text-blue-400" />
 					</button>
 
 					<button
-						className="p-2 ml-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-blue-100 hover:shadow"
+						className="p-2 ml-2 border border-green-200 border-solid rounded shadow-sm hover:bg-green-100 hover:shadow"
 						onClick={ e => {
 							let next = new ItemGroupJS();
 
@@ -125,7 +125,7 @@ export function Item({ item }) {
 
 							setBaseItem(baseItem);
 						} }>
-						<RectangleGroupIcon className="w-4 h-4" />
+						<RectangleGroupIcon className="w-4 h-4 text-green-400" />
 					</button>
 
 					<button
@@ -133,7 +133,7 @@ export function Item({ item }) {
 						onClick={ e => {
 							SysChecklist.attachChecklist(baseItem);
 						} }>
-						<ListBulletIcon className="w-4 h-4" />
+						<ListBulletIcon className="w-4 h-4 text-neutral-400" />
 					</button>
 				</div>
 			</div>
@@ -188,7 +188,7 @@ export function Item({ item }) {
 							onClick={ e => {
 								SysChecklist.attachChecklist(baseItem);
 							} }>
-							<ListBulletIcon className="w-4 h-4" />
+							<ListBulletIcon className="w-4 h-4 text-neutral-400" />
 						</button>
 					</div>
 				)
