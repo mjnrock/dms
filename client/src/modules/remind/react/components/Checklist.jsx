@@ -18,7 +18,7 @@ export function Checklist({ item, ...rest } = {}) {
 	let checklist = [ ...emitter.shared.checklist.list.values() ];
 
 	return (
-		<div className={ `flex flex-col p-2 mt-2 ml-2 border border-l-2 border-solid border-neutral-200 rounded shadow-sm hover:shadow` }>
+		<div className={ `flex flex-col p-2 mt-2 ml-1 border border-l-2 border-solid border-neutral-200 rounded shadow-sm hover:shadow` }>
 			<div className={ `text-xl italic text-center p-2 mt-2 mb-1` }>{ emitter.shared.checklist.title }</div>
 			{
 				checklist.filter(v => showCompleted ? true : !v.complete).sort((a, b) => a.order - b.order).map((checklistItem, index) => {
