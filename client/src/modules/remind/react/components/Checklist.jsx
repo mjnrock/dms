@@ -18,37 +18,25 @@ export function Checklist({ item, ...rest } = {}) {
 	let checklist = [ ...emitter.shared.checklist.list.values() ];
 
 	return (
-		<div className={ `flex flex-col p-2 mt-2 ml-4 border border-l-[3px] border-solid border-neutral-200 rounded shadow-sm hover:shadow` }>
+		<div className={ `flex flex-col p-2 mt-2 ml-2 border border-l-2 border-solid border-neutral-200 rounded shadow-sm hover:shadow` }>
 			<div className={ `text-xl italic text-center p-2 mt-2 mb-1` }>{ emitter.shared.checklist.title }</div>
 			{
 				checklist.filter(v => showCompleted ? true : !v.complete).sort((a, b) => a.order - b.order).map((checklistItem, index) => {
 					return (
 						<div key={ checklistItem.id } className={ `inline-flex p-2 mt-2 mb-0 rounded border border-solid border-neutral-200 shadow-sm hover:shadow` }>
-							{/* <div
-								className={ `w-4 h-4 my-auto cursor-pointer border border-solid rounded-full border-neutral-200 ${ checklistItem.complete ? `border-emerald-400 bg-emerald-300 hover:bg-rose-100 hover:border-rose-200` : `bg-neutral-50 hover:bg-emerald-100 hover:border-emerald-200` }` }
-								onClick={ e => {
-									SysChecklist.toggleChecklistItem(emitter, checklistItem);
-								} }
-								onContextMenu={ e => {
-									e.preventDefault();
-
-									SysChecklist.removeChecklistItem(emitter, checklistItem);
-								} }
-							/> */}
 							<div
 								className={ `p-2 rounded-full cursor-pointer ${ checklistItem.complete ? `text-emerald-400 hover:text-rose-300 hover:bg-rose-50` : `text-neutral-400 hover:text-emerald-300 hover:bg-emerald-50` }` }
 								onClick={ e => {
-									SysChecklist.toggleChecklistItem(emitter, checklistItem);
-								} }
-								onContextMenu={ e => {
-									e.preventDefault();
-
-									SysChecklist.removeChecklistItem(emitter, checklistItem);
+									if(e.ctrlKey || e.metaKey) {
+										SysChecklist.removeChecklistItem(emitter, checklistItem);
+									} else {
+										SysChecklist.toggleChecklistItem(emitter, checklistItem);
+									}
 								} }
 							>
 								{
 									checklistItem.complete ? (
-										<div className={ `w-5 h-5 border-2 border-solid border-emeral-400 bg-emerald-300 hover:bg-rose-100 rounded-full` } />
+										<div className={ `w-5 h-5 border-2 border-solid hover:border-rose-400 hover:bg-rose-300 border-emerald-400 bg-emerald-300 rounded-full` } />
 									) : (
 										<div className={ `w-5 h-5 border-2 border-solid border-neutral-400 hover:bg-emerald-100 rounded-full` } />
 									)
