@@ -31,7 +31,7 @@ export function StatusDropdown({ item, callback, ...rest } = {}) {
 				{/* <div className="w-full my-auto">
 				</div> */}
 					<div className={ `w-3 h-3 p-1 rounded-full bg-${ StatusColor[ current ] }` } />
-				<ChevronDownIcon className={ `ml-1 w-3 h-3 my-auto` } />
+				<ChevronDownIcon className={ `ml-1 w-3 h-3 my-auto text-neutral-400` } />
 			</div>
 			{
 				isOpen ? (
