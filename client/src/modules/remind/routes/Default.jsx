@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Test } from "./../react/components/Test";
+import { Test } from "../react/components/$Test";
 
 import { Node } from "./../lib/Node";
 import { Item } from "./../lib/Item";
@@ -86,13 +86,12 @@ const [ baseItem2, baseItem3 ] = baseItemCollection.state.factory.Item([
 	{
 		shared: {
 			item: {
-				content: `
-This is *some* nonsense.
+				content: 
+`This is *some* nonsense.
 
 # this is a header
 
-this is some **more** ~nonsense~
-				`,
+this is some **more** ~nonsense~`,
 			},
 			status: {
 				complete: true,

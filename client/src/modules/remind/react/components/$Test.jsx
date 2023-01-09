@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from "react";
 
-import { useNodeEvent } from "./../../react/useNodeEvent";
+import { useNodeEvent } from "../useNodeEvent";
 
 export function Test({ ...rest } = {}) {
 	return (

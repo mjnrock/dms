@@ -17,78 +17,19 @@ import { ItemCollection as ItemCollectionJS } from "./../../lib/ItemCollection";
 import { Node as NodeJS } from "../../lib/Node";
 
 import { Checklist as ChecklistJSX } from "./Checklist";
+import { MarkdownEditor } from "./MarkdownEditor";
 import { StatusDropdown } from "./StatusDropdown";
 
 export function Item({ item }) {
 	const [ baseItem, setBaseItem ] = useState(item);
-	const [ editMode, setEditMode ] = useState(false);
-	const [ groupEditMode, setGroupEditMode ] = useState(false);
 
 	// const { emitter, prop, current, previous } = useNodeEvent("update", baseItem);
 	const { } = useNodeEvent("update", baseItem);
 
-	function onCompleteEvent(e) {
-		let next = SysStatus.toggle(baseItem);
-
-		setBaseItem(next);
-	}
-
-	function onMarkdownEvent(e) {
-		let next = SysItem.update(baseItem, { content: e.target.value });
-
-		setBaseItem(next);
-	}
-
-	function enableEditMode() {
-		if(!editMode) {
-			setEditMode(!editMode);
-		}
-	}
-
 	if(baseItem instanceof ItemGroupJS) {
 		return (
 			<div className={ `mt-2 pt-0 p-2 rounded border border-solid border-neutral-200 shadow-sm hover:shadow w-full` }>
-				<div className="flex flex-row mt-2">
-					{
-						groupEditMode ? (
-							<>
-								<input
-									className="w-full p-2 text-lg text-center border border-solid rounded shadow-sm border-neutral-300 hover:shadow"
-									type="text"
-									value={ baseItem.shared.item.title }
-									placeholder="Add a title..."
-									onBlur={ e => setGroupEditMode(false) }
-									onKeyUp={ e => {
-										if(e.key === "Escape") {
-											setGroupEditMode(false);
-										}
-									} }
-									onChange={ e => {
-										let next = SysItem.setTitle(baseItem, e.target.value);
-
-										setBaseItem(next);
-									} } />
-							</>
-						) : (
-							<>
-								<div
-									className="w-full p-2 text-lg text-center border border-transparent border-solid rounded"
-									onClick={ e => {
-										setGroupEditMode(!groupEditMode);
-									} }
-								>
-									{
-										baseItem.shared.item.title ? (
-											<ReactMarkdown remarkPlugins={ [ remarkGfm ] }>{ baseItem.shared.item.title }</ReactMarkdown>
-										) : (
-											<div className="text-neutral-400">Add a title...</div>
-										)
-									}
-								</div>
-							</>
-						)
-					}
-				</div>
+				<MarkdownEditor item={ baseItem } type={ "title" } />
 				{
 					baseItem.state.children.map((child, index) => {
 						return (
@@ -153,30 +94,7 @@ export function Item({ item }) {
 						} }
 					/>
 				</div>
-				<div className={ `w-full pl-2 border border-transparent border-solid rounded ${ editMode ? `` : `hover:border-neutral-200` }` } onClick={ enableEditMode }>
-					{
-						editMode
-							? (
-								<>
-									<textarea
-										className={ `w-full pl-2 -ml-2 border border-solid rounded border-neutral-300 outline-neutral-300` }
-										value={ item.shared.item.content }
-										onChange={ onMarkdownEvent }
-										onBlur={ e => setEditMode(false) }
-										onKeyUp={ e => {
-											if(e.key === "Escape") {
-												setEditMode(false);
-											}
-										} }
-									/>
-								</>
-							) : (
-								<>
-									<ReactMarkdown children={ item.shared.item.content } remarkPlugins={ [ remarkGfm ] } />
-								</>
-							)
-					}
-				</div>
+				<MarkdownEditor item={ baseItem } type={ "content" } />
 			</div>
 			{
 				baseItem.shared.checklist ? (
