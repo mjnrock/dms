@@ -86,7 +86,13 @@ const [ baseItem2, baseItem3 ] = baseItemCollection.state.factory.Item([
 	{
 		shared: {
 			item: {
-				content: `# Hello Worldzz`,
+				content: `
+This is *some* nonsense.
+
+# this is a header
+
+this is some **more** ~nonsense~
+				`,
 			},
 			status: {
 				complete: true,

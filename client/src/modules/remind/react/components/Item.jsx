@@ -153,13 +153,13 @@ export function Item({ item }) {
 						} }
 					/>
 				</div>
-				<div className="w-full pl-2" onClick={ enableEditMode }>
+				<div className={ `w-full pl-2 border border-transparent border-solid rounded ${ editMode ? `` : `hover:border-neutral-200` }` } onClick={ enableEditMode }>
 					{
 						editMode
 							? (
 								<>
 									<textarea
-										className={ `w-full border border-solid rounded border-black min-h-[150px]` }
+										className={ `w-full pl-2 -ml-2 border border-solid rounded border-neutral-300 outline-neutral-300` }
 										value={ item.shared.item.content }
 										onChange={ onMarkdownEvent }
 										onBlur={ e => setEditMode(false) }
