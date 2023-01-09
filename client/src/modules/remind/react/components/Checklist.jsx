@@ -4,8 +4,34 @@ import { useNodeEvent } from "../useNodeEvent";
 
 import { Checklist as SysChecklist } from "../../systems/Checklist";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
-import ChecklistItem from "../../components/templates/ChecklistItem";
-import { CheckCircleIcon, CheckIcon, EyeIcon, EyeSlashIcon, XCircleIcon } from "@heroicons/react/24/outline";
+import ComponentChecklistItem from "../../components/templates/ChecklistItem";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+
+export function ChecklistItem({ item, checklistItem, ...rest } = {}) {
+	return (
+		<div key={ checklistItem.id } className={ `inline-flex p-2 mt-2 mb-0 rounded border border-solid border-neutral-200 shadow-sm hover:shadow` }>
+			<div
+				className={ `p-2 rounded-full cursor-pointer ${ checklistItem.complete ? `text-emerald-400 hover:text-rose-300 hover:bg-rose-50` : `text-neutral-400 hover:text-emerald-300 hover:bg-emerald-50` }` }
+				onClick={ e => {
+					if(e.ctrlKey || e.metaKey) {
+						SysChecklist.removeChecklistItem(item, checklistItem);
+					} else {
+						SysChecklist.toggleChecklistItem(item, checklistItem);
+					}
+				} }
+			>
+				{
+					checklistItem.complete ? (
+						<div className={ `w-5 h-5 border-2 border-solid hover:border-rose-400 hover:bg-rose-300 border-emerald-400 bg-emerald-300 rounded-full` } />
+					) : (
+						<div className={ `w-5 h-5 border-2 border-solid border-neutral-400 hover:bg-emerald-100 rounded-full` } />
+					)
+				}
+			</div>
+			<ReactMarkdown children={ checklistItem.content } className={ `pl-4 my-auto` } />
+		</div>
+	);
+}
 
 export function Checklist({ item, ...rest } = {}) {
 	const { emitter } = useNodeEvent("update", item);
@@ -19,33 +45,11 @@ export function Checklist({ item, ...rest } = {}) {
 
 	return (
 		<div className={ `flex flex-col p-2 mt-2 ml-1 border border-l-2 border-solid border-neutral-200 rounded shadow-sm hover:shadow` }>
-			<div className={ `text-xl italic text-center p-2 mt-2 mb-1` }>{ emitter.shared.checklist.title }</div>
+			<ReactMarkdown className={ `text-xl text-center p-2 mt-2 mb-1` }>{ emitter.shared.checklist.title }</ReactMarkdown>
 			{
-				checklist.filter(v => showCompleted ? true : !v.complete).sort((a, b) => a.order - b.order).map((checklistItem, index) => {
-					return (
-						<div key={ checklistItem.id } className={ `inline-flex p-2 mt-2 mb-0 rounded border border-solid border-neutral-200 shadow-sm hover:shadow` }>
-							<div
-								className={ `p-2 rounded-full cursor-pointer ${ checklistItem.complete ? `text-emerald-400 hover:text-rose-300 hover:bg-rose-50` : `text-neutral-400 hover:text-emerald-300 hover:bg-emerald-50` }` }
-								onClick={ e => {
-									if(e.ctrlKey || e.metaKey) {
-										SysChecklist.removeChecklistItem(emitter, checklistItem);
-									} else {
-										SysChecklist.toggleChecklistItem(emitter, checklistItem);
-									}
-								} }
-							>
-								{
-									checklistItem.complete ? (
-										<div className={ `w-5 h-5 border-2 border-solid hover:border-rose-400 hover:bg-rose-300 border-emerald-400 bg-emerald-300 rounded-full` } />
-									) : (
-										<div className={ `w-5 h-5 border-2 border-solid border-neutral-400 hover:bg-emerald-100 rounded-full` } />
-									)
-								}
-							</div>
-							<ReactMarkdown children={ checklistItem.content } className={ `pl-4 my-auto` } />
-						</div>
-					);
-				})
+				checklist.filter(v => showCompleted ? true : !v.complete).sort((a, b) => a.order - b.order).map((checklistItem, index) => (
+					<ChecklistItem key={ checklistItem.id } item={ item } checklistItem={ checklistItem } />
+				))
 			}
 			<div className={ `` }>
 				<input
@@ -56,7 +60,7 @@ export function Checklist({ item, ...rest } = {}) {
 					onKeyUp={ e => {
 						if(e.key === "Enter") {
 							if(e.target.value.trim().length) {
-								SysChecklist.addChecklistItem(emitter, new ChecklistItem({ content: e.target.value }));
+								SysChecklist.addChecklistItem(emitter, new ComponentChecklistItem({ content: e.target.value }));
 							}
 
 							e.target.value = ``;

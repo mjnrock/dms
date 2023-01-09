@@ -13,9 +13,11 @@ import { ItemGroup as SysItemGroup } from "./../systems/class/ItemGroup";
 import { ItemCollection as SysItemCollection } from "./../systems/class/ItemCollection";
 import { Status as SysStatus } from "./../systems/Status";
 import { Ref as SysRef } from "./../systems/Ref";
+import { Checklist as SysChecklist } from "./../systems/Checklist";
 
 import { Create as ComponentItem } from "./../components/Item";
 import { Create as ComponentStatus } from "./../components/Status";
+import { Create as ComponentChecklist } from "./../components/Checklist";
 
 import { Item as ItemJSX } from "./../react/components/Item";
 
@@ -172,6 +174,10 @@ SysItemCollection.register(baseItemCollection, baseItemGroup);
 // console.log(registry.findEntry(`itemseses`));
 // registry.removeFromPool(`itemseses`, baseItem);
 // console.log(registry.findEntry(`itemseses`));
+
+SysChecklist.attachChecklist(baseItem, {
+	title: `This *is* a **TITLE**!`,
+});
 
 export const RemindContext = React.createContext();
 
