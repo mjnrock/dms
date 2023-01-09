@@ -5,7 +5,7 @@ import { useNodeEvent } from "../useNodeEvent";
 import { Checklist as SysChecklist } from "../../systems/Checklist";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import ComponentChecklistItem from "../../components/templates/ChecklistItem";
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { CheckIcon, EyeIcon, EyeSlashIcon, MinusIcon } from "@heroicons/react/24/outline";
 
 export function ChecklistItem({ item, checklistItem, ...rest } = {}) {
 	return (
@@ -22,9 +22,9 @@ export function ChecklistItem({ item, checklistItem, ...rest } = {}) {
 			>
 				{
 					checklistItem.complete ? (
-						<div className={ `w-5 h-5 border-2 border-solid hover:border-rose-400 hover:bg-rose-300 border-emerald-400 bg-emerald-300 rounded-full` } />
+						<CheckIcon className={ `w-5 h-5` } />
 					) : (
-						<div className={ `w-5 h-5 border-2 border-solid border-neutral-400 hover:bg-emerald-100 rounded-full` } />
+						<MinusIcon className={ `w-5 h-5` } />
 					)
 				}
 			</div>
