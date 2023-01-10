@@ -20,6 +20,7 @@ import { Create as ComponentStatus } from "./../components/Status";
 import { Create as ComponentChecklist } from "./../components/Checklist";
 
 import { Item as ItemJSX } from "./../react/components/Item";
+import Viewport from "../react/components/Viewport";
 
 const exampleMarkdown = `
 A paragraph with *emphasis* and **strong importance**.
@@ -192,10 +193,7 @@ export function Default() {
 
 	return (
 		<RemindContext.Provider value={ { stub: true } }>
-			<div className="m-2">
-				{/* <ItemJSX item={ baseItemGroup } /> */ }
-				<ItemJSX item={ item } />
-			</div>
+			<Viewport item={item}/>
 		</RemindContext.Provider>
 	);
 };

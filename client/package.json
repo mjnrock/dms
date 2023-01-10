@@ -10,7 +10,7 @@
 		"codemirror": "^6.0.1",
 		"danfojs": "^1.1.2",
 		"marked": "^4.2.5",
-		"pixi.js": "^6.5.8",
+		"pixi.js": "^6.4.2",
 		"react": "^18.2.0",
 		"react-dnd": "^16.0.1",
 		"react-dnd-html5-backend": "^16.0.1",

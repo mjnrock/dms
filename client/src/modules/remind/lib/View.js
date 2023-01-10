@@ -24,6 +24,11 @@ export class View extends ItemGroup {
 			...state,
 		};
 
+		// state.members may be an array, instead of a Registry -- cast back to Registry
+		if(Array.isArray(state.members)) {
+			this.state.members = new Registry({ state: state.members });
+		}
+
 		/** At some interval/invocation, members should be categorized into cached buckets */
 		ComponentViewport.Attach(this, { ...(rest.shared || {}).viewport });
 	}
