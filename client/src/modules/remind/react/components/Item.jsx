@@ -34,7 +34,7 @@ export function Item({ item, x, y, ...rest }) {
 	// const { emitter, prop, current, previous } = useNodeEvent("update", baseItem);
 	const { } = useNodeEvent("update", baseItem);
 
-	let classNames = ` `;
+	let classNames = ``;
 	if(x != null && y != null) {
 		classNames = `absolute`;
 	}
