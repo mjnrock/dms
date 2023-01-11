@@ -21,6 +21,7 @@ import { Create as ComponentChecklist } from "./../components/Checklist";
 
 import { Item as ItemJSX } from "./../react/components/Item";
 import Viewport from "../react/components/Viewport";
+import { Viewport as SysViewport } from "../systems/Viewport";
 
 const exampleMarkdown = `
 A paragraph with *emphasis* and **strong importance**.
@@ -190,6 +191,11 @@ export const RemindContext = React.createContext();
 export function Default() {
 	let registry = [ ...baseItemCollection.state.registry.values() ],
 		item = registry[ 3 ];
+
+	SysViewport.update(item, {
+		x: 650,
+		y: 350,
+	});
 
 	return (
 		<RemindContext.Provider value={ { stub: true } }>

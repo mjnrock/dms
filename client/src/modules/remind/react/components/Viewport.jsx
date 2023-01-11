@@ -17,19 +17,21 @@ export function Viewport({ item, ...rest } = {}) {
 	 * Consider whether or not you should pass the Pixi instance to the PixiCanvas component or the view only
 	 */
 
-	return (
-		<div className={ `p-1 m-2` }>
-			<div
-				className={ `p-1 m-2 rounded border border-solid border-black` }
-			>
-				<ItemJSX item={ item } />
-			</div>
+	let { x, y } = item.shared.viewport;
 
+	return (
+		<div className={ `p-1 m-2 relative` }>
 			<PixiCanvas
-				className={ `p-1 m-2 rounded border border-solid border-black` }
+				className={ `p-1 m-2 rounded border border-solid border-black absolute z-0` }
 				pixi={ pixi }
 			// view={ pixi.renderer.view }
 			/>
+
+			<div
+				className={ `p-1 m-2 rounded border border-solid border-black absolute z-1 bg-white` }
+			>
+				<ItemJSX item={ item } x={ x } y={ y } />
+			</div>
 		</div>
 	)
 };
