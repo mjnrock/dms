@@ -3,7 +3,7 @@ import { Cog6ToothIcon, ListBulletIcon, LockClosedIcon, LockOpenIcon, PencilIcon
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNodeEvent } from "./../useNodeEvent";
 
 import { Status as SysStatus } from "../../systems/Status";
@@ -20,13 +20,15 @@ import { Checklist as ChecklistJSX } from "./Checklist";
 import { MarkdownEditor } from "./MarkdownEditor";
 import { StatusDropdown } from "./StatusDropdown";
 
-const Wrapper = ({ className, x, y, children, ...rest }) => (
-	<div className={ className + ` bg-white min-w-[350px]` } style={ { top: y, left: x } } { ...rest }>
-		<div className={ `` }>
-			{ children }
+const Wrapper = ({ className, x, y, children, ...rest }) => {
+	return (
+		<div className={ className + ` bg-white min-w-[350px]` } style={ { top: y, left: x } } { ...rest }>
+			<div className={ `` }>
+				{ children }
+			</div>
 		</div>
-	</div>
-);
+	);
+};
 
 export function Item({ item, x, y, ...rest }) {
 	const [ baseItem, setBaseItem ] = useState(item);
@@ -37,6 +39,7 @@ export function Item({ item, x, y, ...rest }) {
 	let classNames = ``;
 	if(x != null && y != null) {
 		classNames = `absolute`;
+		// classNames = `absolute p-4`;
 	}
 
 	if(baseItem instanceof ItemGroupJS) {

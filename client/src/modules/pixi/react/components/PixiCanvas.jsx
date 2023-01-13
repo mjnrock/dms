@@ -4,11 +4,12 @@ import * as PixiJS from "pixi.js";
 export function PixiCanvas({ pixi, view, ...rest } = {}) {
 	const canvasRef = useRef(null);
 
+	//FIXME: Bring this outside of this component and use the custom Pixi class
 	useEffect(() => {
 		const ref = canvasRef.current;
 
 		const app = new PixiJS.Application({ antialias: true });
-		document.body.appendChild(app.view);
+		// document.body.appendChild(app.view);
 
 		const graphics = new PixiJS.Graphics();
 
@@ -85,14 +86,16 @@ export function PixiCanvas({ pixi, view, ...rest } = {}) {
 
 		app.stage.addChild(graphics);
 
-		ref.appendChild(pixi.renderer.view);
-
+		ref.appendChild(app.view);
+		// ref.appendChild(pixi.renderer.view);
+		
 		pixi.container = ref;
 		pixi.resizeToViewport();
-
+		
 		return () => {
 			pixi.container = window;
-			ref.removeChild(pixi.renderer.view);
+			ref.removeChild(app.view);
+			// ref.removeChild(pixi.renderer.view);
 		}
 	}, []);
 
