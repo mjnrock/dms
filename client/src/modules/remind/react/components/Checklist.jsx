@@ -9,7 +9,7 @@ import { CheckIcon, EyeIcon, EyeSlashIcon, MinusIcon } from "@heroicons/react/24
 
 export function ChecklistItem({ item, checklistItem, ...rest } = {}) {
 	return (
-		<div key={ checklistItem.id } className={ `inline-flex p-2 mt-2 mb-0 rounded border border-solid border-neutral-200 shadow-sm hover:shadow` }>
+		<div key={ checklistItem.id } className={ `inline-flex p-2 mt-2 mb-0 rounded border border-l-2 border-solid ${ checklistItem.complete ? `border-emerald-200` : `border-neutral-200` } shadow-sm hover:shadow` }>
 			<div
 				className={ `p-2 rounded-full cursor-pointer ${ checklistItem.complete ? `text-emerald-400 hover:text-rose-300 hover:bg-rose-50` : `text-neutral-400 hover:text-emerald-300 hover:bg-emerald-50` }` }
 				onClick={ e => {
@@ -72,13 +72,13 @@ export function Checklist({ item, ...rest } = {}) {
 
 				<div className={ `flex flew-row` }>
 					<button
-						className="p-2 mt-2 border border-solid rounded shadow-sm border-neutral-200 hover:bg-neutral-100 hover:shadow text-neutral-300"
+						className={ `p-2 mt-2 border border-solid rounded shadow-sm ${ showCompleted ? `border-emerald-200` : `border-neutral-200` } hover:bg-neutral-100 hover:shadow text-neutral-300` }
 						onClick={ e => {
 							setShowCompleted(!showCompleted);
 						} }>
 						{
 							showCompleted ? (
-								<EyeIcon className={ `w-4 h-4` } />
+								<EyeIcon className={ `w-4 h-4 text-emerald-200` } />
 							) : (
 								<EyeSlashIcon className={ `w-4 h-4` } />
 							)

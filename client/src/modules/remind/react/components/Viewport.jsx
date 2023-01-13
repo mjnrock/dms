@@ -6,6 +6,7 @@ import { Item as ItemJSX } from "./Item";
 
 import { Pixi } from "./../../../pixi/lib/Pixi";
 import { PixiCanvas } from "../../../pixi/react/components/PixiCanvas";
+import { Bars3Icon } from "@heroicons/react/24/outline";
 
 
 export function Viewport({ item, ...rest } = {}) {
