@@ -6,8 +6,14 @@ import ComponentRef from "../components/Ref";
 import ComponentChecklist from "../components/Checklist";
 
 export class Item extends Node {
-	constructor ({ ...rest } = {}) {
+	constructor ({ parent = null, ...rest } = {}) {
 		super({ ...rest });
+
+		this.state = {
+			...this.state,
+
+			parent,
+		};
 
 		ComponentItem.Attach(this, { ...(rest.shared || {}).item });
 		ComponentStatus.Attach(this, { ...(rest.shared || {}).status });

@@ -132,6 +132,11 @@ const [ baseItemGroup ] = baseItemCollection.state.factory.ItemGroup(1, {
 	},
 });
 
+//STUB -- This would normally be populated when the child is added (but need this for testing)
+baseItem.state.parent = baseItemGroup;
+baseItem2.state.parent = baseItemGroup;
+baseItem3.state.parent = baseItemGroup;
+
 SysItemCollection.register(baseItemCollection, baseItem);
 SysItemCollection.register(baseItemCollection, baseItem2);
 SysItemCollection.register(baseItemCollection, baseItem3);

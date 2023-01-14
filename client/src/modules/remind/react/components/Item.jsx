@@ -30,25 +30,102 @@ const Wrapper = ({ className, x, y, children, ...rest }) => {
 	);
 };
 
-export function Item({ item, x, y, ...rest }) {
+export function CommonTaskBarButtons({ item, onAction = () => { }, ...props } = {}) {
+	return (
+		<>
+			<button
+				className="p-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-neutral-100 hover:shadow"
+				onClick={ e => {
+					SysChecklist.attachChecklist(item);
+
+					onAction("checklist", item);
+				} }>
+				<ListBulletIcon className="w-4 h-4 text-neutral-400" />
+			</button>
+
+			<button
+				className="p-2 ml-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-neutral-100 hover:shadow"
+				onClick={ e => {
+					SysItemGroup.removeChild(item.state.parent, item);
+
+					onAction("delete", item);
+				} }>
+				<TrashIcon className="w-4 h-4 text-neutral-400" />
+			</button>
+		</>
+	);
+};
+
+export function ItemTaskBar({ item, onAction = () => { }, ...props } = {}) {
+	return (
+		<div className="flex flex-row mt-2">
+			<CommonTaskBarButtons item={ item } onAction={ onAction } />
+		</div>
+	);
+};
+export function GroupItemTaskBar({ item, onAction = () => { }, ...props } = {}) {
 	const [ baseItem, setBaseItem ] = useState(item);
 
-	// const { emitter, prop, current, previous } = useNodeEvent("update", baseItem);
-	const { } = useNodeEvent("update", baseItem);
+	return (
+		<div className="flex flex-row mt-2">
+			<button
+				className="p-2 border border-blue-200 border-solid rounded shadow-sm hover:bg-blue-100 hover:shadow"
+				onClick={ e => {
+					let next = new ItemJS();
 
+					SysItemGroup.addChild(baseItem, next);
+
+					setBaseItem(baseItem);
+
+					onAction("add-item", baseItem);
+				} }>
+				<PlusIcon className="w-4 h-4 text-blue-400" />
+			</button>
+
+			<button
+				className="p-2 ml-2 border border-green-200 border-solid rounded shadow-sm hover:bg-green-100 hover:shadow"
+				onClick={ e => {
+					let next = new ItemGroupJS();
+
+					SysItemGroup.addChild(baseItem, next);
+
+					setBaseItem(baseItem);
+
+					onAction("add-group", baseItem);
+				} }>
+				<RectangleGroupIcon className="w-4 h-4 text-green-400" />
+			</button>
+
+			<div className={ `ml-2` } />
+
+			<CommonTaskBarButtons item={ item } onAction={ onAction } />
+		</div>
+	);
+};
+
+export function Item({ item, x, y, ...rest }) {
+	const { } = useNodeEvent("update", item);
+	const [ showChecklist, setShowChecklist ] = useState(false);
+
+	//IDEA: Ideate around how to best do this
 	let classNames = ``;
 	if(x != null && y != null) {
 		classNames = `absolute`;
-		// classNames = `absolute p-4`;
 	}
 
-	if(baseItem instanceof ItemGroupJS) {
+	function onAction(action, item) {
+		if(action === "checklist") {
+			setShowChecklist(!showChecklist);
+		}
+	}
+
+	if(item instanceof ItemGroupJS) {
 		return (
 			<Wrapper className={ classNames } { ...rest } x={ x } y={ y }>
-				<div className={ `mt-2 pt-0 p-2 rounded border border-solid border-neutral-200 shadow-sm hover:shadow w-full` } { ...rest }>
-					<MarkdownEditor item={ baseItem } type={ "title" } />
+				<div className={ `mt-2 pt-0 text-neutral-600 p-2 rounded border border-l-4 bg-neutral-50 hover:bg-emerald-50 border-solid border-neutral-200 shadow-lg hover:border-emerald-200 hover:shadow w-full` } { ...rest }>
+					<MarkdownEditor item={ item } type={ "title" } />
 					{
-						baseItem.state.children.map((child, index) => {
+						item.state.children.map((child, index) => {
 							return (
 								<div key={ index }>
 									<Item item={ child } />
@@ -57,43 +134,11 @@ export function Item({ item, x, y, ...rest }) {
 						})
 					}
 					{
-						baseItem.shared.checklist ? (
-							<ChecklistJSX item={ baseItem } />
+						(item.shared.checklist && showChecklist) ? (
+							<ChecklistJSX item={ item } />
 						) : null
 					}
-					<div className="flex flex-row mt-2">
-						<button
-							className="p-2 border border-blue-200 border-solid rounded shadow-sm hover:bg-blue-100 hover:shadow"
-							onClick={ e => {
-								let next = new ItemJS();
-
-								SysItemGroup.addChild(baseItem, next);
-
-								setBaseItem(baseItem);
-							} }>
-							<PlusIcon className="w-4 h-4 text-blue-400" />
-						</button>
-
-						<button
-							className="p-2 ml-2 border border-green-200 border-solid rounded shadow-sm hover:bg-green-100 hover:shadow"
-							onClick={ e => {
-								let next = new ItemGroupJS();
-
-								SysItemGroup.addChild(baseItem, next);
-
-								setBaseItem(baseItem);
-							} }>
-							<RectangleGroupIcon className="w-4 h-4 text-green-400" />
-						</button>
-
-						<button
-							className="p-2 ml-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-neutral-100 hover:shadow"
-							onClick={ e => {
-								SysChecklist.attachChecklist(baseItem);
-							} }>
-							<ListBulletIcon className="w-4 h-4 text-neutral-400" />
-						</button>
-					</div>
+					<GroupItemTaskBar item={ item } onAction={ onAction } />
 				</div>
 			</Wrapper>
 		);
@@ -101,35 +146,26 @@ export function Item({ item, x, y, ...rest }) {
 
 	return (
 		<Wrapper className={ classNames } { ...rest }>
-			<div className={ `mt-2 p-2 rounded border border-solid border-neutral-200 shadow-sm hover:shadow w-full` } { ...rest }>
+			<div className={ `mt-2 p-2 text-neutral-600 rounded border border-l-4 border-solid border-neutral-300 shadow-lg hover:bg-sky-50 hover:border-sky-300 w-full` } { ...rest }>
 				<div className="flex flex-row">
 					<div className={ `` }>
 						<StatusDropdown
-							item={ baseItem }
+							item={ item }
 							callback={ (etype, status) => {
 								if(etype === "select") {
-									SysStatus.setCurrent(baseItem, status);
+									SysStatus.setCurrent(item, status);
 								}
 							} }
 						/>
 					</div>
-					<MarkdownEditor item={ baseItem } type={ "content" } />
+					<MarkdownEditor item={ item } type={ "content" } />
 				</div>
 				{
-					baseItem.shared.checklist ? (
-						<ChecklistJSX item={ baseItem } />
-					) : (
-						<div className="flex flex-row mt-2">
-							<button
-								className="p-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-neutral-100 hover:shadow"
-								onClick={ e => {
-									SysChecklist.attachChecklist(baseItem);
-								} }>
-								<ListBulletIcon className="w-4 h-4 text-neutral-400" />
-							</button>
-						</div>
-					)
+					(item.shared.checklist && showChecklist) ? (
+						<ChecklistJSX item={ item } />
+					) : null
 				}
+				<ItemTaskBar item={ item } onAction={ onAction } />
 			</div>
 		</Wrapper>
 	);
