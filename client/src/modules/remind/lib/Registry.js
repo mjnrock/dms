@@ -15,6 +15,8 @@ export class Registry extends Node {
 				this.setEntry(key, entry);
 			}
 		}
+		
+		this.tokens.add(`@remind:registry`);
 	}
 
 	/**

@@ -45,8 +45,7 @@ export function Checklist({ item, override, ...rest } = {}) {
 	let checklist = [ ...emitter.shared.checklist.list.values() ];
 
 	return (
-		<div className={ `flex flex-col p-2 mt-2` }>
-			<MarkdownEditor item={ item } type={ "content" } override={ override } />
+		<div className={ `flex flex-col p-2` }>
 			{
 				checklist.filter(v => showCompleted ? true : !v.complete).sort((a, b) => a.order - b.order).map((checklistItem, index) => (
 					<ChecklistItem key={ checklistItem.id } item={ item } checklistItem={ checklistItem } />

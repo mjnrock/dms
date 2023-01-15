@@ -14,12 +14,12 @@ export function MarkdownEditor({ item, type = "content", override }) {
 
 	if(type === "title") {
 		return (
-			<div className="flex flex-row mt-2">
+			<div className="flex flex-row w-full mt-2">
 				{
 					editMode ? (
 						<>
 							<input
-								className="w-full p-2 text-lg text-center border border-solid rounded shadow-sm border-neutral-300 hover:shadow"
+								className="w-full p-2 text-lg text-center bg-white border border-solid rounded shadow-sm border-neutral-300 hover:shadow"
 								type="text"
 								value={ item.shared.item.title }
 								placeholder="Add a title..."

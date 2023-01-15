@@ -166,15 +166,20 @@ export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 	} else if(item instanceof ItemChecklistJS) {
 		return (
 			<Wrapper className={ classNames + ` mt-2 p-2 text-gray-600 bg-white rounded border border-l-4 border-solid border-neutral-300 shadow-lg` } { ...rest } x={ x } y={ y }>
-				<StatusDropdown
-					item={ item }
-					callback={ (etype, status) => {
-						if(etype === "select") {
-							SysStatus.setCurrent(item, status);
-						}
-					} }
-				/>
-				<MarkdownEditor item={ item } type={ "title" } override={ override } />
+
+				<div className="flex flex-row">
+					<div className={ `` }>
+						<StatusDropdown
+							item={ item }
+							callback={ (etype, status) => {
+								if(etype === "select") {
+									SysStatus.setCurrent(item, status);
+								}
+							} }
+						/>
+					</div>
+					<MarkdownEditor item={ item } type={ "title" } override={ override } />
+				</div>
 				<ChecklistJSX item={ item } override={ override } />
 				{
 					showTaskBar ? (

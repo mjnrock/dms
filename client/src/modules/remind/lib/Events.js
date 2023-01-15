@@ -7,6 +7,8 @@ export class Events extends Identity {
 		this.events = new Map();
 
 		this.addObject(events);
+		
+		this.tokens.add(`@remind:events`);
 	}
 
 	get size() {

@@ -34,6 +34,8 @@ export class ItemCollection extends ItemGroup {
 		for(let item of register) {
 			this.state.registry.set(item.id, item);
 		}
+		
+		this.tokens.add(`@remind:item-collection`);
 	}
 
 	getRegistry(asArray = false) {
