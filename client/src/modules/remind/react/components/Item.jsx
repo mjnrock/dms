@@ -150,9 +150,67 @@ export function GroupItemTaskBar({ item, onAction = () => { }, attr, ...props } 
 	);
 };
 
-export function ItemGroup({ item, override, showTaskBar, showChecklist } = {}) {
+export function ItemImage({ item, override, showTaskBar, onAction, className, ...rest } = {}) {
+	const [ width, setWidth ] = useState(500);
+	const [ height, setHeight ] = useState(300);
+	const [ alignment, setAlignment ] = useState("center");
+
 	return (
-		<>
+		<Wrapper className={ className + ` mt-2 p-2 text-gray-600 bg-white rounded border border-l-4 border-solid border-neutral-300 shadow-lg` } { ...rest }>
+			<MarkdownEditor item={ item } type={ "title" } override={ override } className={ `mb-2` } />
+			<Canvas
+				className={ `m-auto` }
+				canvas={ item.shared.image.canvas }
+				width={ width }
+				height={ height }
+			/>
+			{
+				showTaskBar ? (
+					<div className={ `flex flex-row justify-center` }>
+						W: <input type="number" className={ `text-center` } value={ width } onChange={ e => setWidth(e.target.value) } />
+						H: <input type="number" className={ `text-center` } value={ height } onChange={ e => setHeight(e.target.value) } />
+					</div>
+				) : null
+			}
+			<MarkdownEditor item={ item } type={ "content" } override={ override } />
+			{
+				showTaskBar ? (
+					<ItemTaskBar item={ item } onAction={ onAction } />
+				) : null
+			}
+		</Wrapper>
+	);
+};
+
+export function ItemChecklist({ item, override, showTaskBar, onAction, className, ...rest } = {}) {
+	return (
+		<Wrapper className={ className + ` mt-2 p-2 text-gray-600 bg-white rounded border border-l-4 border-solid border-neutral-300 shadow-lg` } { ...rest }>
+			<div className="flex flex-row">
+				<div className={ `` }>
+					<StatusDropdown
+						item={ item }
+						callback={ (etype, status) => {
+							if(etype === "select") {
+								SysStatus.setCurrent(item, status);
+							}
+						} }
+					/>
+				</div>
+				<MarkdownEditor item={ item } type={ "title" } override={ override } />
+			</div>
+			<ChecklistJSX item={ item } override={ override } />
+			{
+				showTaskBar ? (
+					<ItemTaskBar item={ item } onAction={ onAction } />
+				) : null
+			}
+		</Wrapper>
+	);
+};
+
+export function ItemGroup({ item, override, showTaskBar, showChecklist, onAction, className, ...rest } = {}) {
+	return (
+		<Wrapper className={ className + ` p-2 my-1 border border-solid rounded border-neutral-200 text-neutral-600 bg-neutral-50 shadow` } { ...rest } >
 			<MarkdownEditor item={ item } type={ "title" } override={ override } />
 			{
 				item.state.children.map((child, index) => {
@@ -164,11 +222,13 @@ export function ItemGroup({ item, override, showTaskBar, showChecklist } = {}) {
 				})
 			}
 			{
-				(item.shared.checklist && showChecklist) ? (
-					<ChecklistJSX item={ item } attr={ { showChecklist } } />
+				showTaskBar ? (
+					<div className={ `mt-4` }>
+						<GroupItemTaskBar item={ item } onAction={ onAction } attr={ { showChecklist } } />
+					</div>
 				) : null
 			}
-		</>
+		</Wrapper>
 	);
 };
 
@@ -190,60 +250,37 @@ export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 
 	if(item instanceof ItemGroupJS) {
 		return (
-			<Wrapper className={ classNames + ` p-2 my-1 border border-solid rounded border-neutral-200 text-neutral-600 bg-neutral-50 shadow` } { ...rest } x={ x } y={ y }>
-				<ItemGroup item={ item } showTaskBar={ showTaskBar } showChecklist={ showChecklist } override={ override } />
-				{
-					showTaskBar ? (
-						<div className={ `mt-4` }>
-							<GroupItemTaskBar item={ item } onAction={ onAction } attr={ { showChecklist } } />
-						</div>
-					) : null
-				}
-			</Wrapper>
+			<ItemGroup
+				className={ classNames }
+				item={ item }
+				override={ override }
+				showTaskBar={ showTaskBar }
+				showChecklist={ showChecklist }
+				onAction={ onAction }
+				{ ...rest }
+			/>
 		);
 	} else if(item instanceof ItemChecklistJS) {
 		return (
-			<Wrapper className={ classNames + ` mt-2 p-2 text-gray-600 bg-white rounded border border-l-4 border-solid border-neutral-300 shadow-lg` } { ...rest } x={ x } y={ y }>
-				<div className="flex flex-row">
-					<div className={ `` }>
-						<StatusDropdown
-							item={ item }
-							callback={ (etype, status) => {
-								if(etype === "select") {
-									SysStatus.setCurrent(item, status);
-								}
-							} }
-						/>
-					</div>
-					<MarkdownEditor item={ item } type={ "title" } override={ override } />
-				</div>
-				<ChecklistJSX item={ item } override={ override } />
-				{
-					showTaskBar ? (
-						<ItemTaskBar item={ item } onAction={ onAction } attr={ { showChecklist } } />
-					) : null
-				}
-			</Wrapper>
+			<ItemChecklist
+				className={ classNames }
+				item={ item }
+				override={ override }
+				showTaskBar={ showTaskBar }
+				onAction={ onAction }
+				{ ...rest }
+			/>
 		);
 	} else if(item instanceof ItemImageJS) {
-		//FIXME: Break this out and add an "align" button group (left, center, right)
-		//TODO: Add "width" and "height" modifiers that data-bind back
 		return (
-			<Wrapper className={ classNames + ` mt-2 p-2 text-gray-600 bg-white rounded border border-l-4 border-solid border-neutral-300 shadow-lg` } { ...rest } x={ x } y={ y }>
-				<MarkdownEditor item={ item } type={ "title" } override={ override } className={ `mb-2` } />
-				<Canvas
-					className={ `m-auto`}
-					canvas={ item.shared.image.canvas }
-					width={ 500 }
-					height={ 300 }
-				/>
-				<MarkdownEditor item={ item } type={ "content" } override={ override } />
-				{
-					showTaskBar ? (
-						<ItemTaskBar item={ item } onAction={ onAction } attr={ { showChecklist } } />
-					) : null
-				}
-			</Wrapper>
+			<ItemImage
+				className={ classNames }
+				item={ item }
+				override={ override }
+				showTaskBar={ showTaskBar }
+				onAction={ onAction }
+				{ ...rest }
+			/>
 		);
 	}
 

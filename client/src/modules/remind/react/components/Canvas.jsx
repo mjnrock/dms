@@ -6,7 +6,6 @@ export function Canvas({ canvas, width, height, className, containerClassName, .
 	useEffect(() => {
 		container.current.innerHTML = "";
 
-		canvas.className = className;
 
 		let tempCanvas = document.createElement("canvas"),
 			ctx = tempCanvas.getContext("2d");
@@ -16,15 +15,10 @@ export function Canvas({ canvas, width, height, className, containerClassName, .
 
 		ctx.drawImage(canvas, 0, 0, tempCanvas.width, tempCanvas.height);
 
-		canvas.width = tempCanvas.width;
-		canvas.height = tempCanvas.height;
+		tempCanvas.className = className;
 
-		ctx = canvas.getContext("2d");
-
-		ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
-
-		container.current.append(canvas);
-	}, [ container, canvas ]);
+		container.current.append(tempCanvas);
+	}, [ container, canvas, width, height ]);
 
 	return (
 		<div ref={ container } className={ containerClassName } />
