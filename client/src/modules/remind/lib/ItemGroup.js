@@ -8,6 +8,8 @@ export class ItemGroup extends Item {
 			parent,
 			children,
 		};
+
+		this.tokens.add(`@remind:item-group`);
 	}
 
 	toObject({ components = [] } = {}) {

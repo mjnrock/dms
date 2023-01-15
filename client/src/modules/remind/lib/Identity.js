@@ -169,6 +169,8 @@ export class Identity {
 
 			Identity.Tracker(this);
 		}
+		
+		this.tokens.add(`@remind:identity`);
 	}
 
 	deconstructor() {

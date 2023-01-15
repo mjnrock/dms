@@ -34,7 +34,7 @@ export function Viewport({ item, ...rest } = {}) {
 
 	useEffect(() => {
 		let fn = e => {
-			if(e.target.tagName !== `INPUT`) {
+			if(e.target.tagName !== `INPUT` && e.target.tagName !== `TEXTAREA`) {
 				e.preventDefault();
 			}
 

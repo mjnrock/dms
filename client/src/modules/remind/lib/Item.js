@@ -3,7 +3,6 @@ import { Node } from "./Node";
 import ComponentItem from "../components/Item";
 import ComponentStatus from "../components/Status";
 import ComponentRef from "../components/Ref";
-import ComponentChecklist from "../components/Checklist";
 
 export class Item extends Node {
 	constructor ({ parent = null, ...rest } = {}) {
@@ -18,12 +17,13 @@ export class Item extends Node {
 		ComponentItem.Attach(this, { ...(rest.shared || {}).item });
 		ComponentStatus.Attach(this, { ...(rest.shared || {}).status });
 		ComponentRef.Attach(this, { ...(rest.shared || {}).ref });
-		// ComponentChecklist.Attach(this, { ...(rest.shared || {}).checklist });
 
 		//? Related to de/serialization testing
 		// this.merge("shared.item", { content: "meowzzz" });
 		// this.merge("shared.item", { ...(rest.shared || {}).item });
 		// this.merge("shared.status", { ...(rest.shared || {}).status });
+
+		this.tokens.add(`@remind:item`);
 	}
 
 	static Factory(qty = 1, input = {}) {

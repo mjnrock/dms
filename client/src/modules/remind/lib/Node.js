@@ -23,6 +23,8 @@ export class Node extends Identity {
 		} else {
 			this.events = new Events(events, eventOpts);
 		}
+
+		this.tokens.add(`@remind:node`);
 	}
 
 	__parseComponent(component) {

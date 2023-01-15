@@ -6,6 +6,7 @@ import { Checklist as SysChecklist } from "../../systems/Checklist";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import ComponentChecklistItem from "../../components/templates/ChecklistItem";
 import { CheckIcon, EyeIcon, EyeSlashIcon, MinusIcon } from "@heroicons/react/24/outline";
+import { MarkdownEditor } from "./MarkdownEditor";
 
 export function ChecklistItem({ item, checklistItem, ...rest } = {}) {
 	return (
@@ -33,7 +34,7 @@ export function ChecklistItem({ item, checklistItem, ...rest } = {}) {
 	);
 }
 
-export function Checklist({ item, ...rest } = {}) {
+export function Checklist({ item, override, ...rest } = {}) {
 	const { emitter } = useNodeEvent("update", item);
 	const [ showCompleted, setShowCompleted ] = useState(true);
 
@@ -44,8 +45,8 @@ export function Checklist({ item, ...rest } = {}) {
 	let checklist = [ ...emitter.shared.checklist.list.values() ];
 
 	return (
-		<div className={ `flex flex-col p-2 mt-2 ml-1 border border-l-2 border-solid border-neutral-200 rounded shadow hover:shadow-md` }>
-			<ReactMarkdown className={ `text-xl text-center p-2 mt-2 mb-1` }>{ emitter.shared.checklist.title }</ReactMarkdown>
+		<div className={ `flex flex-col p-2 mt-2` }>
+			<MarkdownEditor item={ item } type={ "content" } override={ override } />
 			{
 				checklist.filter(v => showCompleted ? true : !v.complete).sort((a, b) => a.order - b.order).map((checklistItem, index) => (
 					<ChecklistItem key={ checklistItem.id } item={ item } checklistItem={ checklistItem } />

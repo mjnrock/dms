@@ -197,7 +197,7 @@ export function Default() {
 	let registry = [ ...baseItemCollection.state.registry.values() ],
 		item = registry[ 3 ];
 
-	window.onkeydown = (e) => console.log(e.key);
+	// window.onkeydown = (e) => console.log(e.key);
 
 	SysViewport.update(item, {
 		x: 650,
