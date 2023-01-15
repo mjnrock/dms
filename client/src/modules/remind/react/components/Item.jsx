@@ -105,7 +105,7 @@ export function GroupItemTaskBar({ item, onAction = () => { }, attr, ...props } 
 	);
 };
 
-export function Item({ item, x, y, showTaskBar, ...rest }) {
+export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 	const { } = useNodeEvent("update", item);
 	const [ showChecklist, setShowChecklist ] = useState(false);
 
@@ -125,12 +125,12 @@ export function Item({ item, x, y, showTaskBar, ...rest }) {
 		return (
 			<Wrapper className={ classNames } { ...rest } x={ x } y={ y }>
 				<div style={ {} } className={ `mt-2 pt-0 text-neutral-600 p-2 rounded border border-l-4 bg-neutral-50 border-solid border-neutral-200 shadow-lg hover:border-emerald-200 hover:shadow w-full` } { ...rest }>
-					<MarkdownEditor item={ item } type={ "title" } />
+					<MarkdownEditor item={ item } type={ "title" } override={ override } />
 					{
 						item.state.children.map((child, index) => {
 							return (
 								<div key={ index }>
-									<Item item={ child } showTaskBar={ showTaskBar } />
+									<Item item={ child } showTaskBar={ showTaskBar } override={ override } />
 								</div>
 							)
 						})
@@ -164,7 +164,7 @@ export function Item({ item, x, y, showTaskBar, ...rest }) {
 							} }
 						/>
 					</div>
-					<MarkdownEditor item={ item } type={ "content" } />
+					<MarkdownEditor item={ item } type={ "content" } override={ override } />
 				</div>
 				{
 					(item.shared.checklist && showChecklist) ? (

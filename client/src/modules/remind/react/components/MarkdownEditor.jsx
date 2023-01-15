@@ -1,12 +1,16 @@
+import { useState, useEffect } from "react";
+
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-import { useState } from "react";
-
 import { Item as SysItem } from "../../systems/Item";
 
-export function MarkdownEditor({ item, type = "content" }) {
+export function MarkdownEditor({ item, type = "content", override }) {
 	const [ editMode, setEditMode ] = useState(false);
+
+	useEffect(() => {
+		setEditMode(false);
+	}, [ override.EscapeKey ]);
 
 	if(type === "title") {
 		return (

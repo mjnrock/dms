@@ -28,14 +28,47 @@ export function MenuBar({ showTaskBar, setShowTaskBar, ...rest } = {}) {
 
 export function Viewport({ item, ...rest } = {}) {
 	const [ showTaskBar, setShowTaskBar ] = React.useState(false);
+	const [ override, setOverride ] = React.useState({});
 
 	let { x, y } = item.shared.viewport;
+
+	useEffect(() => {
+		let fn = e => {
+			e.preventDefault();
+
+			if(e.key === `Escape`) {
+				setOverride({
+					...override,
+					EscapeKey: `${ Date.now() }:${ Math.random() }`,
+				});
+			} else if(e.key === `F1`) {
+				setOverride({
+					...override,
+					F1: `${ Date.now() }:${ Math.random() }`,
+				});
+			}
+
+			if(e.key === "F5") {
+				window.location.reload();
+			}
+		};
+
+		window.addEventListener("keydown", fn);
+
+		return () => {
+			window.removeEventListener("keydown", fn);
+		};
+	}, []);
+
+	useEffect(() => {
+		setShowTaskBar(!showTaskBar);
+	}, [ override.F1 ]);
 
 	return (
 		<div className={ `p-1 m-2` }>
 			<div className={ `flex flex-col` }>
 				<MenuBar showTaskBar={ showTaskBar } setShowTaskBar={ setShowTaskBar } />
-				<ItemJSX item={ item } x={ x } y={ y } showTaskBar={ showTaskBar } />
+				<ItemJSX item={ item } x={ x } y={ y } showTaskBar={ showTaskBar } override={ override } />
 			</div>
 		</div>
 	)
