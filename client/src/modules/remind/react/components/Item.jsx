@@ -369,7 +369,7 @@ export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 										{ key }
 									</div>
 									<pre className={ `w-1/2 font-mono text-neutral-600` }>
-										{ JSON.stringify(value, null, 2) }
+										{ JSON.stringify(value.toObject ? value.toObject() : value, null, 2) }
 									</pre>
 								</div>
 							);

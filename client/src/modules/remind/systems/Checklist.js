@@ -31,7 +31,7 @@ export const Checklist = {
 	},
 
 	setTitle(emitter, title) {
-		emitter.shared[ Name ].title = title;
+		emitter.shared[ Name ].title = title || "";
 
 		dispatch(emitter, "update", emitter.shared[ Name ]);
 

@@ -38,11 +38,7 @@ export function Checklist({ item, override, ...rest } = {}) {
 	const { emitter } = useNodeEvent("update", item);
 	const [ showCompleted, setShowCompleted ] = useState(true);
 
-	if(!emitter) {
-		return null;
-	}
-
-	let checklist = [ ...emitter.shared.checklist.list.values() ];
+	let checklist = [ ...item.shared.checklist.list.values() ];
 
 	return (
 		<div className={ `flex flex-col p-2` }>
@@ -55,12 +51,12 @@ export function Checklist({ item, override, ...rest } = {}) {
 				<input
 					className={ `shadow hover:shadow-md w-full p-2 border border-solid rounded border-neutral-100 mt-2 focus:outline-neutral-300` }
 					type="text"
-					value={ emitter.content }
+					value={ item.content }
 					placeholder="Add an item..."
 					onKeyUp={ e => {
 						if(e.key === "Enter") {
 							if(e.target.value.trim().length) {
-								SysChecklist.addChecklistItem(emitter, new ComponentChecklistItem({ content: e.target.value }));
+								SysChecklist.addChecklistItem(item, new ComponentChecklistItem({ content: e.target.value }));
 							}
 
 							e.target.value = ``;

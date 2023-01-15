@@ -40,6 +40,8 @@ export class ChecklistItem extends Identity {
 		this.complete = originate(complete);
 		this.content = originate(content);
 		this.order = originate(order);
+
+		this.tokens.add(`@remind:checklist-item`);
 	}
 };
 

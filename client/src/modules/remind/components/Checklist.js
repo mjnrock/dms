@@ -1,8 +1,9 @@
 export const Name = `checklist`;
 
+//FIXME: There is currently no proper way to serialize this, so the .list property is not saved correctly.
 export function Create({ ...rest } = {}) {
 	return {
-		title: ``,
+		title: "",
 		list: new Map(),
 
 		...rest,

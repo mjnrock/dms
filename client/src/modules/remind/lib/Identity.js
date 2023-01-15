@@ -170,7 +170,8 @@ export class Identity {
 			Identity.Tracker(this);
 		}
 
-		this.tokens.add(`@${ id }`, `@remind:identity`);
+		this.tokens.add(`@${ this.id }`);
+		this.tokens.add(`@remind:identity`);
 	}
 
 	deconstructor() {

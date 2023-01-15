@@ -2,8 +2,8 @@ export const Name = `markdown`;
 
 export function Create({ ...rest } = {}) {
 	return {
-		title: null,
-		content: ``,
+		title: "",
+		content: "",
 
 		...rest,
 	};
