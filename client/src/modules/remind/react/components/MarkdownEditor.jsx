@@ -25,7 +25,7 @@ export function MarkdownEditor({ item, type = "content", override }) {
 								placeholder="Add a title..."
 								onBlur={ e => setEditMode(false) }
 								onKeyUp={ e => {
-									if(e.key === "Escape") {
+									if(e.key === "Escape" || e.key === "Enter") {
 										setEditMode(false);
 									}
 								} }
@@ -65,7 +65,7 @@ export function MarkdownEditor({ item, type = "content", override }) {
 									onChange={ e => SysItem.update(item, { content: e.target.value }) }
 									onBlur={ e => setEditMode(false) }
 									onKeyUp={ e => {
-										if(e.key === "Escape") {
+										if(e.key === "Escape" || (e.key === "Enter" && e.ctrlKey)) {
 											setEditMode(false);
 										}
 									} }
