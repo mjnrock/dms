@@ -24,6 +24,8 @@ import { ItemCollection as ItemCollectionJS } from "./../../lib/ItemCollection";
 import { ItemChecklist as ItemChecklistJS } from "./../../lib/custom/ItemChecklist";
 import { ItemImage as ItemImageJS } from "../../lib/custom/ItemImage";
 
+import Components from "./../../components/package";
+
 import { Checklist as ChecklistJSX } from "./Checklist";
 import { Canvas } from "./Canvas";
 import { MarkdownEditor } from "./MarkdownEditor";
@@ -351,30 +353,66 @@ export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 							}
 						} }
 					>{ item.id }</div>
+
 					{
 						Object.entries(item.shared).map(([ key, value ]) => {
 							return (
 								<div
 									key={ key }
 									className={ `truncate flex flex-row border border-t-2 border-solid border-neutral-200 border-t-neutral-400 rounded mb-2 p-2 shadow hover:shadow-md` }
-									onContextMenu={ e => {
-										//STUB: Bind this to something more appropriate
-										e.preventDefault();
-										if(e.ctrlKey) {
-											SysItem.removeComponent(item, key);
-										}
-									} }
 								>
 									<div className={ `w-1/2 font-bold text-neutral-700` }>
 										{ key }
 									</div>
-									<pre className={ `w-1/2 font-mono text-neutral-600` }>
-										{ JSON.stringify(value.toObject ? value.toObject() : value, null, 2) }
-									</pre>
+
+									<div className={ `w-1/2 font-mono text-neutral-600 justify-end flex flex-row` }>
+										<button
+											className="p-2 ml-2 border border-solid rounded shadow-sm border-rose-300 hover:bg-rose-50 hover:border-rose-400 hover:text-rose-400 hover:shadow"
+											onClick={ e => {
+												SysItem.removeComponent(item, key);
+
+												onAction("delete-component", item);
+											} }>
+											<TrashIcon className="w-4 h-4 text-rose-400" />
+										</button>
+									</div>
 								</div>
 							);
 						})
 					}
+
+					<hr className="my-2" />
+
+					<div className={ `flex flex-col` }>
+						<div className="mb-4 italic font-thin text-center">Add Component</div>
+
+						{
+							Object.entries(Components).filter(([ k, v ]) => ![ ...Object.keys(item.shared), `acomponent` ].includes(k.toLowerCase())).map(([ key, value ]) => {
+								return (
+									<div
+										key={ key }
+										className={ `flex flex-row border border-t-2 border-solid border-neutral-200 border-t-neutral-400 rounded mb-2 p-2 shadow hover:shadow-md` }
+									>
+										<div className={ `w-1/2 font-bold text-neutral-700` }>
+											{ key }
+										</div>
+
+										<div className={ `w-1/2 font-mono text-neutral-600 justify-end flex flex-row` }>
+											<button
+												className="p-2 ml-2 border border-solid rounded shadow-sm border-emerald-300 hover:bg-emerald-50 hover:border-emerald-400 hover:text-emerald-400 hover:shadow"
+												onClick={ e => {
+													SysItem.addComponent(item, key.toLowerCase(), value, {});
+
+													onAction("add-component", item);
+												} }>
+												<PlusIcon className="w-4 h-4 text-emerald-400" />
+											</button>
+										</div>
+									</div>
+								);
+							})
+						}
+					</div>
 				</div>
 			</Modal>
 
