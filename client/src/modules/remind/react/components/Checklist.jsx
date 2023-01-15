@@ -9,7 +9,7 @@ import { CheckIcon, EyeIcon, EyeSlashIcon, MinusIcon } from "@heroicons/react/24
 
 export function ChecklistItem({ item, checklistItem, ...rest } = {}) {
 	return (
-		<div key={ checklistItem.id } className={ `inline-flex p-2 mt-2 mb-0 rounded border border-l-2 border-solid ${ checklistItem.complete ? `border-emerald-200` : `border-neutral-200` } shadow-sm hover:shadow` }>
+		<div key={ checklistItem.id } className={ `bg-white shadow hover:shadow-md hover:border-l-4 inline-flex p-2 mt-2 mb-0 rounded border border-l-2 border-solid ${ checklistItem.complete ? `border-emerald-200` : `border-neutral-200` } shadow-sm hover:shadow` }>
 			<div
 				className={ `p-2 rounded-full cursor-pointer ${ checklistItem.complete ? `text-emerald-400 hover:text-rose-300 hover:bg-rose-50` : `text-neutral-400 hover:text-emerald-300 hover:bg-emerald-50` }` }
 				onClick={ e => {
@@ -44,7 +44,7 @@ export function Checklist({ item, ...rest } = {}) {
 	let checklist = [ ...emitter.shared.checklist.list.values() ];
 
 	return (
-		<div className={ `flex flex-col p-2 mt-2 ml-1 border border-l-2 border-solid border-neutral-200 rounded shadow-sm hover:shadow` }>
+		<div className={ `flex flex-col p-2 mt-2 ml-1 border border-l-2 border-solid border-neutral-200 rounded shadow hover:shadow-md` }>
 			<ReactMarkdown className={ `text-xl text-center p-2 mt-2 mb-1` }>{ emitter.shared.checklist.title }</ReactMarkdown>
 			{
 				checklist.filter(v => showCompleted ? true : !v.complete).sort((a, b) => a.order - b.order).map((checklistItem, index) => (
@@ -53,7 +53,7 @@ export function Checklist({ item, ...rest } = {}) {
 			}
 			<div className={ `` }>
 				<input
-					className={ `w-full p-2 border border-solid rounded border-neutral-100 shadow mt-2 focus:outline-neutral-300` }
+					className={ `shadow hover:shadow-md w-full p-2 border border-solid rounded border-neutral-100 mt-2 focus:outline-neutral-300` }
 					type="text"
 					value={ emitter.content }
 					placeholder="Add an item..."

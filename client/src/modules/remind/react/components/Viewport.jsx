@@ -11,6 +11,20 @@ import { Pixi } from "./../../../pixi/lib/Pixi";
 import { PixiCanvas } from "../../../pixi/react/components/PixiCanvas";
 import { Bars3Icon } from "@heroicons/react/24/outline";
 
+export function MenuBar({ showTaskBar, setShowTaskBar, ...rest } = {}) {
+	return (
+		<div className={ `` }>
+			<button
+				className={ `p-2 rounded border border-solid ${ showTaskBar ? `bg-rose-50 border-rose-200 text-rose-300 hover:border-rose-300 hover:bg-rose-100 hover:text-rose-400` : `bg-gray-50 border-gray-300 text-gray-400 hover:border-gray-400 hover:bg-gray-100 hover:text-gray-500` }` }
+				onClick={ () => setShowTaskBar(!showTaskBar) }
+			>
+				{ showTaskBar ? `Edit` : `View` } Mode
+			</button>
+		</div>
+	);
+};
+
+
 
 export function Viewport({ item, ...rest } = {}) {
 	const [ showTaskBar, setShowTaskBar ] = React.useState(false);
@@ -20,14 +34,7 @@ export function Viewport({ item, ...rest } = {}) {
 	return (
 		<div className={ `p-1 m-2` }>
 			<div className={ `flex flex-col` }>
-				<div className={ `` }>
-					<button
-						className={ `p-2 rounded border border-solid ${ showTaskBar ? `bg-rose-50 border-rose-200 text-rose-300 hover:border-rose-300 hover:bg-rose-100 hover:text-rose-400` : `bg-gray-50 border-gray-300 text-gray-400 hover:border-gray-400 hover:bg-gray-100 hover:text-gray-500` }` }
-						onClick={ () => setShowTaskBar(!showTaskBar) }
-					>
-						{ showTaskBar ? `Edit` : `View` } Mode
-					</button>
-				</div>
+				<MenuBar showTaskBar={ showTaskBar } setShowTaskBar={ setShowTaskBar } />
 				<ItemJSX item={ item } x={ x } y={ y } showTaskBar={ showTaskBar } />
 			</div>
 		</div>

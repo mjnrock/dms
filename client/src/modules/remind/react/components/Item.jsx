@@ -36,7 +36,7 @@ export function CommonTaskBarButtons({ item, onAction = () => { }, attr = {}, ..
 	return (
 		<>
 			<button
-				className={ `p-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-neutral-100 hover:shadow ${ item.shared.checklist ? `text-orange-200 border-orange-200` : `text-neutral-400` } ${ showChecklist ? `bg-orange-50` : `` }` }
+				className={ `p-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-neutral-100 hover:shadow ${ item.shared.checklist ? `text-orange-200 border-orange-200` : `text-neutral-400` } ${ showChecklist ? `bg-orange-50 hover:bg-orange-100` : `` }` }
 				onClick={ e => {
 					SysChecklist.attachChecklist(item);
 
@@ -124,7 +124,7 @@ export function Item({ item, x, y, showTaskBar, ...rest }) {
 	if(item instanceof ItemGroupJS) {
 		return (
 			<Wrapper className={ classNames } { ...rest } x={ x } y={ y }>
-				<div style={ {} } className={ `mt-2 pt-0 text-neutral-600 p-2 rounded border border-l-4 bg-neutral-50 hover:bg-emerald-50 border-solid border-neutral-200 shadow-lg hover:border-emerald-200 hover:shadow w-full` } { ...rest }>
+				<div style={ {} } className={ `mt-2 pt-0 text-neutral-600 p-2 rounded border border-l-4 bg-neutral-50 border-solid border-neutral-200 shadow-lg hover:border-emerald-200 hover:shadow w-full` } { ...rest }>
 					<MarkdownEditor item={ item } type={ "title" } />
 					{
 						item.state.children.map((child, index) => {
@@ -142,7 +142,7 @@ export function Item({ item, x, y, showTaskBar, ...rest }) {
 					}
 					{
 						showTaskBar ? (
-							<GroupItemTaskBar item={ item } onAction={ onAction } />
+							<GroupItemTaskBar item={ item } onAction={ onAction } attr={ { showChecklist } } />
 						) : null
 					}
 				</div>
@@ -152,7 +152,7 @@ export function Item({ item, x, y, showTaskBar, ...rest }) {
 
 	return (
 		<Wrapper className={ classNames } { ...rest }>
-			<div className={ `mt-2 p-2 text-neutral-600 rounded border border-l-4 border-solid border-neutral-300 shadow-lg hover:bg-sky-50 hover:border-sky-300 w-full` } { ...rest }>
+			<div className={ `mt-2 p-2 text-neutral-600 rounded border border-l-4 border-solid border-neutral-300 shadow-lg hover:border-sky-300 w-full` } { ...rest }>
 				<div className="flex flex-row">
 					<div className={ `` }>
 						<StatusDropdown
@@ -173,7 +173,7 @@ export function Item({ item, x, y, showTaskBar, ...rest }) {
 				}
 				{
 					showTaskBar ? (
-						<ItemTaskBar item={ item } onAction={ onAction } />
+						<ItemTaskBar item={ item } onAction={ onAction } attr={ { showChecklist } } />
 					) : null
 				}
 			</div>
