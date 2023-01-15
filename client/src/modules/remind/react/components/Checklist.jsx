@@ -72,7 +72,7 @@ export function Checklist({ item, ...rest } = {}) {
 
 				<div className={ `flex flew-row` }>
 					<button
-						className={ `p-2 mt-2 border border-solid rounded shadow-sm ${ showCompleted ? `border-emerald-200` : `border-neutral-200` } hover:bg-neutral-100 hover:shadow text-neutral-300` }
+						className={ `p-2 mt-2 border border-solid rounded shadow-sm ${ showCompleted ? `border-emerald-200 bg-emerald-50` : `border-neutral-200 bg-neutral-50` } hover:bg-neutral-100 hover:shadow text-neutral-300` }
 						onClick={ e => {
 							setShowCompleted(!showCompleted);
 						} }>

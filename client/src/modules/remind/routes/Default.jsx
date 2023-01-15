@@ -88,8 +88,8 @@ const [ baseItem2, baseItem3 ] = baseItemCollection.state.factory.Item([
 	{
 		shared: {
 			item: {
-				content: 
-`This is *some* nonsense.
+				content:
+					`This is *some* nonsense.
 
 # this is a header
 
@@ -206,7 +206,7 @@ export function Default() {
 
 	return (
 		<RemindContext.Provider value={ { stub: true } }>
-			<Viewport item={item}/>
+			<Viewport item={ item } />
 		</RemindContext.Provider>
 	);
 };

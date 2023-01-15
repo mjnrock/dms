@@ -30,40 +30,42 @@ const Wrapper = ({ className, x, y, children, ...rest }) => {
 	);
 };
 
-export function CommonTaskBarButtons({ item, onAction = () => { }, ...props } = {}) {
+export function CommonTaskBarButtons({ item, onAction = () => { }, attr = {}, ...props } = {}) {
+	const { showChecklist } = attr;
+
 	return (
 		<>
 			<button
-				className="p-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-neutral-100 hover:shadow"
+				className={ `p-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-neutral-100 hover:shadow ${ item.shared.checklist ? `text-orange-200 border-orange-200` : `text-neutral-400` } ${ showChecklist ? `bg-orange-50` : `` }` }
 				onClick={ e => {
 					SysChecklist.attachChecklist(item);
 
 					onAction("checklist", item);
 				} }>
-				<ListBulletIcon className="w-4 h-4 text-neutral-400" />
+				<ListBulletIcon className="w-4 h-4" />
 			</button>
 
 			<button
-				className="p-2 ml-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-neutral-100 hover:shadow"
+				className="p-2 ml-2 border border-solid rounded shadow-sm border-rose-300 hover:bg-rose-50 hover:border-rose-400 hover:text-rose-400 hover:shadow"
 				onClick={ e => {
 					SysItemGroup.removeChild(item.state.parent, item);
 
 					onAction("delete", item);
 				} }>
-				<TrashIcon className="w-4 h-4 text-neutral-400" />
+				<TrashIcon className="w-4 h-4 text-rose-400" />
 			</button>
 		</>
 	);
 };
 
-export function ItemTaskBar({ item, onAction = () => { }, ...props } = {}) {
+export function ItemTaskBar({ item, onAction = () => { }, attr, ...props } = {}) {
 	return (
 		<div className="flex flex-row mt-2">
-			<CommonTaskBarButtons item={ item } onAction={ onAction } />
+			<CommonTaskBarButtons item={ item } onAction={ onAction } attr={ attr } />
 		</div>
 	);
 };
-export function GroupItemTaskBar({ item, onAction = () => { }, ...props } = {}) {
+export function GroupItemTaskBar({ item, onAction = () => { }, attr, ...props } = {}) {
 	const [ baseItem, setBaseItem ] = useState(item);
 
 	return (
@@ -98,19 +100,19 @@ export function GroupItemTaskBar({ item, onAction = () => { }, ...props } = {}) 
 
 			<div className={ `ml-2` } />
 
-			<CommonTaskBarButtons item={ item } onAction={ onAction } />
+			<CommonTaskBarButtons item={ item } onAction={ onAction } attr={ attr } />
 		</div>
 	);
 };
 
-export function Item({ item, x, y, ...rest }) {
+export function Item({ item, x, y, showTaskBar, ...rest }) {
 	const { } = useNodeEvent("update", item);
 	const [ showChecklist, setShowChecklist ] = useState(false);
 
 	//IDEA: Ideate around how to best do this
 	let classNames = ``;
 	if(x != null && y != null) {
-		classNames = `absolute`;
+		// classNames = `absolute`;
 	}
 
 	function onAction(action, item) {
@@ -122,23 +124,27 @@ export function Item({ item, x, y, ...rest }) {
 	if(item instanceof ItemGroupJS) {
 		return (
 			<Wrapper className={ classNames } { ...rest } x={ x } y={ y }>
-				<div className={ `mt-2 pt-0 text-neutral-600 p-2 rounded border border-l-4 bg-neutral-50 hover:bg-emerald-50 border-solid border-neutral-200 shadow-lg hover:border-emerald-200 hover:shadow w-full` } { ...rest }>
+				<div style={ {} } className={ `mt-2 pt-0 text-neutral-600 p-2 rounded border border-l-4 bg-neutral-50 hover:bg-emerald-50 border-solid border-neutral-200 shadow-lg hover:border-emerald-200 hover:shadow w-full` } { ...rest }>
 					<MarkdownEditor item={ item } type={ "title" } />
 					{
 						item.state.children.map((child, index) => {
 							return (
 								<div key={ index }>
-									<Item item={ child } />
+									<Item item={ child } showTaskBar={ showTaskBar } />
 								</div>
 							)
 						})
 					}
 					{
 						(item.shared.checklist && showChecklist) ? (
-							<ChecklistJSX item={ item } />
+							<ChecklistJSX item={ item } attr={ { showChecklist } } />
 						) : null
 					}
-					<GroupItemTaskBar item={ item } onAction={ onAction } />
+					{
+						showTaskBar ? (
+							<GroupItemTaskBar item={ item } onAction={ onAction } />
+						) : null
+					}
 				</div>
 			</Wrapper>
 		);
@@ -165,7 +171,11 @@ export function Item({ item, x, y, ...rest }) {
 						<ChecklistJSX item={ item } />
 					) : null
 				}
-				<ItemTaskBar item={ item } onAction={ onAction } />
+				{
+					showTaskBar ? (
+						<ItemTaskBar item={ item } onAction={ onAction } />
+					) : null
+				}
 			</div>
 		</Wrapper>
 	);
