@@ -76,6 +76,10 @@ export const Base64 = {
 	DecodeFile: (path, allowAnonymous = false) => {
 		return new Promise((resolve, reject) => {
 			try {
+				if(path instanceof File) {
+					path = URL.createObjectURL(path);
+				}
+				
 				if(path.match(/\.(json|txt)/i)) {
 					const opts = header => ({
 						method: "GET",
@@ -184,15 +188,15 @@ export const Base64 = {
 export function PixelScaleCanvas(source, factor = 1) {
 	const canvas = document.createElement("canvas");
 	const data = {};
-	
+
 	let ctx = source.getContext("2d");
-	let imgData = ctx.getImageData(0, 0, source.width, source.height);	
+	let imgData = ctx.getImageData(0, 0, source.width, source.height);
 	for(let i = 0; i < imgData.data.length; i += 4) {
 		const r = imgData.data[ i ];
 		const g = imgData.data[ i + 1 ];
 		const b = imgData.data[ i + 2 ];
 		const a = imgData.data[ i + 3 ];
-		
+
 		const index = i / 4;
 		data[ index ] = {
 			index,
@@ -205,7 +209,7 @@ export function PixelScaleCanvas(source, factor = 1) {
 			avg: (r + g + b) / 3,
 		};
 	}
-	
+
 	ctx = canvas.getContext("2d");
 	canvas.width = source.width * factor;
 	canvas.height = source.height * factor;
@@ -213,7 +217,7 @@ export function PixelScaleCanvas(source, factor = 1) {
 
 	function writeZone({ x, y, r, g, b, a }) {
 		const color = `rgba(${ r }, ${ g }, ${ b }, ${ a })`;
-		
+
 		ctx.fillStyle = color;
 		ctx.fillRect(x * factor, y * factor, factor, factor);
 	}

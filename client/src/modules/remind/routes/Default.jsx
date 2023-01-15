@@ -8,14 +8,14 @@ import { ItemGroup } from "./../lib/ItemGroup";
 import { ItemCollection } from "../lib/ItemCollection";
 import { Registry } from "../lib/Registry";
 
-import { Item as SysItem } from "../systems/Item";
-import { ItemGroup as SysItemGroup } from "./../systems/class/ItemGroup";
-import { ItemCollection as SysItemCollection } from "./../systems/class/ItemCollection";
+import { Markdown as SysMarkdown } from "../systems/Markdown";
+import { ItemGroup as SysMarkdownGroup } from "./../systems/class/ItemGroup";
+import { ItemCollection as SysMarkdownCollection } from "./../systems/class/ItemCollection";
 import { Status as SysStatus } from "./../systems/Status";
 import { Ref as SysRef } from "./../systems/Ref";
 import { Checklist as SysChecklist } from "./../systems/Checklist";
 
-import { Create as ComponentItem } from "./../components/Item";
+import { Create as ComponentItem } from "../components/Markdown";
 import { Create as ComponentStatus } from "./../components/Status";
 import { Create as ComponentChecklist } from "./../components/Checklist";
 
@@ -47,9 +47,9 @@ const baseItemCollection = new ItemCollection({
 		ItemCollection,
 	},
 	systems: {
-		Item: SysItem,
-		ItemGroup: SysItemGroup,
-		ItemCollection: SysItemCollection,
+		Item: SysMarkdown,
+		ItemGroup: SysMarkdownGroup,
+		ItemCollection: SysMarkdownCollection,
 	},
 	components: {
 		Item: ComponentItem,
@@ -137,10 +137,10 @@ baseItem.state.parent = baseItemGroup;
 baseItem2.state.parent = baseItemGroup;
 baseItem3.state.parent = baseItemGroup;
 
-SysItemCollection.register(baseItemCollection, baseItem);
-SysItemCollection.register(baseItemCollection, baseItem2);
-SysItemCollection.register(baseItemCollection, baseItem3);
-SysItemCollection.register(baseItemCollection, baseItemGroup);
+SysMarkdownCollection.register(baseItemCollection, baseItem);
+SysMarkdownCollection.register(baseItemCollection, baseItem2);
+SysMarkdownCollection.register(baseItemCollection, baseItem3);
+SysMarkdownCollection.register(baseItemCollection, baseItemGroup);
 
 
 // console.log(baseItem.toObject());

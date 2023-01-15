@@ -1,6 +1,6 @@
 import { Node } from "./Node";
 
-import ComponentItem from "../components/Item";
+import ComponentItem from "../components/Markdown";
 import ComponentStatus from "../components/Status";
 import ComponentRef from "../components/Ref";
 
@@ -19,8 +19,8 @@ export class Item extends Node {
 		ComponentRef.Attach(this, { ...(rest.shared || {}).ref });
 
 		//? Related to de/serialization testing
-		// this.merge("shared.item", { content: "meowzzz" });
-		// this.merge("shared.item", { ...(rest.shared || {}).item });
+		// this.merge("shared.markdown", { content: "meowzzz" });
+		// this.merge("shared.markdown", { ...(rest.shared || {}).item });
 		// this.merge("shared.status", { ...(rest.shared || {}).status });
 
 		this.tokens.add(`@remind:item`);

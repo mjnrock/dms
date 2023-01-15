@@ -1,4 +1,4 @@
-import { Cog6ToothIcon, DocumentIcon, ListBulletIcon, LockClosedIcon, LockOpenIcon, PencilIcon, PlusIcon, RectangleGroupIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { Cog6ToothIcon, DocumentIcon, ListBulletIcon, LockClosedIcon, LockOpenIcon, PencilIcon, PhotoIcon, PlusIcon, RectangleGroupIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -6,18 +6,23 @@ import remarkGfm from "remark-gfm";
 import { useState, useEffect, useRef } from "react";
 import { useNodeEvent } from "./../useNodeEvent";
 
+import Base64 from "../../../../util/Base64";
+
 import { Status as SysStatus } from "../../systems/Status";
-import { Item as SysItem } from "../../systems/Item";
-import { ItemGroup as SysItemGroup } from "./../../systems/class/ItemGroup";
+import { Item as SysMarkdown } from "../../systems/Markdown";
+import { ItemGroup as SysMarkdownGroup } from "./../../systems/class/ItemGroup";
 import { Checklist as SysChecklist } from "./../../systems/Checklist";
+import { Image as SysImage } from "./../../systems/Image";
 
 import { Node as NodeJS } from "../../lib/Node";
 import { Item as ItemJS } from "./../../lib/Item";
 import { ItemGroup as ItemGroupJS } from "./../../lib/ItemGroup";
 import { ItemCollection as ItemCollectionJS } from "./../../lib/ItemCollection";
 import { ItemChecklist as ItemChecklistJS } from "./../../lib/custom/ItemChecklist";
+import { ItemImage as ItemImageJS } from "../../lib/custom/ItemImage";
 
 import { Checklist as ChecklistJSX } from "./Checklist";
+import { Canvas } from "./Canvas";
 import { MarkdownEditor } from "./MarkdownEditor";
 import { StatusDropdown } from "./StatusDropdown";
 
@@ -43,7 +48,7 @@ export function CommonTaskBarButtons({ item, onAction = () => { }, attr = {}, ..
 						onClick={ e => {
 							let next = new ItemChecklistJS();
 
-							SysItemGroup.addChild(item, next);
+							SysMarkdownGroup.addChild(item, next);
 
 							onAction("checklist", item);
 						} }>
@@ -55,7 +60,7 @@ export function CommonTaskBarButtons({ item, onAction = () => { }, attr = {}, ..
 			<button
 				className="p-2 ml-2 border border-solid rounded shadow-sm border-rose-300 hover:bg-rose-50 hover:border-rose-400 hover:text-rose-400 hover:shadow"
 				onClick={ e => {
-					SysItemGroup.removeChild(item.state.parent, item);
+					SysMarkdownGroup.removeChild(item.state.parent, item);
 
 					onAction("delete", item);
 				} }>
@@ -82,7 +87,7 @@ export function GroupItemTaskBar({ item, onAction = () => { }, attr, ...props } 
 				onClick={ e => {
 					let next = new ItemJS();
 
-					SysItemGroup.addChild(baseItem, next);
+					SysMarkdownGroup.addChild(baseItem, next);
 
 					setBaseItem(baseItem);
 
@@ -96,7 +101,7 @@ export function GroupItemTaskBar({ item, onAction = () => { }, attr, ...props } 
 				onClick={ e => {
 					let next = new ItemGroupJS();
 
-					SysItemGroup.addChild(baseItem, next);
+					SysMarkdownGroup.addChild(baseItem, next);
 
 					setBaseItem(baseItem);
 
@@ -104,6 +109,39 @@ export function GroupItemTaskBar({ item, onAction = () => { }, attr, ...props } 
 				} }>
 				<RectangleGroupIcon className="w-4 h-4 text-green-400" />
 			</button>
+
+			<label
+				for={ item.id }
+				className="p-2 ml-2 border border-solid rounded shadow-sm cursor-pointer border-violet-200 hover:bg-violet-100 hover:shadow"
+			>
+				<input
+					className="hidden"
+					type="file"
+					id={ item.id }
+					accept="image/*"
+					onChange={ e => {
+						Base64.DecodeFile(e.target.files[ 0 ]).then((canvas) => {
+							console.log(canvas);
+							let next = new ItemImageJS({
+								shared: {
+									image: {
+										canvas: canvas,
+									},
+								},
+							});
+
+							SysMarkdownGroup.addChild(baseItem, next);
+
+							setBaseItem(baseItem);
+
+							onAction("add-group", baseItem);
+
+							e.target.value = null;
+						});
+					} }
+				/>
+				<PhotoIcon className="w-4 h-4 text-violet-400" />
+			</label>
 
 			<div className={ `ml-2` } />
 
@@ -166,7 +204,6 @@ export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 	} else if(item instanceof ItemChecklistJS) {
 		return (
 			<Wrapper className={ classNames + ` mt-2 p-2 text-gray-600 bg-white rounded border border-l-4 border-solid border-neutral-300 shadow-lg` } { ...rest } x={ x } y={ y }>
-
 				<div className="flex flex-row">
 					<div className={ `` }>
 						<StatusDropdown
@@ -181,6 +218,26 @@ export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 					<MarkdownEditor item={ item } type={ "title" } override={ override } />
 				</div>
 				<ChecklistJSX item={ item } override={ override } />
+				{
+					showTaskBar ? (
+						<ItemTaskBar item={ item } onAction={ onAction } attr={ { showChecklist } } />
+					) : null
+				}
+			</Wrapper>
+		);
+	} else if(item instanceof ItemImageJS) {
+		//FIXME: Break this out and add an "align" button group (left, center, right)
+		//TODO: Add "width" and "height" modifiers that data-bind back
+		return (
+			<Wrapper className={ classNames + ` mt-2 p-2 text-gray-600 bg-white rounded border border-l-4 border-solid border-neutral-300 shadow-lg` } { ...rest } x={ x } y={ y }>
+				<MarkdownEditor item={ item } type={ "title" } override={ override } className={ `mb-2` } />
+				<Canvas
+					className={ `m-auto`}
+					canvas={ item.shared.image.canvas }
+					width={ 500 }
+					height={ 300 }
+				/>
+				<MarkdownEditor item={ item } type={ "content" } override={ override } />
 				{
 					showTaskBar ? (
 						<ItemTaskBar item={ item } onAction={ onAction } attr={ { showChecklist } } />
