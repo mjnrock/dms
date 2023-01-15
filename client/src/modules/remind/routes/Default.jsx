@@ -187,10 +187,6 @@ SysMarkdownCollection.register(baseItemCollection, baseItemGroup);
 // registry.removeFromPool(`itemseses`, baseItem);
 // console.log(registry.findEntry(`itemseses`));
 
-SysChecklist.attachChecklist(baseItem, {
-	title: `This *is* a **TITLE**!`,
-});
-
 export const RemindContext = React.createContext();
 
 export function Default() {

@@ -1,7 +1,9 @@
-import { Cog6ToothIcon, DocumentIcon, ListBulletIcon, LockClosedIcon, LockOpenIcon, PencilIcon, PhotoIcon, PlusIcon, RectangleGroupIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { Cog6ToothIcon, CogIcon, DocumentIcon, ListBulletIcon, LockClosedIcon, LockOpenIcon, PencilIcon, PhotoIcon, PlusIcon, RectangleGroupIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+
+import { Modal } from "semantic-ui-react";
 
 import { useState, useEffect, useRef } from "react";
 import { useNodeEvent } from "./../useNodeEvent";
@@ -9,8 +11,9 @@ import { useNodeEvent } from "./../useNodeEvent";
 import Base64 from "../../../../util/Base64";
 
 import { Status as SysStatus } from "../../systems/Status";
-import { Item as SysMarkdown } from "../../systems/Markdown";
-import { ItemGroup as SysMarkdownGroup } from "./../../systems/class/ItemGroup";
+import { Markdown as SysMarkdown } from "../../systems/Markdown";
+import { Item as SysItem } from "./../../systems/class/Item";
+import { ItemGroup as SysItemGroup } from "./../../systems/class/ItemGroup";
 import { Checklist as SysChecklist } from "./../../systems/Checklist";
 import { Image as SysImage } from "./../../systems/Image";
 
@@ -48,7 +51,7 @@ export function CommonTaskBarButtons({ item, onAction = () => { }, attr = {}, ..
 						onClick={ e => {
 							let next = new ItemChecklistJS();
 
-							SysMarkdownGroup.addChild(item, next);
+							SysItemGroup.addChild(item, next);
 
 							onAction("checklist", item);
 						} }>
@@ -58,9 +61,17 @@ export function CommonTaskBarButtons({ item, onAction = () => { }, attr = {}, ..
 			}
 
 			<button
+				className="p-2 ml-2 border border-gray-300 border-solid rounded shadow-sm hover:bg-gray-50 hover:border-gray-400 hover:text-gray-400 hover:shadow"
+				onClick={ e => {
+					onAction("config", item);
+				} }>
+				<CogIcon className="w-4 h-4 text-gray-400" />
+			</button>
+
+			<button
 				className="p-2 ml-2 border border-solid rounded shadow-sm border-rose-300 hover:bg-rose-50 hover:border-rose-400 hover:text-rose-400 hover:shadow"
 				onClick={ e => {
-					SysMarkdownGroup.removeChild(item.state.parent, item);
+					SysItemGroup.removeChild(item.state.parent, item);
 
 					onAction("delete", item);
 				} }>
@@ -87,7 +98,7 @@ export function GroupItemTaskBar({ item, onAction = () => { }, attr, ...props } 
 				onClick={ e => {
 					let next = new ItemJS();
 
-					SysMarkdownGroup.addChild(baseItem, next);
+					SysItemGroup.addChild(baseItem, next);
 
 					setBaseItem(baseItem);
 
@@ -101,7 +112,7 @@ export function GroupItemTaskBar({ item, onAction = () => { }, attr, ...props } 
 				onClick={ e => {
 					let next = new ItemGroupJS();
 
-					SysMarkdownGroup.addChild(baseItem, next);
+					SysItemGroup.addChild(baseItem, next);
 
 					setBaseItem(baseItem);
 
@@ -111,7 +122,7 @@ export function GroupItemTaskBar({ item, onAction = () => { }, attr, ...props } 
 			</button>
 
 			<label
-				for={ item.id }
+				htmlFor={ item.id }
 				className="p-2 ml-2 border border-solid rounded shadow-sm cursor-pointer border-violet-200 hover:bg-violet-100 hover:shadow"
 			>
 				<input
@@ -130,7 +141,7 @@ export function GroupItemTaskBar({ item, onAction = () => { }, attr, ...props } 
 								},
 							});
 
-							SysMarkdownGroup.addChild(baseItem, next);
+							SysItemGroup.addChild(baseItem, next);
 
 							setBaseItem(baseItem);
 
@@ -150,13 +161,13 @@ export function GroupItemTaskBar({ item, onAction = () => { }, attr, ...props } 
 	);
 };
 
-export function ItemImage({ item, override, showTaskBar, onAction, className, ...rest } = {}) {
+export function ItemImage({ item, override, showTaskBar, onAction, className } = {}) {
 	const [ width, setWidth ] = useState(500);
 	const [ height, setHeight ] = useState(300);
 	const [ alignment, setAlignment ] = useState("center");
 
 	return (
-		<Wrapper className={ className + ` mt-2 p-2 text-gray-600 bg-white rounded border border-l-4 border-solid border-neutral-300 shadow-lg` } { ...rest }>
+		<>
 			<MarkdownEditor item={ item } type={ "title" } override={ override } className={ `mb-2` } />
 			<Canvas
 				className={ `m-auto` }
@@ -167,8 +178,8 @@ export function ItemImage({ item, override, showTaskBar, onAction, className, ..
 			{
 				showTaskBar ? (
 					<div className={ `flex flex-row justify-center` }>
-						W: <input type="number" className={ `text-center` } value={ width } onChange={ e => setWidth(e.target.value) } />
-						H: <input type="number" className={ `text-center` } value={ height } onChange={ e => setHeight(e.target.value) } />
+						<input type="number" className={ `text-center` } value={ width } onChange={ e => setWidth(e.target.value) } />
+						<input type="number" className={ `text-center` } value={ height } onChange={ e => setHeight(e.target.value) } />
 					</div>
 				) : null
 			}
@@ -178,24 +189,28 @@ export function ItemImage({ item, override, showTaskBar, onAction, className, ..
 					<ItemTaskBar item={ item } onAction={ onAction } />
 				) : null
 			}
-		</Wrapper>
+		</>
 	);
 };
 
-export function ItemChecklist({ item, override, showTaskBar, onAction, className, ...rest } = {}) {
+export function ItemChecklist({ item, override, showTaskBar, onAction } = {}) {
 	return (
-		<Wrapper className={ className + ` mt-2 p-2 text-gray-600 bg-white rounded border border-l-4 border-solid border-neutral-300 shadow-lg` } { ...rest }>
+		<>
 			<div className="flex flex-row">
-				<div className={ `` }>
-					<StatusDropdown
-						item={ item }
-						callback={ (etype, status) => {
-							if(etype === "select") {
-								SysStatus.setCurrent(item, status);
-							}
-						} }
-					/>
-				</div>
+				{
+					item.shared.status ? (
+						<div className={ `` }>
+							<StatusDropdown
+								item={ item }
+								callback={ (etype, status) => {
+									if(etype === "select") {
+										SysStatus.setCurrent(item, status);
+									}
+								} }
+							/>
+						</div>
+					) : null
+				}
 				<MarkdownEditor item={ item } type={ "title" } override={ override } />
 			</div>
 			<ChecklistJSX item={ item } override={ override } />
@@ -204,13 +219,13 @@ export function ItemChecklist({ item, override, showTaskBar, onAction, className
 					<ItemTaskBar item={ item } onAction={ onAction } />
 				) : null
 			}
-		</Wrapper>
+		</>
 	);
 };
 
-export function ItemGroup({ item, override, showTaskBar, showChecklist, onAction, className, ...rest } = {}) {
+export function ItemGroup({ item, override, showTaskBar, showChecklist, onAction } = {}) {
 	return (
-		<Wrapper className={ className + ` p-2 my-1 border border-solid rounded border-neutral-200 text-neutral-600 bg-neutral-50 shadow` } { ...rest } >
+		<>
 			<MarkdownEditor item={ item } type={ "title" } override={ override } />
 			{
 				item.state.children.map((child, index) => {
@@ -228,13 +243,14 @@ export function ItemGroup({ item, override, showTaskBar, showChecklist, onAction
 					</div>
 				) : null
 			}
-		</Wrapper>
+		</>
 	);
 };
 
 export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 	const { } = useNodeEvent("update", item);
 	const [ showChecklist, setShowChecklist ] = useState(false);
+	const [ showConfig, setShowConfig ] = useState(false);
 
 	//IDEA: Ideate around how to best do this
 	let classNames = ``;
@@ -245,11 +261,14 @@ export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 	function onAction(action, item) {
 		if(action === "checklist") {
 			setShowChecklist(!showChecklist);
+		} else if(action === "config") {
+			setShowConfig(true);
 		}
 	}
 
+	let [ jsx, css ] = [ null, `text-gray-600 bg-white border-neutral-300 shadow-lg` ];
 	if(item instanceof ItemGroupJS) {
-		return (
+		jsx = (
 			<ItemGroup
 				className={ classNames }
 				item={ item }
@@ -260,8 +279,9 @@ export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 				{ ...rest }
 			/>
 		);
+		css = `border-neutral-200 text-neutral-600 bg-neutral-50 shadow`;
 	} else if(item instanceof ItemChecklistJS) {
-		return (
+		jsx = (
 			<ItemChecklist
 				className={ classNames }
 				item={ item }
@@ -272,7 +292,7 @@ export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 			/>
 		);
 	} else if(item instanceof ItemImageJS) {
-		return (
+		jsx = (
 			<ItemImage
 				className={ classNames }
 				item={ item }
@@ -282,28 +302,83 @@ export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 				{ ...rest }
 			/>
 		);
+	} else {
+		jsx = (
+			<>
+				<div className="flex flex-row">
+					{
+						item.shared.status ? (
+							<div className={ `` }>
+								<StatusDropdown
+									item={ item }
+									callback={ (etype, status) => {
+										if(etype === "select") {
+											SysStatus.setCurrent(item, status);
+										}
+									} }
+								/>
+							</div>
+						) : null
+					}
+					<MarkdownEditor item={ item } type={ "content" } override={ override } />
+				</div>
+				{
+					showTaskBar ? (
+						<ItemTaskBar item={ item } onAction={ onAction } attr={ { showChecklist } } />
+					) : null
+				}
+			</>
+		);
 	}
 
 	return (
-		<Wrapper className={ classNames + ` mt-2 p-2 text-gray-600 bg-white rounded border border-l-4 border-solid border-neutral-300 shadow-lg` } { ...rest }>
-			<div className="flex flex-row">
-				<div className={ `` }>
-					<StatusDropdown
-						item={ item }
-						callback={ (etype, status) => {
-							if(etype === "select") {
-								SysStatus.setCurrent(item, status);
+		<Wrapper className={ classNames + ` mt-2 p-2  rounded border border-l-4 border-solid ` + css } { ...rest }>
+			<Modal
+				onClose={ () => setShowConfig(false) }
+				onOpen={ () => setShowConfig(true) }
+				open={ showConfig }
+			>
+				<div className={ `flex flex-col p-2 m-2 pb-0` }>
+					<div
+						className={ `p-2 border border-solid border-neutral-200 font-mono text-neutral-600 text-center mb-4 rounded shadow-sm cursor-copy active:bg-emerald-50 active:border-emerald-200 hover:shadow` }
+						onClick={ e => {
+							if(e.ctrlKey) {
+								/* Copy the `ref` version of the UUID */
+								navigator.clipboard.writeText(`@${ item.id }`);
+							} else {
+								/* Copy the UUID */
+								navigator.clipboard.writeText(item.id);
 							}
 						} }
-					/>
+					>{ item.id }</div>
+					{
+						Object.entries(item.shared).map(([ key, value ]) => {
+							return (
+								<div
+									key={ key }
+									className={ `truncate flex flex-row border border-t-2 border-solid border-neutral-200 border-t-neutral-400 rounded mb-2 p-2 shadow hover:shadow-md` }
+									onContextMenu={ e => {
+										//STUB: Bind this to something more appropriate
+										e.preventDefault();
+										if(e.ctrlKey) {
+											SysItem.removeComponent(item, key);
+										}
+									} }
+								>
+									<div className={ `w-1/2 font-bold text-neutral-700` }>
+										{ key }
+									</div>
+									<pre className={ `w-1/2 font-mono text-neutral-600` }>
+										{ JSON.stringify(value, null, 2) }
+									</pre>
+								</div>
+							);
+						})
+					}
 				</div>
-				<MarkdownEditor item={ item } type={ "content" } override={ override } />
-			</div>
-			{
-				showTaskBar ? (
-					<ItemTaskBar item={ item } onAction={ onAction } attr={ { showChecklist } } />
-				) : null
-			}
+			</Modal>
+
+			{ jsx }
 		</Wrapper>
 	);
 };
