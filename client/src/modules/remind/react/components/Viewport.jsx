@@ -27,28 +27,30 @@ export function MenuBar({ showTaskBar, setShowTaskBar, ...rest } = {}) {
 
 
 export function Viewport({ item, ...rest } = {}) {
-	const [ showTaskBar, setShowTaskBar ] = React.useState(false);
+	const [ showTaskBar, setShowTaskBar ] = React.useState(true);
 	const [ override, setOverride ] = React.useState({});
 
 	let { x, y } = item.shared.viewport;
 
 	useEffect(() => {
 		let fn = e => {
-			e.preventDefault();
+			if(e.target.tagName !== `INPUT`) {
+				e.preventDefault();
+			}
 
 			if(e.key === `Escape`) {
 				setOverride({
 					...override,
 					EscapeKey: `${ Date.now() }:${ Math.random() }`,
 				});
-			} else if(e.key === `F1`) {
+			}
+
+			if(e.key === `F1`) {
 				setOverride({
 					...override,
 					F1: `${ Date.now() }:${ Math.random() }`,
 				});
-			}
-
-			if(e.key === "F5") {
+			} else if(e.key === "F5") {
 				window.location.reload();
 			}
 		};
@@ -61,7 +63,9 @@ export function Viewport({ item, ...rest } = {}) {
 	}, []);
 
 	useEffect(() => {
-		setShowTaskBar(!showTaskBar);
+		if(override.F1) {
+			setShowTaskBar(!showTaskBar);
+		}
 	}, [ override.F1 ]);
 
 	return (
