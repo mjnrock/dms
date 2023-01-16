@@ -334,13 +334,13 @@ export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 	}
 
 	return (
-		<Wrapper className={ classNames + ` mt-2 p-2  rounded border border-l-4 border-solid ` + css } { ...rest }>
+		<Wrapper className={ classNames + ` mt-2 p-2 rounded border border-l-4 border-solid ` + css } { ...rest }>
 			<Modal
 				onClose={ () => setShowConfig(false) }
 				onOpen={ () => setShowConfig(true) }
 				open={ showConfig }
 			>
-				<div className={ `flex flex-col p-2 m-2 pb-0` }>
+				<div className={ `flex flex-col p-2 m-2` }>
 					<div
 						className={ `p-2 border border-solid border-neutral-200 font-mono text-neutral-600 text-center mb-4 rounded shadow-sm cursor-copy active:bg-emerald-50 active:border-emerald-200 hover:shadow` }
 						onClick={ e => {
@@ -354,61 +354,28 @@ export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 						} }
 					>{ item.id }</div>
 
-					{
-						Object.entries(item.shared).map(([ key, value ]) => {
-							return (
-								<div
-									key={ key }
-									className={ `truncate flex flex-row border border-t-2 border-solid border-neutral-200 border-t-neutral-400 rounded mb-2 p-2 shadow hover:shadow-md` }
-								>
-									<div className={ `w-1/2 font-bold text-neutral-700` }>
-										{ key }
-									</div>
+					<div className={ `flex flex-row gap-2` }>
+						{
+							Object.entries(Components).filter(([ k, v ]) => ![ `acomponent` ].includes(k.toLowerCase())).map(([ key, value ]) => {
+								let color = key.toLowerCase() in item.shared ? `emerald` : `neutral`,
+									hoverColor = color === `emerald` ? `rose` : `emerald`;
 
-									<div className={ `w-1/2 font-mono text-neutral-600 justify-end flex flex-row` }>
-										<button
-											className="p-2 ml-2 border border-solid rounded shadow-sm border-rose-300 hover:bg-rose-50 hover:border-rose-400 hover:text-rose-400 hover:shadow"
-											onClick={ e => {
-												SysItem.removeComponent(item, key);
+								return (
+									<button
+										className={ `flex-1 p-2 font-mono border border-solid rounded shadow-sm text-neutral-700 bg-${ color }-50 hover:bg-${ hoverColor }-100 border-${ color }-300 hover:border-${ hoverColor }-400 hover:text-${ hoverColor }-400 hover:shadow` }
+										onClick={ e => {
+											if(key.toLowerCase() in item.shared) {
+												SysItem.removeComponent(item, key.toLowerCase());
 
 												onAction("delete-component", item);
-											} }>
-											<TrashIcon className="w-4 h-4 text-rose-400" />
-										</button>
-									</div>
-								</div>
-							);
-						})
-					}
+											} else {
+												SysItem.addComponent(item, key.toLowerCase(), value, {});
 
-					<hr className="my-2" />
-
-					<div className={ `flex flex-col` }>
-						<div className="mb-4 italic font-thin text-center">Add Component</div>
-
-						{
-							Object.entries(Components).filter(([ k, v ]) => ![ ...Object.keys(item.shared), `acomponent` ].includes(k.toLowerCase())).map(([ key, value ]) => {
-								return (
-									<div
-										key={ key }
-										className={ `flex flex-row border border-t-2 border-solid border-neutral-200 border-t-neutral-400 rounded mb-2 p-2 shadow hover:shadow-md` }
-									>
-										<div className={ `w-1/2 font-bold text-neutral-700` }>
-											{ key }
-										</div>
-
-										<div className={ `w-1/2 font-mono text-neutral-600 justify-end flex flex-row` }>
-											<button
-												className="p-2 ml-2 border border-solid rounded shadow-sm border-emerald-300 hover:bg-emerald-50 hover:border-emerald-400 hover:text-emerald-400 hover:shadow"
-												onClick={ e => {
-													SysItem.addComponent(item, key.toLowerCase(), value, {});
-
-													onAction("add-component", item);
-												} }>
-												<PlusIcon className="w-4 h-4 text-emerald-400" />
-											</button>
-										</div>
-									</div>
+												onAction("add-component", item);
+											}
+										} }>
+										{ key }
+									</button>
 								);
 							})
 						}
