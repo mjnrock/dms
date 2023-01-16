@@ -41,3 +41,19 @@ h5 {
 h6 {
 	font-size: 0.67em;
 }
+
+li {
+	margin-left: 2em;
+	list-style-type: circle;
+}
+
+table, thead, tbody, th, td, tr {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+thead {
+	font-weight: bold;
+}
+th, td {
+	padding: 5px;
+}
