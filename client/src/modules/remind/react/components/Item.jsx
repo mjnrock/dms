@@ -3,7 +3,7 @@ import { Cog6ToothIcon, CogIcon, DocumentIcon, ListBulletIcon, LockClosedIcon, L
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-import { Modal } from "semantic-ui-react";
+import { Label, Modal } from "semantic-ui-react";
 
 import { useState, useEffect, useRef } from "react";
 import { useNodeEvent } from "./../useNodeEvent";
@@ -333,6 +333,7 @@ export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 		);
 	}
 
+	//FIXME: Overall this works well, but some of the jsx components don't update properly after a node is deleted
 	return (
 		<Wrapper className={ classNames + ` mt-2 p-2 rounded border border-l-4 border-solid ` + css } { ...rest }>
 			<Modal
@@ -340,9 +341,9 @@ export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 				onOpen={ () => setShowConfig(true) }
 				open={ showConfig }
 			>
-				<div className={ `flex flex-col p-2 m-2` }>
+				<div className={ `flex flex-col p-4 select-none` }>
 					<div
-						className={ `p-2 border border-solid border-neutral-200 font-mono text-neutral-600 text-center mb-4 rounded shadow-sm cursor-copy active:bg-emerald-50 active:border-emerald-200 hover:shadow` }
+						className={ `p-2 border border-solid border-neutral-200 font-mono text-neutral-600 text-center rounded shadow-sm cursor-copy active:bg-emerald-50 active:border-emerald-200 hover:shadow hover:bg-neutral-50` }
 						onClick={ e => {
 							if(e.ctrlKey) {
 								/* Copy the `ref` version of the UUID */
@@ -354,7 +355,7 @@ export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 						} }
 					>{ item.id }</div>
 
-					<div className={ `flex flex-row gap-2` }>
+					<div className={ `flex flex-row gap-2 mt-4` }>
 						{
 							Object.entries(Components).filter(([ k, v ]) => ![ `acomponent` ].includes(k.toLowerCase())).map(([ key, value ]) => {
 								let color = key.toLowerCase() in item.shared ? `emerald` : `neutral`,
@@ -378,6 +379,21 @@ export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 									</button>
 								);
 							})
+						}
+					</div>
+
+					<div className={ `flex flex-row gap-2 mt-8` }>
+						{
+							Array.from(item.tokens).map(token => (
+								<div
+									className={ `p-1 rounded border border-solid border-sky-400 bg-sky-100 text-sky-800 hover:border-sky-500 hover:bg-sky-200 hover:text-sky-900 font-mono text-xs cursor-copy active:bg-emerald-50 active:border-emerald-200` }
+									onClick={ e => {
+										navigator.clipboard.writeText(token);
+									} }
+								>
+									{ token }
+								</div>
+							))
 						}
 					</div>
 				</div>
