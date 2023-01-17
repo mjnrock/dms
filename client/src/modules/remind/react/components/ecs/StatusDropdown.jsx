@@ -1,7 +1,8 @@
 import { useContext, useState, useEffect } from "react";
 
-import { useNodeEvent } from "../useNodeEvent";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+
+import { Status as SysStatus } from "./../../../systems/Status";
 
 //FIXME: Figure how how to do this dynamically, as values are currently hardcoded
 //STUB
@@ -9,10 +10,6 @@ export const StatusColor = {
 	[ `Not Started` ]: `rose-500`,
 	[ `In Progress` ]: `amber-500`,
 	[ `Complete` ]: `emerald-500`,
-};
-
-export const EnumEventType = {
-	SELECT: `select`,
 };
 
 export function StatusDropdown({ item, callback, ...rest } = {}) {
@@ -41,7 +38,8 @@ export function StatusDropdown({ item, callback, ...rest } = {}) {
 										key={ option }
 										className={ `p-2 hover:bg-neutral-100 flex flex-row ${ current === option ? `bg-neutral-200` : `` }` }
 										onClick={ e => {
-											callback(EnumEventType.SELECT, option);
+											SysStatus.setCurrent(item, option);
+											
 											setIsOpen(false);
 										} }
 									>

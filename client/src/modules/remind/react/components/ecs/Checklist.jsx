@@ -1,10 +1,10 @@
 import { useContext, useState, useEffect } from "react";
 
-import { useNodeEvent } from "../useNodeEvent";
+import { useNodeEvent } from "../../useNodeEvent";
 
-import { Checklist as SysChecklist } from "../../systems/Checklist";
+import { Checklist as SysChecklist } from "../../../systems/Checklist";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
-import ComponentChecklistItem from "../../components/templates/ChecklistItem";
+import ComponentChecklistItem from "../../../components/templates/ChecklistItem";
 import { CheckIcon, EyeIcon, EyeSlashIcon, MinusIcon } from "@heroicons/react/24/outline";
 import { MarkdownEditor } from "./MarkdownEditor";
 

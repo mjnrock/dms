@@ -2,7 +2,7 @@ import { dispatch } from "../ASystem";
 
 export const Item = {
 	addComponent(item, key, component, args = {}) {
-		item.shared[ key ] = component.Create(item, args);
+		item.shared[ key ] = component.Create(args);
 
 		dispatch(item, "update", item.shared);
 

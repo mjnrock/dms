@@ -1,35 +1,27 @@
-import { Cog6ToothIcon, CogIcon, DocumentIcon, ListBulletIcon, LockClosedIcon, LockOpenIcon, PencilIcon, PhotoIcon, PlusIcon, RectangleGroupIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { CogIcon, DocumentIcon, ListBulletIcon, PhotoIcon, PlusIcon, RectangleGroupIcon, TrashIcon } from "@heroicons/react/24/outline";
 
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import { Modal } from "semantic-ui-react";
 
-import { Label, Modal } from "semantic-ui-react";
-
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { useNodeEvent } from "./../useNodeEvent";
 
 import Base64 from "../../../../util/Base64";
 
-import { Status as SysStatus } from "../../systems/Status";
-import { Markdown as SysMarkdown } from "../../systems/Markdown";
 import { Item as SysItem } from "./../../systems/class/Item";
 import { ItemGroup as SysItemGroup } from "./../../systems/class/ItemGroup";
-import { Checklist as SysChecklist } from "./../../systems/Checklist";
-import { Image as SysImage } from "./../../systems/Image";
 
-import { Node as NodeJS } from "../../lib/Node";
 import { Item as ItemJS } from "./../../lib/Item";
 import { ItemGroup as ItemGroupJS } from "./../../lib/ItemGroup";
-import { ItemCollection as ItemCollectionJS } from "./../../lib/ItemCollection";
 import { ItemChecklist as ItemChecklistJS } from "./../../lib/custom/ItemChecklist";
 import { ItemImage as ItemImageJS } from "../../lib/custom/ItemImage";
 
 import Components from "./../../components/package";
 
-import { Checklist as ChecklistJSX } from "./Checklist";
+import ComponentJSX from "./ecs/package";
+
 import { Canvas } from "./Canvas";
-import { MarkdownEditor } from "./MarkdownEditor";
-import { StatusDropdown } from "./StatusDropdown";
+
+import { TaskBar } from "./Taskbar";
 
 const Wrapper = ({ className, x, y, children, ...rest }) => {
 	return (
@@ -41,154 +33,63 @@ const Wrapper = ({ className, x, y, children, ...rest }) => {
 	);
 };
 
-export function CommonTaskBarButtons({ item, onAction = () => { }, attr = {}, ...props } = {}) {
-	const { showChecklist } = attr;
-
-	return (
-		<>
-			{
-				item.hasToken(`@remind:item-group`) ? (
-					<button
-						className={ `p-2 border border-solid rounded shadow-sm border-neutral-300 hover:bg-neutral-100 hover:shadow ${ item.shared.checklist ? `text-orange-200 border-orange-200` : `text-neutral-400` } ${ showChecklist ? `bg-orange-50 hover:bg-orange-100` : `` }` }
-						onClick={ e => {
-							let next = new ItemChecklistJS();
-
-							SysItemGroup.addChild(item, next);
-
-							onAction("checklist", item);
-						} }>
-						<ListBulletIcon className="w-4 h-4" />
-					</button>
-				) : null
-			}
-
-			<button
-				className="p-2 ml-2 border border-gray-300 border-solid rounded shadow-sm hover:bg-gray-50 hover:border-gray-400 hover:text-gray-400 hover:shadow"
-				onClick={ e => {
-					onAction("config", item);
-				} }>
-				<CogIcon className="w-4 h-4 text-gray-400" />
-			</button>
-
-			<button
-				className="p-2 ml-2 border border-solid rounded shadow-sm border-rose-300 hover:bg-rose-50 hover:border-rose-400 hover:text-rose-400 hover:shadow"
-				onClick={ e => {
-					SysItemGroup.removeChild(item.state.parent, item);
-
-					onAction("delete", item);
-				} }>
-				<TrashIcon className="w-4 h-4 text-rose-400" />
-			</button>
-		</>
-	);
-};
-
-export function ItemTaskBar({ item, onAction = () => { }, attr, ...props } = {}) {
-	return (
-		<div className="flex flex-row mt-2">
-			<CommonTaskBarButtons item={ item } onAction={ onAction } attr={ attr } />
-		</div>
-	);
-};
-export function GroupItemTaskBar({ item, onAction = () => { }, attr, ...props } = {}) {
-	const [ baseItem, setBaseItem ] = useState(item);
-
-	return (
-		<div className="flex flex-row mt-2">
-			<button
-				className="p-2 border border-blue-200 border-solid rounded shadow-sm hover:bg-blue-100 hover:shadow"
-				onClick={ e => {
-					let next = new ItemJS();
-
-					SysItemGroup.addChild(baseItem, next);
-
-					setBaseItem(baseItem);
-
-					onAction("add-item", baseItem);
-				} }>
-				<DocumentIcon className="w-4 h-4 text-blue-400" />
-			</button>
-
-			<button
-				className="p-2 ml-2 border border-green-200 border-solid rounded shadow-sm hover:bg-green-100 hover:shadow"
-				onClick={ e => {
-					let next = new ItemGroupJS();
-
-					SysItemGroup.addChild(baseItem, next);
-
-					setBaseItem(baseItem);
-
-					onAction("add-group", baseItem);
-				} }>
-				<RectangleGroupIcon className="w-4 h-4 text-green-400" />
-			</button>
-
-			<label
-				htmlFor={ item.id }
-				className="p-2 ml-2 border border-solid rounded shadow-sm cursor-pointer border-violet-200 hover:bg-violet-100 hover:shadow"
-			>
-				<input
-					className="hidden"
-					type="file"
-					id={ item.id }
-					accept="image/*"
-					onChange={ e => {
-						Base64.DecodeFile(e.target.files[ 0 ]).then((canvas) => {
-							console.log(canvas);
-							let next = new ItemImageJS({
-								shared: {
-									image: {
-										canvas: canvas,
-									},
-								},
-							});
-
-							SysItemGroup.addChild(baseItem, next);
-
-							setBaseItem(baseItem);
-
-							onAction("add-group", baseItem);
-
-							e.target.value = null;
-						});
-					} }
-				/>
-				<PhotoIcon className="w-4 h-4 text-violet-400" />
-			</label>
-
-			<div className={ `ml-2` } />
-
-			<CommonTaskBarButtons item={ item } onAction={ onAction } attr={ attr } />
-		</div>
-	);
-};
-
 export function ItemImage({ item, override, showTaskBar, onAction, className } = {}) {
+	const { } = useNodeEvent("update", item);
 	const [ width, setWidth ] = useState(500);
 	const [ height, setHeight ] = useState(300);
 	const [ alignment, setAlignment ] = useState("center");
 
 	return (
 		<>
-			<MarkdownEditor item={ item } type={ "title" } override={ override } className={ `mb-2` } />
-			<Canvas
-				className={ `m-auto` }
-				canvas={ item.shared.image.canvas }
-				width={ width }
-				height={ height }
-			/>
+			<ComponentJSX component="markdown" item={ item } type={ "title" } override={ override } className={ `mb-2` } />
 			{
-				showTaskBar ? (
-					<div className={ `flex flex-row justify-center` }>
-						<input type="number" className={ `text-center` } value={ width } onChange={ e => setWidth(e.target.value) } />
-						<input type="number" className={ `text-center` } value={ height } onChange={ e => setHeight(e.target.value) } />
+				item.shared.image && item.shared.image.canvas ? (
+					<>
+						<Canvas
+							className={ `m-auto` }
+							canvas={ item.shared.image.canvas }
+							width={ width }
+							height={ height }
+						/>
+						{
+							showTaskBar ? (
+								<div className={ `flex flex-row justify-center mt-2 font-mono` }>
+									<input type="number" className={ `text-center` } value={ width } onChange={ e => setWidth(e.target.value) } />
+									<input type="number" className={ `text-center` } value={ height } onChange={ e => setHeight(e.target.value) } />
+								</div>
+							) : null
+						}
+					</>
+				) : (
+					<div className={ `border-2 border-solid rounded shadow cursor-pointer border-violet-200 hover:bg-violet-100 hover:shadow-md mb-4 select-none` }>
+						<label htmlFor={ item.id + "-upload" } className="cursor-pointer">
+							<input
+								className="hidden"
+								type="file"
+								id={ item.id + "-upload" }
+								accept="image/*"
+								onChange={ e => {
+									Base64.DecodeFile(e.target.files[ 0 ]).then((canvas) => {
+										SysItem.addComponent(item, `image`, Components.Image, {
+											canvas: canvas,
+										});
+
+										onAction("update-component", item);
+
+										e.target.value = null;
+									});
+								} }
+							/>
+							<PhotoIcon className="w-10 h-10 mx-auto mt-4 cursor-pointer text-violet-400" />
+							<div className="mb-4 text-sm italic text-center cursor-pointer text-violet-300">Upload an Image</div>
+						</label>
 					</div>
-				) : null
+				)
 			}
-			<MarkdownEditor item={ item } type={ "content" } override={ override } />
+			<ComponentJSX component="markdown" item={ item } type={ "content" } override={ override } />
 			{
 				showTaskBar ? (
-					<ItemTaskBar item={ item } onAction={ onAction } />
+					<TaskBar item={ item } onAction={ onAction } />
 				) : null
 			}
 		</>
@@ -199,26 +100,13 @@ export function ItemChecklist({ item, override, showTaskBar, onAction } = {}) {
 	return (
 		<>
 			<div className="flex flex-row">
-				{
-					item.shared.status ? (
-						<div className={ `` }>
-							<StatusDropdown
-								item={ item }
-								callback={ (etype, status) => {
-									if(etype === "select") {
-										SysStatus.setCurrent(item, status);
-									}
-								} }
-							/>
-						</div>
-					) : null
-				}
-				<MarkdownEditor item={ item } type={ "title" } override={ override } />
+				<ComponentJSX component="status" item={ item } />
+				<ComponentJSX component="markdown" item={ item } type={ "title" } override={ override } />
 			</div>
-			<ChecklistJSX item={ item } override={ override } />
+			<ComponentJSX component="checklist" item={ item } override={ override } />
 			{
 				showTaskBar ? (
-					<ItemTaskBar item={ item } onAction={ onAction } />
+					<TaskBar item={ item } onAction={ onAction } />
 				) : null
 			}
 		</>
@@ -228,7 +116,7 @@ export function ItemChecklist({ item, override, showTaskBar, onAction } = {}) {
 export function ItemGroup({ item, override, showTaskBar, showChecklist, onAction } = {}) {
 	return (
 		<>
-			<MarkdownEditor item={ item } type={ "title" } override={ override } />
+			<ComponentJSX component="markdown" item={ item } type={ "title" } override={ override } />
 			{
 				item.state.children.map((child, index) => {
 					return (
@@ -241,7 +129,8 @@ export function ItemGroup({ item, override, showTaskBar, showChecklist, onAction
 			{
 				showTaskBar ? (
 					<div className={ `mt-4` }>
-						<GroupItemTaskBar item={ item } onAction={ onAction } attr={ { showChecklist } } />
+						{/* <GroupItemTaskBar item={ item } onAction={ onAction } attr={ { showChecklist } } /> */ }
+						<TaskBar item={ item } onAction={ onAction } attr={ { showChecklist } } />
 					</div>
 				) : null
 			}
@@ -293,7 +182,7 @@ export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 				{ ...rest }
 			/>
 		);
-	} else if(item instanceof ItemImageJS) {
+	} else if(item instanceof ItemImageJS || item.shared.image) {
 		jsx = (
 			<ItemImage
 				className={ classNames }
@@ -308,25 +197,12 @@ export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 		jsx = (
 			<>
 				<div className="flex flex-row">
-					{
-						item.shared.status ? (
-							<div className={ `` }>
-								<StatusDropdown
-									item={ item }
-									callback={ (etype, status) => {
-										if(etype === "select") {
-											SysStatus.setCurrent(item, status);
-										}
-									} }
-								/>
-							</div>
-						) : null
-					}
-					<MarkdownEditor item={ item } type={ "content" } override={ override } />
+					<ComponentJSX component="status" item={ item } />
+					<ComponentJSX component="markdown" item={ item } type={ "content" } override={ override } />
 				</div>
 				{
 					showTaskBar ? (
-						<ItemTaskBar item={ item } onAction={ onAction } attr={ { showChecklist } } />
+						<TaskBar item={ item } onAction={ onAction } attr={ { showChecklist } } />
 					) : null
 				}
 			</>
@@ -363,6 +239,7 @@ export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 
 								return (
 									<button
+										key={ key }
 										className={ `flex-1 p-2 font-mono border border-solid rounded shadow-sm text-neutral-700 bg-${ color }-50 hover:bg-${ hoverColor }-100 border-${ color }-300 hover:border-${ hoverColor }-400 hover:text-${ hoverColor }-400 hover:shadow` }
 										onClick={ e => {
 											if(key.toLowerCase() in item.shared) {
@@ -386,6 +263,7 @@ export function Item({ item, x, y, showTaskBar, override, ...rest }) {
 						{
 							Array.from(item.tokens).map(token => (
 								<div
+									key={ token }
 									className={ `p-1 rounded border border-solid border-sky-400 bg-sky-100 text-sky-800 hover:border-sky-500 hover:bg-sky-200 hover:text-sky-900 font-mono text-xs cursor-copy active:bg-emerald-50 active:border-emerald-200` }
 									onClick={ e => {
 										navigator.clipboard.writeText(token);
