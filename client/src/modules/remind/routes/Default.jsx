@@ -23,6 +23,8 @@ import { Item as ItemJSX } from "./../react/components/Item";
 import Viewport from "../react/components/Viewport";
 import { Viewport as SysViewport } from "../systems/Viewport";
 
+import { Container } from "./../react/components/Container";
+
 const exampleMarkdown = `
 A paragraph with *emphasis* and **strong importance**.
 
@@ -95,6 +97,16 @@ export function Default() {
 
 	return (
 		<RemindContext.Provider value={ { stub: true } }>
+			<div>
+				<p className="p-2 font-mono font-bold font-sm text-neutral-300">GRID Test</p>
+				<Container item={ item } type="grid" w={ 2 } h={ 4 } />
+			</div>
+			<hr />
+			<div>
+				<p className="p-2 font-mono font-bold font-sm text-neutral-300">FLEX Test</p>
+				<Container item={ item } type="flex" />
+			</div>
+			<hr />
 			<Viewport item={ item } />
 		</RemindContext.Provider>
 	);
