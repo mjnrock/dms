@@ -134,36 +134,36 @@ export function Grid({ data = [], className = "", width = 0, height = 0, ...rest
 };
 
 function recurseFlexSchema(schema = []) {
-	return schema.map((item, i) => {
-		if(item.children && item.children.length) {
+	return schema.map((cell, i) => {
+		if(cell.children && cell.children.length) {
 			return (
 				<div className={ `flex` }>
-					{ recurseFlexSchema(item.children) }
+					{ recurseFlexSchema(cell.children) }
 				</div>
 			);
 		}
 
 		let style = {};
-		if(typeof item === "object") {
-			if(Array.isArray(item.w)) {
+		if(typeof cell === "object") {
+			if(Array.isArray(cell.w)) {
 				style = {
 					...style,
-					flexBasis: item.w[ 0 ] / item.w[ 1 ] * 100 + "%",
+					flexBasis: cell.w[ 0 ] / cell.w[ 1 ] * 100 + "%",
 				};
-			} else if(typeof item.w === "number") {
+			} else if(typeof cell.w === "number") {
 				style = {
 					...style,
-					flexBasis: item.w + "%",
+					flexBasis: cell.w + "%",
 				};
-			} else if(Array.isArray(item.h)) {
+			} else if(Array.isArray(cell.h)) {
 				style = {
 					...style,
-					flexBasis: item.h[ 0 ] / item.h[ 1 ] * 100 + "%",
+					flexBasis: cell.h[ 0 ] / cell.h[ 1 ] * 100 + "%",
 				};
-			} else if(typeof item.h === "number") {
+			} else if(typeof cell.h === "number") {
 				style = {
 					...style,
-					flexBasis: item.h + "%",
+					flexBasis: cell.h + "%",
 				};
 			}
 		}
