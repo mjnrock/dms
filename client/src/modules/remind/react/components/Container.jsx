@@ -1,40 +1,96 @@
 function generateSampleData(input = [], { w, h } = {}) {
 	if(input === true) {
+		//* Row-based flex layout
 		return [
 			{
+				type: "row",
 				rh: 2,
 				children: [
 					{
+						type: "col",
 						w: [ 1, 6 ],
 					},
 					{
+						type: "col",
 						w: [ 1, 6 ],
 					},
 					{
+						type: "col",
 						w: [ 1, 3 ],
 					},
 					{
+						type: "col",
 						w: [ 1, 3 ],
 					},
 				],
 			},
 			{
+				type: "row",
 				rh: 4,
 				children: [],
 			},
 			{
+				type: "row",
 				rh: 1,
 				children: [
 					{
+						type: "col",
 						w: [ 1, 2 ],
 					},
 					{
+						type: "col",
 						w: [ 1, 2 ],
 					},
 				],
 			},
 		];
+	} else if(input === false) {
+		//* Column-based flex layout
+		return [
+			{
+				type: "col",
+				rw: 2,
+				children: [
+					{
+						type: "row",
+						h: [ 1, 6 ],
+					},
+					{
+						type: "row",
+						h: [ 1, 6 ],
+					},
+					{
+						type: "row",
+						h: [ 1, 3 ],
+					},
+					{
+						type: "row",
+						h: [ 1, 3 ],
+					},
+				],
+			},
+			{
+				type: "col",
+				rw: 4,
+				children: [],
+			},
+			{
+				type: "col",
+				rw: 1,
+				children: [
+					{
+						type: "row",
+						h: [ 1, 2 ],
+					},
+					{
+						type: "row",
+						h: [ 1, 2 ],
+					},
+				],
+			},
+		];
 	} else if(!input.length) {
+		//* Grid based layout
 		return Array(w * h).fill(null).map((v, i) => i + 1);
 	}
 
@@ -77,12 +133,12 @@ export function Grid({ data = [], className = "", width = 0, height = 0, ...rest
 	);
 };
 
-function recurseData(data = []) {
-	return data.map((item, i) => {
+function recurseFlexSchema(schema = []) {
+	return schema.map((item, i) => {
 		if(item.children && item.children.length) {
 			return (
 				<div className={ `flex` }>
-					{ recurseData(item.children) }
+					{ recurseFlexSchema(item.children) }
 				</div>
 			);
 		}
@@ -120,10 +176,14 @@ function recurseData(data = []) {
 	});
 }
 
-export function Flex({ data = [], className = "", ...rest }) {
+/**
+ * Currently this only does row-based flex, but does have the ability
+ * to be precise with its flex-basis, allowing for a grid-like layout.
+ */
+export function Flex({ schema = [], className = "", ...rest }) {
 	return (
 		<div className={ `flex flex-col` + className } { ...rest }>
-			{ recurseData(data) }
+			{ recurseFlexSchema(schema) }
 		</div>
 	);
 }
@@ -136,10 +196,10 @@ export function Container({ data = [], type = "grid", w = 3, h = 3, isRowBased =
 			<Grid width={ w } height={ h } data={ data } { ...rest } />
 		);
 	} else if(type === "flex") {
-		data = generateSampleData(true);
+		let schema = generateSampleData(true);
 
 		return (
-			<Flex { ...rest } data={ data } />
+			<Flex { ...rest } schema={ schema } />
 		);
 	}
 
