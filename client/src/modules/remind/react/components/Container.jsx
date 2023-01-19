@@ -2,42 +2,33 @@ function generateSampleData(input = [], { w, h } = {}) {
 	if(input === true) {
 		return [
 			{
-				type: "row",
 				rh: 2,
 				children: [
 					{
-						type: "col",
 						w: [ 1, 6 ],
 					},
 					{
-						type: "col",
 						w: [ 1, 6 ],
 					},
 					{
-						type: "col",
 						w: [ 1, 3 ],
 					},
 					{
-						type: "col",
 						w: [ 1, 3 ],
 					},
 				],
 			},
 			{
-				type: "row",
 				rh: 4,
 				children: [],
 			},
 			{
-				type: "row",
 				rh: 1,
 				children: [
 					{
-						type: "col",
 						w: [ 1, 2 ],
 					},
 					{
-						type: "col",
 						w: [ 1, 2 ],
 					},
 				],
@@ -72,7 +63,7 @@ export function Grid({ data = [], className = "", width = 0, height = 0, ...rest
 							{
 								row.map((cell, x) => {
 									return (
-										<div key={ x } className={`flex justify-center items-center border border-solid border-neutral-200 rounded m-1 p-1 shadow hover:bg-neutral-50 hover:border-neutral-300` }>
+										<div key={ x } className={ `flex justify-center items-center border border-solid border-neutral-200 rounded m-1 p-1 shadow hover:bg-neutral-50 hover:border-neutral-300` }>
 											{ cell }
 										</div>
 									);
