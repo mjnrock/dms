@@ -120,33 +120,45 @@ export function Default() {
 		<RemindContext.Provider value={ { stub: true } }>
 			<div>
 				<p className="p-2 font-mono font-bold font-sm text-neutral-300">GRID Test</p>
-				<Container item={ () => [
-					item,
-					item,
-					item,
-					null,
-					item,
-					item,
-					null,
-					item,
-				] } type="grid" schema={ schemaGrid } />
+				<Container
+					type="grid"
+					schema={ schemaGrid }
+					item={ () => [
+						item,
+						item,
+						item,
+						null,
+						item,
+						item,
+						null,
+						item,
+					] }
+				/>
 			</div>
-			<hr />
+
+			<hr className="my-4" />
+
 			<div>
 				<p className="p-2 font-mono font-bold font-sm text-neutral-300">FLEX Test</p>
-				<Container item={ () => [
-					item,
-					item,
-					item,
-					null,
-					item,
-					item,
-					null,
-					null,
-					item,
-				] } type="flex" schema={ schemaFlex } />
+				<Container
+					type="flex"
+					schema={ schemaFlex }
+					item={ () => [
+						item,
+						item,
+						item,
+						null,
+						item,
+						item,
+						null,
+						null,
+						item,
+					] }
+				/>
 			</div>
-			<hr />
+
+			<hr className="my-4" />
+
 			<Viewport item={ item } />
 		</RemindContext.Provider>
 	);
