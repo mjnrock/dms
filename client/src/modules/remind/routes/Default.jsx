@@ -91,18 +91,31 @@ let schemaFlex = [
 	[ { rw: 1, jsx: Test }, { rw: 1, jsx: Test } ],
 ];
 let schemaGrid = [
-	2,
-	4,
-	[
-		Test,
-		Test,
-		Test,
-		Test,
-		Test,
-		Test,
-		Test,
-		Test,
-	],
+	2,	/* width */
+	4,	/* height */
+
+	/* Coordinate Variant */
+	{
+		"0,0": () => null,	/* Empty cell at JSX level */
+		"1,0": Test,
+		"0,1": Test,
+		"1,1": Test,
+		"0,2": Test,
+		"1,2": Test,
+		"0,3": Test,
+		"1,3": Test,
+	},
+	/* Index Variant */
+	// [
+	// 	Test,
+	// 	Test,
+	// 	Test,
+	// 	Test,
+	// 	Test,
+	// 	Test,
+	// 	Test,
+	// 	Test,
+	// ],
 ];
 
 export const RemindContext = React.createContext();

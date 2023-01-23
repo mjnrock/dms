@@ -24,17 +24,21 @@ export function parseItem(item, index) {
 	}
 
 	return null;
-}
+};
 
 export function Grid({ item, schema = [], className = "", props = {}, ...rest }) {
 	let grid = [],
-		[ width, height, arrJsx ] = schema;
+		[ width, height, jsx ] = schema;
 
 	for(let y = 0; y < height; y++) {
 		let row = [];
 
 		for(let x = 0; x < width; x++) {
-			row.push(arrJsx[ y * width + x ] || null);
+			if(Array.isArray(jsx)) {
+				row.push(jsx[ y * width + x ] || null);
+			} else if(typeof jsx === "object") {
+				row.push(jsx[ `${ x },${ y }` ] || null);
+			}
 		}
 
 		grid.push(row);
