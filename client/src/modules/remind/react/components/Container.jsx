@@ -10,17 +10,46 @@ export function Cell({ item, style, children = [], className = "", ...rest }) {
 	);
 };
 
-export function parseItem(item, index) {
+export function parseItem(item, index, { current = 1, maxDepth = 10 } = {}) {
 	if(item instanceof Node) {
+		/* Direct node reference */
 		return item;
 	} else if(Array.isArray(item)) {
+		if(item.some(v => Array.isArray(v))) {
+			/* Condensed array form */
+			let tempItem = [];
+			for(let i = 0; i < item.length; i++) {
+				if(Array.isArray(item[ i ])) {
+					let [ count, value ] = item[ i ];
+
+					/* Nested loop to expand array */
+					for(let j = 0; j < count; j++) {
+						tempItem.push(value);
+					}
+				} else {
+					tempItem.push(item[ i ]);
+				}
+			}
+
+			item = tempItem;
+		}
+
 		if(typeof index === "number") {
+			/* Passed index */
 			return item[ index ];
 		}
 
 		return item;
 	} else if(typeof item === "function") {
-		return parseItem(item(), index);
+		/* Function reference */
+
+		/* Short-circuit if we've reached the max depth */
+		if(current > maxDepth) {
+			return null;
+		}
+
+		/* Recusively call as result could be another function */
+		return parseItem(item(), index, { current: current + 1, maxDepth });
 	}
 
 	return null;

@@ -137,9 +137,7 @@ export function Default() {
 					type="grid"
 					schema={ schemaGrid }
 					item={ () => [
-						item,
-						item,
-						item,
+						[ 3, baseItem ],
 						null,
 						item,
 						item,
@@ -157,9 +155,7 @@ export function Default() {
 					type="flex"
 					schema={ schemaFlex }
 					item={ () => [
-						item,
-						item,
-						item,
+						[ 3, baseItem ],
 						null,
 						item,
 						item,

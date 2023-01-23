@@ -1,8 +1,9 @@
 export const Name = `rendercomponent`;
 
 export const EnumRenderType = {
-	ELEMENT: `element`,
-	CONTAINER: `container`,
+	//IDEA: Should we just use `flex` or `grid`?
+	// ELEMENT: `element`,
+	// CONTAINER: `container`,
 	FLEX: `flex`,
 	GRID: `grid`,
 };
@@ -20,7 +21,7 @@ export function SchemaCell({ w, rw, h, rh, jsx = () => null, css = {} } = {}) {
 
 export function Create({ ...rest } = {}) {
 	return {
-		type: EnumRenderType.ELEMENT,
+		type: EnumRenderType.FLEX,
 		schema: [],
 		item: null,
 
