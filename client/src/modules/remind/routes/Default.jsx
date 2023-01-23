@@ -84,6 +84,27 @@ SysItemCollection.register(baseItemCollection, baseItem2);
 SysItemCollection.register(baseItemCollection, baseItem3);
 SysItemCollection.register(baseItemCollection, baseItemGroup);
 
+//IDEA: For now, just use these SCHEMA VARIANTS and add the other options later
+let schemaFlex = [
+	[ { rw: 1, jsx: Test }, { rw: 1, jsx: Test }, { rw: 2, jsx: Test }, { rw: 2, jsx: Test }, { rw: 1, jsx: Test }, { rw: 3, jsx: Test } ],
+	[ { rw: 1, jsx: Test } ],
+	[ { rw: 1, jsx: Test }, { rw: 1, jsx: Test } ],
+];
+let schemaGrid = [
+	2,
+	4,
+	[
+		Test,
+		Test,
+		Test,
+		Test,
+		Test,
+		Test,
+		Test,
+		Test,
+	],
+];
+
 export const RemindContext = React.createContext();
 
 export function Default() {
@@ -99,12 +120,31 @@ export function Default() {
 		<RemindContext.Provider value={ { stub: true } }>
 			<div>
 				<p className="p-2 font-mono font-bold font-sm text-neutral-300">GRID Test</p>
-				<Container item={ item } type="grid" w={ 2 } h={ 4 } />
+				<Container item={ () => [
+					item,
+					item,
+					item,
+					null,
+					item,
+					item,
+					null,
+					item,
+				] } type="grid" schema={ schemaGrid } />
 			</div>
 			<hr />
 			<div>
 				<p className="p-2 font-mono font-bold font-sm text-neutral-300">FLEX Test</p>
-				<Container item={ item } type="flex" />
+				<Container item={ () => [
+					item,
+					item,
+					item,
+					null,
+					item,
+					item,
+					null,
+					null,
+					item,
+				] } type="flex" schema={ schemaFlex } />
 			</div>
 			<hr />
 			<Viewport item={ item } />

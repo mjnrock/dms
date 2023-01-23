@@ -1,127 +1,63 @@
-function generateSampleData(input = [], { w, h } = {}) {
-	if(input === true) {
-		//* Row-based flex layout
-		return [
+import Node from "../../lib/Node";
+
+export function Cell({ item, style, children = [], className = "", ...rest }) {
+	return (
+		<div style={ style } className={ `flex grow ` + className } { ...rest }>
 			{
-				type: "row",
-				rh: 2,
-				children: [
-					{
-						type: "col",
-						w: [ 1, 6 ],
-					},
-					{
-						type: "col",
-						w: [ 1, 6 ],
-					},
-					{
-						type: "col",
-						w: [ 1, 3 ],
-					},
-					{
-						type: "col",
-						w: [ 1, 3 ],
-					},
-				],
-			},
-			{
-				type: "row",
-				rh: 4,
-				children: [],
-			},
-			{
-				type: "row",
-				rh: 1,
-				children: [
-					{
-						type: "col",
-						w: [ 1, 2 ],
-					},
-					{
-						type: "col",
-						w: [ 1, 2 ],
-					},
-				],
-			},
-		];
-	} else if(input === false) {
-		//* Column-based flex layout
-		return [
-			{
-				type: "col",
-				rw: 2,
-				children: [
-					{
-						type: "row",
-						h: [ 1, 6 ],
-					},
-					{
-						type: "row",
-						h: [ 1, 6 ],
-					},
-					{
-						type: "row",
-						h: [ 1, 3 ],
-					},
-					{
-						type: "row",
-						h: [ 1, 3 ],
-					},
-				],
-			},
-			{
-				type: "col",
-				rw: 4,
-				children: [],
-			},
-			{
-				type: "col",
-				rw: 1,
-				children: [
-					{
-						type: "row",
-						h: [ 1, 2 ],
-					},
-					{
-						type: "row",
-						h: [ 1, 2 ],
-					},
-				],
-			},
-		];
-	} else if(!input.length) {
-		//* Grid based layout
-		return Array(w * h).fill(null).map((v, i) => i + 1);
+				children
+			}
+		</div>
+	);
+};
+
+export function parseItem(item, index) {
+	if(item instanceof Node) {
+		return item;
+	} else if(Array.isArray(item)) {
+		if(typeof index === "number") {
+			return item[ index ];
+		}
+
+		return item;
+	} else if(typeof item === "function") {
+		return parseItem(item(), index);
 	}
 
-	return input.toString();
+	return null;
 }
 
-export function Grid({ data = [], className = "", width = 0, height = 0, ...rest }) {
-	let grid = [];
+export function Grid({ item, schema = [], className = "", props = {}, ...rest }) {
+	let grid = [],
+		[ width, height, arrJsx ] = schema;
 
-	for(let x = 0; x < width; x++) {
+	for(let y = 0; y < height; y++) {
 		let row = [];
 
-		for(let y = 0; y < height; y++) {
-			row.push(data[ x * height + y ] || null);
+		for(let x = 0; x < width; x++) {
+			row.push(arrJsx[ y * width + x ] || null);
 		}
 
 		grid.push(row);
 	}
 
 	return (
-		<div className={ `flex flex-row ` + className } { ...rest }>
+		<div className={ `flex flex-col ` + className } { ...rest }>
 			{
 				grid.map((row, y) => {
 					return (
-						<div key={ y } className={ `flex flex-col grow` }>
+						<div key={ y } className={ `flex flex-row grow` }>
 							{
-								row.map((cell, x) => {
+								row.map((JSX, x) => {
+									let test = `border border-solid border-neutral-200 rounded m-1 p-1 shadow hover:bg-neutral-50 hover:border-neutral-300`;
+
+									let style = {
+										flexBasis: 100 / width + "%",
+									};
+
 									return (
-										<div key={ x } className={ `flex justify-center items-center border border-solid border-neutral-200 rounded m-1 p-1 shadow hover:bg-neutral-50 hover:border-neutral-300` }>
-											{ cell }
-										</div>
+										<Cell key={ x } style={ style } className={ `justify-center items-center ` + test }>
+											<JSX item={ parseItem(item, y * width + x) } { ...props } />
+										</Cell>
 									);
 								})
 							}
@@ -133,73 +69,54 @@ export function Grid({ data = [], className = "", width = 0, height = 0, ...rest
 	);
 };
 
-function recurseFlexSchema(schema = []) {
-	return schema.map((cell, i) => {
-		if(cell.children && cell.children.length) {
-			return (
-				<div className={ `flex` }>
-					{ recurseFlexSchema(cell.children) }
-				</div>
-			);
-		}
-
-		let style = {};
-		if(typeof cell === "object") {
-			if(Array.isArray(cell.w)) {
-				style = {
-					...style,
-					flexBasis: cell.w[ 0 ] / cell.w[ 1 ] * 100 + "%",
-				};
-			} else if(typeof cell.w === "number") {
-				style = {
-					...style,
-					flexBasis: cell.w + "%",
-				};
-			} else if(Array.isArray(cell.h)) {
-				style = {
-					...style,
-					flexBasis: cell.h[ 0 ] / cell.h[ 1 ] * 100 + "%",
-				};
-			} else if(typeof cell.h === "number") {
-				style = {
-					...style,
-					flexBasis: cell.h + "%",
-				};
-			}
-		}
-
-		return (
-			<div key={ i } style={ style } className={ `flex justify-center items-center border border-solid border-neutral-200 rounded m-1 p-1 shadow hover:bg-neutral-50 hover:border-neutral-300` }>
-				Hi
-			</div>
-		);
-	});
-}
-
 /**
  * Currently this only does row-based flex, but does have the ability
  * to be precise with its flex-basis, allowing for a grid-like layout.
  */
-export function Flex({ schema = [], className = "", ...rest }) {
+export function Flex({ item, schema = [], className = "", props = {}, ...rest }) {
+	let i = -1;
+
 	return (
 		<div className={ `flex flex-col` + className } { ...rest }>
-			{ recurseFlexSchema(schema) }
+			{
+				schema.map((row, y) => {
+					let weight = row.reduce((a, cell) => a + (cell.rw || 0), 0);
+
+					return (
+						<div key={ y } className={ `flex` }>
+							{
+								row.map((cell, x) => {
+									++i;
+
+									let style = {
+										flexBasis: (cell.rw / weight) * 100 + "%",
+									};
+
+									let test = `border border-solid border-neutral-200 rounded m-1 p-1 shadow hover:bg-neutral-50 hover:border-neutral-300 min-h-[32px]`;
+
+									return (
+										<Cell key={ x } style={ style } className={ `justify-center items-center ` + test }>
+											<cell.jsx item={ parseItem(item, i) } { ...props } />
+										</Cell>
+									);
+								})
+							}
+						</div>
+					);
+				})
+			}
 		</div>
 	);
-}
+};
 
-export function Container({ data = [], type = "grid", w = 3, h = 3, isRowBased = true, ...rest }) {
+export function Container({ item, schema, type = "grid", isRowBased = true, ...rest }) {
 	if(type === "grid") {
-		data = generateSampleData([], { w, h });
-
 		return (
-			<Grid width={ w } height={ h } data={ data } { ...rest } />
+			<Grid item={ item } schema={ schema } { ...rest } />
 		);
 	} else if(type === "flex") {
-		let schema = generateSampleData(true);
-
 		return (
-			<Flex { ...rest } schema={ schema } />
+			<Flex item={ item } schema={ schema } { ...rest } />
 		);
 	}
 

@@ -2,10 +2,10 @@ import { useContext, useState, useEffect } from "react";
 
 import { useNodeEvent } from "../useNodeEvent";
 
-export function Test({ ...rest } = {}) {
+export function Test({ item, ...rest } = {}) {
 	return (
-		<div>
-			Hi
+		<div { ...rest }>
+			{ (item || {}).id }
 		</div>
 	)
 };
