@@ -78,18 +78,29 @@ export function Grid({ item, schema = [], className = "", props = {}, ...rest })
 			{
 				grid.map((row, y) => {
 					return (
-						<div key={ y } className={ `flex flex-row grow` }>
+						<div key={ y } className={ `flex flex-row` }>
 							{
 								row.map((JSX, x) => {
 									let test = `border border-solid border-neutral-200 rounded m-1 p-1 shadow hover:bg-neutral-50 hover:border-neutral-300`;
 
 									let style = {
-										flexBasis: 100 / width + "%",
+										minWidth: 100 / width + "%",
+										maxWidth: 100 / width + "%",
 									};
 
+									if(props.className) {
+										props.className += " truncate";
+									} else {
+										props.className = "truncate ";
+									}
+
 									return (
-										<Cell key={ x } style={ style } className={ `justify-center items-center ` + test }>
-											<JSX item={ parseItem(item, y * width + x) } { ...props } />
+										<Cell key={ x } style={ style } className={ test }>
+											{
+												JSX ?
+													<JSX item={ parseItem(item, y * width + x) } { ...props } />
+													: <div>&nbsp;</div>
+											}
 										</Cell>
 									);
 								})
@@ -125,11 +136,21 @@ export function Flex({ item, schema = [], className = "", props = {}, ...rest })
 										flexBasis: (cell.rw / weight) * 100 + "%",
 									};
 
-									let test = `border border-solid border-neutral-200 rounded m-1 p-1 shadow hover:bg-neutral-50 hover:border-neutral-300 min-h-[32px]`;
+									let test = `border border-solid border-neutral-200 rounded m-1 p-1 shadow hover:bg-neutral-50 hover:border-neutral-300 min-h-[32px] truncate`;
+
+									if(props.className) {
+										props.className += " truncate";
+									} else {
+										props.className = "truncate ";
+									}
 
 									return (
-										<Cell key={ x } style={ style } className={ `justify-center items-center ` + test }>
-											<cell.jsx item={ parseItem(item, i) } { ...props } />
+										<Cell key={ x } style={ style } className={ test }>
+											{
+												cell.jsx ?
+													<cell.jsx item={ parseItem(item, i) } { ...props } />
+													: <div></div>
+											}
 										</Cell>
 									);
 								})

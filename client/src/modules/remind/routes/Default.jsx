@@ -91,7 +91,7 @@ let schemaFlex = [
 	[ { rw: 1, jsx: Test }, { rw: 1, jsx: Test } ],
 ];
 let schemaGrid = [
-	2,	/* width */
+	3,	/* width */
 	4,	/* height */
 
 	/* Coordinate Variant */
@@ -138,10 +138,10 @@ export function Default() {
 					schema={ schemaGrid }
 					item={ () => [
 						[ 3, baseItem ],
-						null,
 						item,
 						item,
-						null,
+						item,
+						item,
 						item,
 					] }
 				/>
@@ -156,11 +156,11 @@ export function Default() {
 					schema={ schemaFlex }
 					item={ () => [
 						[ 3, baseItem ],
-						null,
 						item,
 						item,
-						null,
-						null,
+						item,
+						item,
+						item,
 						item,
 					] }
 				/>
