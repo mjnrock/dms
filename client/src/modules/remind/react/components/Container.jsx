@@ -76,9 +76,8 @@ export function Grid({ item, schema = [], className = "", props = {}, ...rest })
 
 	//STUB Default cell appearance
 	if(!props.className) {
-		props.className = `p-1 border border-solid border-neutral-200 rounded shadow hover:bg-neutral-50 hover:border-neutral-300`;
+		props.className = `p-1 border border-solid border-neutral-200 rounded shadow hover:bg-neutral-50 hover:border-neutral-300 overflow-auto`;
 	}
-	props.className += " truncate";
 
 	return (
 		<div className={ `grid gap-1 m-1` } style={ { gridTemplateColumns: `repeat(${ width }, minmax(0, 1fr))` } } { ...rest }>
@@ -107,38 +106,34 @@ export function Flex({ item, schema = [], className = "", props = {}, ...rest })
 	let i = -1;
 
 	return (
-		<div className={ `flex flex-col` + className } { ...rest }>
+		<div className={ `flex flex-col m-1 gap-1` + className } { ...rest }>
 			{
 				schema.map((row, y) => {
 					let weight = row.reduce((a, cell) => a + (cell.rw || 0), 0);
 
-					return (
-						<div key={ y } className={ `flex` }>
-							{
-								row.map((cell, x) => {
-									++i;
+					//STUB Default cell appearance
+					if(!props.className) {
+						props.className = `p-1 border border-solid border-neutral-200 rounded shadow hover:bg-neutral-50 hover:border-neutral-300 overflow-auto`;
+					}
 
-									let style = {
-										flexBasis: (cell.rw / weight) * 100 + "%",
+					return (
+						<div key={ y } className={ `flex gap-1` } { ...rest }>
+							{
+								row.map((cell, i) => {
+									props.style = {
+										flexGrow: 0,
+										flexShrink: 0,
+										flex: `${ (cell.rw || 0) / weight * 100 }%`,
 									};
 
-									let test = `border border-solid border-neutral-200 rounded m-1 p-1 shadow hover:bg-neutral-50 hover:border-neutral-300 min-h-[32px] truncate`;
-
-									//STUB Truncate to ellipsis
-									if(props.className) {
-										props.className += " truncate";
-									} else {
-										props.className = "truncate ";
+									if(cell.jsx) {
+										return (
+											<cell.jsx key={ i } item={ parseItem(item, i) } { ...props } />
+										);
 									}
 
 									return (
-										<Cell key={ x } style={ style } className={ test }>
-											{
-												cell.jsx ?
-													<cell.jsx item={ parseItem(item, i) } { ...props } />
-													: <div></div>
-											}
-										</Cell>
+										<div key={ i } { ...props }>&nbsp;</div>
 									);
 								})
 							}

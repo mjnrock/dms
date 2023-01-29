@@ -7,7 +7,9 @@ export function Test({ item, ...rest } = {}) {
 
 	return (
 		<div { ...rest }>
-			{ tokens.join(",") }
+			<div className="text-xl">{ item.id }</div>
+			<br />
+			<div className="text-xs">{ tokens.join(",") }</div>
 		</div>
 	)
 };
