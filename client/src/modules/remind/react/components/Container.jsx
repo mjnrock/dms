@@ -74,11 +74,6 @@ export function Grid({ item, schema = [], className = "", props = {}, ...rest })
 		grid.push(...row);
 	}
 
-	//STUB Default cell appearance
-	if(!props.className) {
-		props.className = `p-1 border border-solid border-neutral-200 rounded shadow hover:bg-neutral-50 hover:border-neutral-300 overflow-auto`;
-	}
-
 	return (
 		<div className={ `grid gap-1 m-1` } style={ { gridTemplateColumns: `repeat(${ width }, minmax(0, 1fr))` } } { ...rest }>
 			{
@@ -110,11 +105,6 @@ export function Flex({ item, schema = [], className = "", props = {}, ...rest })
 			{
 				schema.map((row, y) => {
 					let weight = row.reduce((a, cell) => a + (cell.rw || 0), 0);
-
-					//STUB Default cell appearance
-					if(!props.className) {
-						props.className = `p-1 border border-solid border-neutral-200 rounded shadow hover:bg-neutral-50 hover:border-neutral-300 overflow-auto`;
-					}
 
 					return (
 						<div key={ y } className={ `flex gap-1` } { ...rest }>
@@ -148,11 +138,17 @@ export function Flex({ item, schema = [], className = "", props = {}, ...rest })
 export function Container({ item, schema, type = "grid", isRowBased = true, ...rest }) {
 	if(type === "grid") {
 		return (
-			<Grid item={ item } schema={ schema } { ...rest } />
-		);
-	} else if(type === "flex") {
-		return (
-			<Flex item={ item } schema={ schema } { ...rest } />
+			<Grid item={ item } schema={ schema } props={ {
+				/* @props get passed to the Element JSX component */
+				className: `border border-solid border-neutral-200 rounded shadow hover:bg-neutral-50 hover:border-neutral-300 overflow-clip`,
+			} } { ...rest } />
+			);
+		} else if(type === "flex") {
+			return (
+				<Flex item={ item } schema={ schema } props={ {
+				/* @props get passed to the Element JSX component */
+				className: `border border-solid border-neutral-200 rounded shadow hover:bg-neutral-50 hover:border-neutral-300 overflow-clip`,
+			} } { ...rest } />
 		);
 	}
 
