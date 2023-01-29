@@ -91,12 +91,12 @@ let schemaFlex = [
 	[ { rw: 1, jsx: Test }, { rw: 1, jsx: Test } ],
 ];
 let schemaGrid = [
-	3,	/* width */
+	2,	/* width */
 	4,	/* height */
 
 	/* Coordinate Variant */
 	{
-		"0,0": () => null,	/* Empty cell at JSX level */
+		"0,0": null,	/* Empty cell at JSX level */
 		"1,0": Test,
 		"0,1": Test,
 		"1,1": Test,

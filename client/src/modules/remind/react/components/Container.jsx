@@ -70,46 +70,32 @@ export function Grid({ item, schema = [], className = "", props = {}, ...rest })
 			}
 		}
 
-		grid.push(row);
+		// grid.push(row);
+		grid.push(...row);
 	}
 
+	//STUB Default cell appearance
+	if(!props.className) {
+		props.className = `p-1 border border-solid border-neutral-200 rounded shadow hover:bg-neutral-50 hover:border-neutral-300`;
+	}
+	props.className += " truncate";
+
 	return (
-		<div className={ `flex flex-col ` + className } { ...rest }>
+		<div className={ `grid gap-1 m-1` } style={ { gridTemplateColumns: `repeat(${ width }, minmax(0, 1fr))` } } { ...rest }>
 			{
-				grid.map((row, y) => {
+				grid.map((JSX, i) => {
+					if(JSX) {
+						return (
+							<JSX key={ i } item={ parseItem(item, i) } { ...props } />
+						);
+					}
+
 					return (
-						<div key={ y } className={ `flex flex-row` }>
-							{
-								row.map((JSX, x) => {
-									let test = `border border-solid border-neutral-200 rounded m-1 p-1 shadow hover:bg-neutral-50 hover:border-neutral-300`;
-
-									let style = {
-										minWidth: 100 / width + "%",
-										maxWidth: 100 / width + "%",
-									};
-
-									if(props.className) {
-										props.className += " truncate";
-									} else {
-										props.className = "truncate ";
-									}
-
-									return (
-										<Cell key={ x } style={ style } className={ test }>
-											{
-												JSX ?
-													<JSX item={ parseItem(item, y * width + x) } { ...props } />
-													: <div>&nbsp;</div>
-											}
-										</Cell>
-									);
-								})
-							}
-						</div>
+						<div key={ i } { ...props }>&nbsp;</div>
 					);
 				})
 			}
-		</div >
+		</div>
 	);
 };
 
@@ -138,6 +124,7 @@ export function Flex({ item, schema = [], className = "", props = {}, ...rest })
 
 									let test = `border border-solid border-neutral-200 rounded m-1 p-1 shadow hover:bg-neutral-50 hover:border-neutral-300 min-h-[32px] truncate`;
 
+									//STUB Truncate to ellipsis
 									if(props.className) {
 										props.className += " truncate";
 									} else {
