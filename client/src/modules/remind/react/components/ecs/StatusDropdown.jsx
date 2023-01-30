@@ -15,6 +15,10 @@ export const StatusColor = {
 export function StatusDropdown({ item, callback, ...rest } = {}) {
 	const [ isOpen, setIsOpen ] = useState(false);
 
+	if(!item.shared.status) {
+		return <div { ...rest } />;
+	}
+
 	let { complete, current, options } = item.shared.status;
 
 	return (
@@ -39,7 +43,7 @@ export function StatusDropdown({ item, callback, ...rest } = {}) {
 										className={ `p-2 hover:bg-neutral-100 flex flex-row ${ current === option ? `bg-neutral-200` : `` }` }
 										onClick={ e => {
 											SysStatus.setCurrent(item, option);
-											
+
 											setIsOpen(false);
 										} }
 									>

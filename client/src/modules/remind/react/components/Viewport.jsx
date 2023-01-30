@@ -69,7 +69,7 @@ export function Viewport({ item, ...rest } = {}) {
 	}, [ override.F1 ]);
 
 	return (
-		<div className={ `p-1 m-2` }>
+		<div className={ `p-1 m-2` } { ...rest }>
 			<div className={ `flex flex-col` }>
 				<MenuBar showTaskBar={ showTaskBar } setShowTaskBar={ setShowTaskBar } />
 				<ItemJSX item={ item } x={ x } y={ y } showTaskBar={ showTaskBar } override={ override } />

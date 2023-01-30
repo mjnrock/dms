@@ -1,12 +1,12 @@
 import Node from "../../lib/Node";
+import useNodeEvent from "../useNodeEvent";
 
-export function Cell({ item, style, children = [], className = "", ...rest }) {
+export function Cell({ item, jsx, ...props }) {
+	const { } = useNodeEvent("update", item);
+
+	let JSX = jsx;
 	return (
-		<div style={ style } className={ `flex grow ` + className } { ...rest }>
-			{
-				children
-			}
-		</div>
+		<JSX item={ item } { ...props } />
 	);
 };
 
@@ -80,7 +80,7 @@ export function Grid({ item, schema = [], className = "", props = {}, ...rest })
 				grid.map((JSX, i) => {
 					if(JSX) {
 						return (
-							<JSX key={ i } item={ parseItem(item, i) } { ...props } />
+							<Cell key={ i } item={ parseItem(item, i) } jsx={ JSX } { ...props } />
 						);
 					}
 
@@ -109,7 +109,9 @@ export function Flex({ item, schema = [], className = "", props = {}, ...rest })
 					return (
 						<div key={ y } className={ `flex gap-1` } { ...rest }>
 							{
-								row.map((cell, i) => {
+								row.map((cell, x) => {
+									++i;
+
 									props.style = {
 										flexGrow: 0,
 										flexShrink: 0,
@@ -118,12 +120,12 @@ export function Flex({ item, schema = [], className = "", props = {}, ...rest })
 
 									if(cell.jsx) {
 										return (
-											<cell.jsx key={ i } item={ parseItem(item, i) } { ...props } />
+											<Cell key={ x } item={ parseItem(item, i) } jsx={ cell.jsx } { ...props } />
 										);
 									}
 
 									return (
-										<div key={ i } { ...props }>&nbsp;</div>
+										<div key={ x } { ...props }>&nbsp;</div>
 									);
 								})
 							}
@@ -140,14 +142,14 @@ export function Container({ item, schema, type = "grid", isRowBased = true, ...r
 		return (
 			<Grid item={ item } schema={ schema } props={ {
 				/* @props get passed to the Element JSX component */
-				className: `border border-solid border-neutral-200 rounded shadow hover:bg-neutral-50 hover:border-neutral-300 overflow-clip`,
+				className: `p-1 border border-solid border-neutral-200 rounded shadow hover:bg-neutral-50 hover:border-neutral-300 overflow-clip`,
 			} } { ...rest } />
-			);
-		} else if(type === "flex") {
-			return (
-				<Flex item={ item } schema={ schema } props={ {
+		);
+	} else if(type === "flex") {
+		return (
+			<Flex item={ item } schema={ schema } props={ {
 				/* @props get passed to the Element JSX component */
-				className: `border border-solid border-neutral-200 rounded shadow hover:bg-neutral-50 hover:border-neutral-300 overflow-clip`,
+				className: `p-1 border border-solid border-neutral-200 rounded shadow hover:bg-neutral-50 hover:border-neutral-300 overflow-clip`,
 			} } { ...rest } />
 		);
 	}

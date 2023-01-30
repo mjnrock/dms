@@ -24,6 +24,7 @@ import Viewport from "../react/components/Viewport";
 import { Viewport as SysViewport } from "../systems/Viewport";
 
 import { Container } from "./../react/components/Container";
+import { StatusDropdown as StatusDropdownJSX } from "./../react/components/ecs/StatusDropdown";
 
 const exampleMarkdown = `
 A paragraph with *emphasis* and **strong importance**.
@@ -72,6 +73,9 @@ const [ baseItemGroup ] = baseItemCollection.state.factory.ItemGroup(1, {
 		baseItem2,
 		baseItem3,
 	],
+	// shared: {
+	// 	status: ComponentStatus(),
+	// },
 });
 
 //STUB -- This would normally be populated when the child is added (but need this for testing)
@@ -86,36 +90,16 @@ SysItemCollection.register(baseItemCollection, baseItemGroup);
 
 //IDEA: For now, just use these SCHEMA VARIANTS and add the other options later
 let schemaFlex = [
-	[ { rw: 1, jsx: Test }, { rw: 1, jsx: Test }, { rw: 2, jsx: Test }, { rw: 2, jsx: Test }, { rw: 1, jsx: Test }, { rw: 3, jsx: Test } ],
-	[ { rw: 1, jsx: Test } ],
-	[ { rw: 1, jsx: Test }, { rw: 1, jsx: Test } ],
+	[ { rw: 1, jsx: Viewport }, { rw: 2, jsx: Viewport } ],
+	[ { rw: 1, jsx: Viewport } ],
 ];
 let schemaGrid = [
-	2,	/* width */
-	4,	/* height */
-
-	/* Coordinate Variant */
+	2,
+	1,
 	{
-		"0,0": null,	/* Empty cell at JSX level */
-		"1,0": Test,
-		"0,1": Test,
-		"1,1": Test,
-		"0,2": Test,
-		"1,2": Test,
-		"0,3": Test,
-		"1,3": Test,
-	},
-	/* Index Variant */
-	// [
-	// 	Test,
-	// 	Test,
-	// 	Test,
-	// 	Test,
-	// 	Test,
-	// 	Test,
-	// 	Test,
-	// 	Test,
-	// ],
+		"0,0": Viewport,
+		"1,0": Viewport,
+	}
 ];
 
 export const RemindContext = React.createContext();
@@ -136,14 +120,7 @@ export function Default() {
 				<Container
 					type="grid"
 					schema={ schemaGrid }
-					item={ () => [
-						[ 3, baseItem ],
-						item,
-						item,
-						item,
-						item,
-						item,
-					] }
+					item={ item }
 				/>
 			</div>
 
@@ -154,15 +131,7 @@ export function Default() {
 				<Container
 					type="flex"
 					schema={ schemaFlex }
-					item={ () => [
-						[ 3, baseItem ],
-						item,
-						item,
-						item,
-						item,
-						item,
-						item,
-					] }
+					item={ item }
 				/>
 			</div>
 
