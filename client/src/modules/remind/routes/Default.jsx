@@ -14,16 +14,17 @@ import { ItemCollection as SysItemCollection } from "./../systems/class/ItemColl
 import { Status as SysStatus } from "./../systems/Status";
 import { Ref as SysRef } from "./../systems/Ref";
 import { Checklist as SysChecklist } from "./../systems/Checklist";
+import { Viewport as SysViewport } from "../systems/Viewport";
+import { Container as SysContainer } from "./../systems/dms/Container";
 
 import { Create as ComponentItem } from "../components/Markdown";
 import { Create as ComponentStatus } from "./../components/Status";
 import { Create as ComponentChecklist } from "./../components/Checklist";
+import { Create as ComponentContainer } from "./../components/dms/Container";
 
 import { Item as ItemJSX } from "./../react/components/Item";
-import Viewport from "../react/components/Viewport";
-import { Viewport as SysViewport } from "../systems/Viewport";
-
-import { Container } from "./../react/components/Container";
+import { Viewport as ViewportJSX } from "../react/components/Viewport";
+import { Container as ContainerJSX } from "./../react/components/Container";
 import { StatusDropdown as StatusDropdownJSX } from "./../react/components/ecs/StatusDropdown";
 
 const exampleMarkdown = `
@@ -53,13 +54,17 @@ const baseItemCollection = new ItemCollection({
 		Item: SysItem,
 		ItemGroup: SysItemGroup,
 		ItemCollection: SysItemCollection,
+		Container: SysContainer,
 	},
 	components: {
 		Item: ComponentItem,
 		Status: ComponentStatus,
+		Container: ComponentContainer,
 	},
 	jsx: {
 		Item: ItemJSX,
+		Viewport: ViewportJSX,
+		Container: ContainerJSX,
 	},
 });
 
@@ -73,9 +78,24 @@ const [ baseItemGroup ] = baseItemCollection.state.factory.ItemGroup(1, {
 		baseItem2,
 		baseItem3,
 	],
-	// shared: {
-	// 	status: ComponentStatus(),
-	// },
+	shared: {
+		container: ComponentContainer({
+			type: "grid",
+			schema: [
+				2,
+				1,
+				{
+					"0,0": ViewportJSX,
+					"1,0": ViewportJSX,
+				}
+			],
+			// type: "flex",
+			// schema: [
+			// 	[ { rw: 1, jsx: ViewportJSX }, { rw: 2, jsx: ViewportJSX } ],
+			// 	[ { rw: 1, jsx: ViewportJSX } ],
+			// ],
+		}),
+	},
 });
 
 //STUB -- This would normally be populated when the child is added (but need this for testing)
@@ -88,26 +108,14 @@ SysItemCollection.register(baseItemCollection, baseItem2);
 SysItemCollection.register(baseItemCollection, baseItem3);
 SysItemCollection.register(baseItemCollection, baseItemGroup);
 
-//IDEA: For now, just use these SCHEMA VARIANTS and add the other options later
-let schemaFlex = [
-	[ { rw: 1, jsx: Viewport }, { rw: 2, jsx: Viewport } ],
-	[ { rw: 1, jsx: Viewport } ],
-];
-let schemaGrid = [
-	2,
-	1,
-	{
-		"0,0": Viewport,
-		"1,0": Viewport,
-	}
-];
-
 export const RemindContext = React.createContext();
 
 export function Default() {
 	let registry = [ ...baseItemCollection.state.registry.values() ],
 		item = registry[ 3 ];
 
+	//FIXME: This is old and needs to be removed -- ItemJSX still takes `x & y` as props, also
+	//IDEA: See if you can merge the RenderComponent and Container components
 	SysViewport.update(item, {
 		x: 650,
 		y: 350,
@@ -115,29 +123,18 @@ export function Default() {
 
 	return (
 		<RemindContext.Provider value={ { stub: true } }>
-			<div>
-				<p className="p-2 font-mono font-bold font-sm text-neutral-300">GRID Test</p>
-				<Container
-					type="grid"
-					schema={ schemaGrid }
-					item={ item }
-				/>
+			<div className={ `m-4 p-2 rounded border-4 border-solid border-purple-400 bg-purple-100` }>
+				<p className="p-2 font-mono font-bold text-purple-300 font-sm">CONTAINER Test</p>
+
+				{/* TODO: Create FLEX and GRID specific VIEW & EDIT components */ }
+
+				<ContainerJSX type={ item.shared.container.type } schema={ item.shared.container.schema } data={ item } />
 			</div>
 
-			<hr className="my-4" />
-
-			<div>
-				<p className="p-2 font-mono font-bold font-sm text-neutral-300">FLEX Test</p>
-				<Container
-					type="flex"
-					schema={ schemaFlex }
-					item={ item }
-				/>
+			<div className={ `m-4 p-2 rounded border-4 border-solid border-blue-400 bg-blue-100` }>
+				<p className="p-2 font-mono font-bold text-blue-300 font-sm">VIEWPORT Test</p>
+				<ViewportJSX item={ item } />
 			</div>
-
-			<hr className="my-4" />
-
-			<Viewport item={ item } />
 		</RemindContext.Provider>
 	);
 };

@@ -137,20 +137,30 @@ export function Flex({ item, schema = [], className = "", props = {}, ...rest })
 	);
 };
 
-export function Container({ item, schema, type = "grid", isRowBased = true, ...rest }) {
+export function Container({ type, schema, data, ...rest }) {
 	if(type === "grid") {
+		const [ width, height ] = schema;
+
 		return (
-			<Grid item={ item } schema={ schema } props={ {
-				/* @props get passed to the Element JSX component */
-				className: `p-1 border border-solid border-neutral-200 rounded shadow hover:bg-neutral-50 hover:border-neutral-300 overflow-clip`,
-			} } { ...rest } />
+			<>
+				<div className="ml-2 font-mono text-xs">GRID { `[${ width } x ${ height }]` }</div>
+				<Grid item={ data } schema={ schema } props={ {
+					/* @props get passed to the Element JSX component */
+					className: `p-1 border border-solid border-neutral-200 rounded shadow hover:bg-neutral-50 hover:border-neutral-300 overflow-clip`,
+				} } { ...rest } />
+			</>
 		);
 	} else if(type === "flex") {
+		let shape = schema.map(row => row.map(cell => cell.rw || 0).join(":")).join("|");
+
 		return (
-			<Flex item={ item } schema={ schema } props={ {
-				/* @props get passed to the Element JSX component */
-				className: `p-1 border border-solid border-neutral-200 rounded shadow hover:bg-neutral-50 hover:border-neutral-300 overflow-clip`,
-			} } { ...rest } />
+			<>
+				<div className="ml-2 font-mono text-xs">FLEX { `[${ shape }]` }</div>
+				<Flex item={ data } schema={ schema } props={ {
+					/* @props get passed to the Element JSX component */
+					className: `p-1 border border-solid border-neutral-200 rounded shadow hover:bg-neutral-50 hover:border-neutral-300 overflow-clip`,
+				} } { ...rest } />
+			</>
 		);
 	}
 
