@@ -127,6 +127,7 @@ export function Default() {
 				<p className="p-2 font-mono font-bold text-purple-300 font-sm">CONTAINER Test</p>
 
 				{/* TODO: Create FLEX and GRID specific VIEW & EDIT components */ }
+				{/* IDEA: Review ItemCollection and use paradigm as a "Lookup Repository" -- allow hot-swapping collections.  Search functionality will ONLY show w/e is in currently-mounted ItemCollection */}
 
 				<ContainerJSX type={ item.shared.container.type } schema={ item.shared.container.schema } data={ item } />
 			</div>
