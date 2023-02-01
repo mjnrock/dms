@@ -1,4 +1,4 @@
-export const Name = `dms_container`;
+export const Name = `DMS:Container`;
 
 export const EnumMode = {
 	VIEW: `view`,
@@ -26,6 +26,7 @@ export function Attach(item, { ...rest } = {}) {
 };
 
 export default {
+	Name,
 	Create,
 	Attach,
 };
