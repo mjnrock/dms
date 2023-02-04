@@ -29,22 +29,7 @@ import { Viewport as ViewportJSX } from "../react/components/Viewport";
 import { Container as ContainerJSX } from "./../react/components/Container";
 import { StatusDropdown as StatusDropdownJSX } from "./../react/components/ecs/StatusDropdown";
 
-const exampleMarkdown = `
-A paragraph with *emphasis* and **strong importance**.
-
-> A block quote with ~strikethrough~ and a URL: https://reactjs.org.
-
-* Lists
-* [ ] todo
-* [x] done
-
-A table:
-
-| a | b |
-| - | - |
-| 123 | 423 |
-`;
-
+//TODO: Manifest should replace the need for this, refactor accordingly
 const baseItemCollection = new ItemCollection({
 	// register: [],
 	factory: {
@@ -128,22 +113,23 @@ function download(input, filename) {
 	delete data.data;
 	data = JSON.stringify(data, null, 2);
 
-	var file = new Blob([ data ], { type: "application/json" });
-	if(window.navigator.msSaveOrOpenBlob) // IE10+
+	let file = new Blob([ data ], { type: "application/json" });
+	if(window.navigator.msSaveOrOpenBlob) {
 		window.navigator.msSaveOrOpenBlob(file, filename);
-	else { // Others
-		var a = document.createElement("a"),
+	} else {
+		let a = document.createElement("a"),
 			url = URL.createObjectURL(file);
 		a.href = url;
 		a.download = filename;
 		document.body.appendChild(a);
 		a.click();
+
 		setTimeout(function () {
 			document.body.removeChild(a);
 			window.URL.revokeObjectURL(url);
 		}, 0);
 	}
-}
+};
 
 //FIXME: This is old and needs to be removed -- ItemJSX still takes `x & y` as props, also
 //IDEA: See if you can merge the RenderComponent and Container components
@@ -187,8 +173,9 @@ export function Default() {
 				<div className={ `p-4 cursor-pointer rounded border border-solid border-gray-400 bg-gray-200 hover:bg-gray-300` } onClick={ () => download(manifest, "test") }>Save</div>
 				<div className={ `flex flex-row` }>
 					<div className={ `p-4 cursor-pointer rounded border border-solid border-gray-400 ${ containerType === "flex" ? "bg-sky-400" : "bg-gray-200" }` } onClick={ () => { alert("implement this"); setContainerType("flex"); } }>Flex</div>
-					<div className={ `p-4 cursor-pointer rounded border border-solid border-gray-400 ${ containerType === "grid" ? "bg-sky-400" : "bg-gray-200" }` } onClick={ () => { alert("implement this"); setContainerType("grid"); }}>Grid</div>
+					<div className={ `p-4 cursor-pointer rounded border border-solid border-gray-400 ${ containerType === "grid" ? "bg-sky-400" : "bg-gray-200" }` } onClick={ () => { alert("implement this"); setContainerType("grid"); } }>Grid</div>
 				</div>
+
 				{/* TODO: Create FLEX and GRID specific VIEW & EDIT components */ }
 				{/* IDEA: Review ItemCollection and use paradigm as a "Lookup Repository" -- allow hot-swapping collections.  Search functionality will ONLY show w/e is in currently-mounted ItemCollection */ }
 
