@@ -144,8 +144,9 @@ export function Default() {
 	let registry = [ ...baseItemCollection.state.registry.values() ],
 		item = registry[ 3 ];
 
+	//IDEA: Container component already stores: mode, type, schema -- so consider how that should play into this
 	const [ manifest, setManifest ] = React.useState(ComponentManifest.Create());
-	const [ containerType, setContainerType ] = React.useState("grid");
+	const [ containerType, setContainerType ] = React.useState("grid");	//grid, flex
 
 	return (
 		<RemindContext.Provider value={ { stub: true } }>
@@ -172,8 +173,8 @@ export function Default() {
 				} } />
 				<div className={ `p-4 cursor-pointer rounded border border-solid border-gray-400 bg-gray-200 hover:bg-gray-300` } onClick={ () => download(manifest, "test") }>Save</div>
 				<div className={ `flex flex-row` }>
-					<div className={ `p-4 cursor-pointer rounded border border-solid border-gray-400 ${ containerType === "flex" ? "bg-sky-400" : "bg-gray-200" }` } onClick={ () => { alert("implement this"); setContainerType("flex"); } }>Flex</div>
-					<div className={ `p-4 cursor-pointer rounded border border-solid border-gray-400 ${ containerType === "grid" ? "bg-sky-400" : "bg-gray-200" }` } onClick={ () => { alert("implement this"); setContainerType("grid"); } }>Grid</div>
+					<div className={ `p-4 cursor-pointer rounded border border-solid border-gray-400 ${ containerType === "flex" ? "bg-sky-400" : "bg-gray-200 hover:bg-gray-300" }` } onClick={ () => { alert("implement this"); setContainerType("flex"); } }>Flex</div>
+					<div className={ `p-4 cursor-pointer rounded border border-solid border-gray-400 ${ containerType === "grid" ? "bg-sky-400" : "bg-gray-200 hover:bg-gray-300 " }` } onClick={ () => { alert("implement this"); setContainerType("grid"); } }>Grid</div>
 				</div>
 
 				{/* TODO: Create FLEX and GRID specific VIEW & EDIT components */ }
