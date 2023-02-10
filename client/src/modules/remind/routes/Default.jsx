@@ -145,6 +145,7 @@ export function Default() {
 		item = registry[ 3 ];
 
 	//IDEA: Container component already stores: mode, type, schema -- so consider how that should play into this
+	// Maybe create a wrapper entity that eventually merges itself into a Manifest?
 	const [ manifest, setManifest ] = React.useState(ComponentManifest.Create());
 	const [ containerType, setContainerType ] = React.useState("grid");	//grid, flex
 
