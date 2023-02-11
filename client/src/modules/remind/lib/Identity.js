@@ -148,8 +148,17 @@ export class Identity {
 	};
 
 	constructor ({ id, tokens = [] } = {}) {
-		this.id = id || uuid();
-		this.tokens = new Set(tokens);
+		if(typeof id === "function") {
+			this.id = id();
+		} else {
+			this.id = id || uuid();
+		}
+
+		if(typeof tokens === "function") {
+			this.tokens = new Set(tokens() || []);
+		} else {
+			this.tokens = new Set(tokens);
+		}
 
 		/**
 		 * If tracking is enabled, register:
