@@ -11,8 +11,12 @@ export const dispatch = (emitter, event, ...args) => {
 	}
 };
 
-//FIXME: This error seems to appear because of both the .parent and .children properties, causing infinite recursion
-//IDEA: There really sould be some running list of all Nodes that the serialization encounters, and then it can check if it has already been serialized
+
+/**
+ * !This error seems to appear because of both the .parent and .children properties, causing infinite recursion
+ * IDEA: Probably refactor this entirely where it returns { result: toObject(), registry: Registry<encounter Nodes> }, and accepts a Manifest as an argument
+ * It may make sense to formalize the Manifest as a class, whose .state is the current ComponentManifest
+ */
 export const toObject = (input = {}, { systems, depth = 0, forManifest = false } = {}) => {
 	if(input instanceof Node) {
 		if(depth > 0 && forManifest === true) {
