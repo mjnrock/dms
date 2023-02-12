@@ -8,7 +8,7 @@ export class ItemImage extends Item {
 
 		ComponentImage.Attach(this, { ...(rest.shared || {}).image });
 
-		this.tokens.add(`@remind:item-checklist`);
+		this.tokens.add(`#remind:item-checklist`);
 	}
 };
 

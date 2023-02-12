@@ -6,7 +6,15 @@ export class Registry extends Node {
 
 		this.state = new Map();
 
-		if(Array.isArray(state)) {
+		if(state instanceof Map) {
+			for(let [ key, entry ] of state.entries()) {
+				this.setEntry(key, entry);
+			}
+		} else if(state instanceof Set) {
+			for(let entry of state) {
+				this.register(entry);
+			}
+		} else if(Array.isArray(state)) {
 			for(let entry of state) {
 				this.register(entry);
 			}
@@ -16,7 +24,7 @@ export class Registry extends Node {
 			}
 		}
 		
-		this.tokens.add(`@remind:registry`);
+		this.tokens.add(`#remind:registry`);
 	}
 
 	/**

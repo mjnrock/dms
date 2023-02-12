@@ -32,7 +32,7 @@ export class View extends ItemGroup {
 		/** At some interval/invocation, members should be categorized into cached buckets */
 		ComponentViewport.Attach(this, { ...(rest.shared || {}).viewport });
 		
-		this.tokens.add(`@remind:view`);
+		this.tokens.add(`#remind:view`);
 	}
 };
 

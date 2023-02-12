@@ -8,7 +8,7 @@ export class ItemChecklist extends Item {
 
 		ComponentChecklist.Attach(this, { ...(rest.shared || {}).checklist });
 
-		this.tokens.add(`@remind:item-checklist`);
+		this.tokens.add(`#remind:item-checklist`);
 	}
 };
 

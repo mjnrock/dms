@@ -10,7 +10,7 @@ export class Item extends Node {
 			parent,
 		};
 
-		this.tokens.add(`@remind:item`);
+		this.tokens.add(`#remind:item`);
 	}
 
 	static Factory(qty = 1, input = {}) {

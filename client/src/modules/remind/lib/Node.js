@@ -24,7 +24,7 @@ export class Node extends Identity {
 			this.events = new Events(events, eventOpts);
 		}
 
-		this.tokens.add(`@remind:node`);
+		this.tokens.add(`#remind:node`);
 	}
 
 	__parseComponent(component) {
@@ -163,86 +163,6 @@ export class Node extends Identity {
 
 			return payload;
 		}
-	}
-
-	/**
-	 * A recursive serialization method that will invoke all child .toObject() methods, if they exist
-	 * within the `shared` property.  Optionally, for you can pass an `Array<string>` of component names
-	 * to only serialize those components, and *ignore* all others. 
-	 * 
-	 * FIXME: This method does not yet recursively serialize the `state` property.
-	 */
-	toObject({ components = [] } = {}) {
-		let obj = {
-			id: this.id,
-			state: typeof this.state !== "object" ? this.state : {},
-			shared: {},
-			events: this.events.toObject(),
-		};
-
-		if(typeof this.state === "object" && this.state.toObject) {
-			obj.state = this.state.toObject();
-		} else if(Array.isArray(this.state)) {
-			for(let state of this.state) {
-				if(state == null) {
-					obj.state.push(null);
-				} else if(typeof state === "object" && state.toObject) {
-					obj.state.push(state.toObject());
-				} else if(typeof state === "object") {
-					obj.state.push({ ...state });
-				} else if(typeof state === "function") {
-					obj.state.push(state.toString());
-				} else {
-					obj.state.push(state);
-				}
-			}
-		} else if(typeof this.state === "object") {
-			for(let [ component, state ] of Object.entries(this.state)) {
-				if(components.length && !components.includes(component)) {
-					continue;
-				}
-
-				if(state == null) {
-					state = null;
-				} else if(typeof state === "object" && state.toObject) {
-					state = state.toObject();
-				} else if(typeof state === "object") {
-					state = { ...state };
-				} else if(typeof state === "function") {
-					state = state.toString();
-				}
-
-				obj.state[ component ] = state;
-			}
-		} else if(typeof this.state === "function") {
-			obj.state = this.state.toString();
-		}
-
-		for(let [ component, state ] of Object.entries(this.shared)) {
-			if(components.length && !components.includes(component)) {
-				continue;
-			}
-
-			if(state == null) {
-				state = null;
-			} else if(typeof state === "object" && state.toObject) {
-				state = state.toObject();
-			} else if(typeof state === "object") {
-				state = { ...state };
-			} else if(typeof state === "function") {
-				state = state.toString();
-			}
-
-			obj.shared[ component ] = state;
-		}
-
-		return obj;
-	}
-	toJson() {
-		return JSON.stringify(this.toObject());
-	}
-	toString() {
-		return this.toJson();
 	}
 };
 

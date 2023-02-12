@@ -8,9 +8,11 @@ import { ItemGroup } from "./../lib/ItemGroup";
 import { ItemCollection } from "../lib/ItemCollection";
 import { Registry } from "../lib/Registry";
 
+import SysASystem from "../systems/ASystem";
 import { Item as SysItem } from "../systems/class/Item";
 import { ItemGroup as SysItemGroup } from "./../systems/class/ItemGroup";
 import { ItemCollection as SysItemCollection } from "./../systems/class/ItemCollection";
+import { Registry as SysRegistry } from "./../systems/class/Registry";
 import { Status as SysStatus } from "./../systems/Status";
 import { Ref as SysRef } from "./../systems/Ref";
 import { Checklist as SysChecklist } from "./../systems/Checklist";
@@ -98,13 +100,13 @@ SysItemCollection.register(baseItemCollection, baseItem2);
 SysItemCollection.register(baseItemCollection, baseItem3);
 SysItemCollection.register(baseItemCollection, baseItemGroup);
 
-console.log(baseItemGroup.shared[ ComponentManifest.Name ]);
+// console.log(baseItemGroup.shared[ ComponentManifest.Name ]);
 
 SysManifest.register(baseItemGroup, baseItem);
 SysManifest.compRegister(baseItemGroup, { [ ComponentManifest.Name ]: ComponentManifest });
 SysManifest.sysRegister(baseItemGroup, { [ ComponentManifest.Name ]: SysManifest });
 
-console.log(baseItemGroup.shared[ ComponentManifest.Name ]);
+// console.log(baseItemGroup.shared[ ComponentManifest.Name ]);
 
 // Function to download data to a file
 function download(input, filename) {
@@ -143,6 +145,15 @@ export const RemindContext = React.createContext();
 export function Default() {
 	let registry = [ ...baseItemCollection.state.registry.values() ],
 		item = registry[ 3 ];
+
+	//FIXME: This serialization does not work
+	const systems = new Map([
+		[ `#remind:item-group`, SysItemGroup ],
+		[ `#remind:item`, SysItem ],
+		[ `#remind:registry`, SysRegistry ],
+	]);
+	console.log(SysASystem.toObject(item, { systems }));
+	console.log(SysASystem.toObject(item, { systems, forManifest: true }));
 
 	//IDEA: Container component already stores: mode, type, schema -- so consider how that should play into this
 	// Maybe create a wrapper entity that eventually merges itself into a Manifest?

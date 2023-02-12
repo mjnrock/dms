@@ -1,4 +1,5 @@
-import { dispatch } from "./../ASystem";
+import { dispatch, toObject } from "./../ASystem";
+import { Item as SysItem } from "./Item";
 
 export const ItemGroup = {
 	addChild(parent, ...children) {
@@ -27,7 +28,7 @@ export const ItemGroup = {
 		const index = parent.state.children.indexOf(oldChild);
 
 		if(index !== -1) {
-			parent.state.children[index] = newChild;
+			parent.state.children[ index ] = newChild;
 			newChild.state.parent = parent;
 			oldChild.state.parent = null;
 		}
@@ -41,13 +42,23 @@ export const ItemGroup = {
 		const index2 = parent.state.children.indexOf(child2);
 
 		if(index1 !== -1 && index2 !== -1) {
-			parent.state.children[index1] = child2;
-			parent.state.children[index2] = child1;
+			parent.state.children[ index1 ] = child2;
+			parent.state.children[ index2 ] = child1;
 		}
 
 		dispatch(parent, "update", parent.state.children);
 
 		return parent;
+	},
+
+	$: {
+		toState(item) {
+			let obj = SysItem.$.toState(item);
+
+			obj.children = item.state.children.map((child) => `@${ child.id }`);
+
+			return obj;
+		}
 	},
 };
 

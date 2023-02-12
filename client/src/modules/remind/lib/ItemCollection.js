@@ -35,7 +35,7 @@ export class ItemCollection extends ItemGroup {
 			this.state.registry.set(item.id, item);
 		}
 		
-		this.tokens.add(`@remind:item-collection`);
+		this.tokens.add(`#remind:item-collection`);
 	}
 
 	getRegistry(asArray = false) {
@@ -46,14 +46,14 @@ export class ItemCollection extends ItemGroup {
 		return Object.fromEntries(this.state.registry.entries());
 	}
 
-	toObject({ components = [] } = {}) {
-		let obj = super.toObject({ components });
+	toStateObject() {
+		let obj = super.toStateObject();
 
-		obj.state.registry = Array.from(this.state.registry.values()).map((item) => `@${ item.id }`);
-		obj.state.factory = Object.fromEntries(Object.entries(this.state.factory).map(([ key, value ]) => [ key, (value.name || "").replace("bound ", "") ]));
-		obj.state.systems = Object.fromEntries(Object.entries(this.state.systems).map(([ key, value ]) => [ key, (value.name || "").replace("bound ", "") ]));
-		obj.state.components = Object.fromEntries(Object.entries(this.state.components).map(([ key, value ]) => [ key, (value.name || "").replace("bound ", "") ]));
-		obj.state.jsx = Object.fromEntries(Object.entries(this.state.jsx).map(([ key, value ]) => [ key, (value.name || "").replace("bound ", "") ]));
+		obj.registry = Array.from(this.state.registry.values()).map((item) => `@${ item.id }`);
+		obj.factory = Object.fromEntries(Object.entries(this.state.factory).map(([ key, value ]) => [ key, (value.name || "").replace("bound ", "") ]));
+		obj.systems = Object.fromEntries(Object.entries(this.state.systems).map(([ key, value ]) => [ key, (value.name || "").replace("bound ", "") ]));
+		obj.components = Object.fromEntries(Object.entries(this.state.components).map(([ key, value ]) => [ key, (value.name || "").replace("bound ", "") ]));
+		obj.jsx = Object.fromEntries(Object.entries(this.state.jsx).map(([ key, value ]) => [ key, (value.name || "").replace("bound ", "") ]));
 
 		return obj;
 	}
