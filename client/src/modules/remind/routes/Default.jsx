@@ -148,9 +148,9 @@ export function Default() {
 
 	//FIXME: This serialization does not work
 	const systems = new Map([
+		[ `#remind:registry`, SysRegistry ],
 		[ `#remind:item-group`, SysItemGroup ],
 		[ `#remind:item`, SysItem ],
-		[ `#remind:registry`, SysRegistry ],
 	]);
 	console.log(SysASystem.toObject(item, { systems }));
 	console.log(SysASystem.toObject(item, { systems, forManifest: true }));
