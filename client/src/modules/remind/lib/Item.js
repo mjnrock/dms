@@ -1,6 +1,8 @@
 import { Node } from "./Node";
 
 export class Item extends Node {
+	static Token = `#remind:item`;
+	
 	constructor ({ parent = null, ...rest } = {}) {
 		super({ ...rest });
 
@@ -10,7 +12,7 @@ export class Item extends Node {
 			parent,
 		};
 
-		this.tokens.add(`#remind:item`);
+		this.tokens.add(Item.Token);
 	}
 
 	static Factory(qty = 1, input = {}) {

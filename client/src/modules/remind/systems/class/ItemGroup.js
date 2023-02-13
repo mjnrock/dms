@@ -51,14 +51,12 @@ export const ItemGroup = {
 		return parent;
 	},
 
-	$: {
-		toState(item) {
-			let obj = SysItem.$.toState(item);
+	toState(item) {
+		let obj = SysItem.toState(item);
 
-			obj.children = item.state.children.map((child) => `@${ child.id }`);
+		obj.children = item.state.children.map((child) => `@${ child.id }`);
 
-			return obj;
-		}
+		return obj;
 	},
 };
 

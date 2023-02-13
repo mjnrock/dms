@@ -147,11 +147,16 @@ export function Default() {
 		item = registry[ 3 ];
 
 	//FIXME: This serialization does not work
-	const systems = new Map([
-		[ `#remind:registry`, SysRegistry ],
-		[ `#remind:item-group`, SysItemGroup ],
-		[ `#remind:item`, SysItem ],
-	]);
+	// const systems = new Map([
+	// 	[ `#remind:registry`, SysRegistry ],
+	// 	[ `#remind:item-group`, SysItemGroup ],
+	// 	[ `#remind:item`, SysItem ],
+	// ]);
+	const systems = {
+		[ `#remind:registry` ]: SysRegistry,
+		[ `#remind:item-group` ]: SysItemGroup,
+		[ `#remind:item` ]: SysItem,
+	};
 	console.log(SysASystem.toObject(item, { systems }));
 	console.log(SysASystem.toObject(item, { systems, forManifest: true }));
 

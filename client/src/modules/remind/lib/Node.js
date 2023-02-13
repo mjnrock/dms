@@ -2,6 +2,7 @@ import { Identity } from "./Identity";
 import { Events } from "./Events";
 
 export class Node extends Identity {
+	static Token = `#remind:node`;
 	constructor ({ state = {}, shared = {}, events = [], id, tokens, eventOpts = {} } = {}) {
 		super({ id, tokens });
 
@@ -24,7 +25,7 @@ export class Node extends Identity {
 			this.events = new Events(events, eventOpts);
 		}
 
-		this.tokens.add(`#remind:node`);
+		this.tokens.add(Node.Token);
 	}
 
 	__parseComponent(component) {

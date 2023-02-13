@@ -1,6 +1,8 @@
 import { Item } from "./Item";
 
 export class ItemGroup extends Item {
+	static Token = `#remind:item-group`;
+
 	constructor ({ state, parent = null, children = [], ...rest } = {}) {
 		super({ ...rest });
 
@@ -9,7 +11,7 @@ export class ItemGroup extends Item {
 			children,
 		};
 
-		this.tokens.add(`#remind:item-group`);
+		this.tokens.add(ItemGroup.Token);
 	}
 };
 

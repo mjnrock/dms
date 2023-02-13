@@ -1,5 +1,4 @@
 import { dispatch } from "../ASystem";
-import { toObject } from "../ASystem";
 
 export const Item = {
 	addComponent(item, key, component, args = {}) {
@@ -17,20 +16,18 @@ export const Item = {
 		return item;
 	},
 
-	$: {
-		toState(item) {
-			let obj = {
-				...item.state,
-			};
+	toState(item) {
+		let obj = {
+			...item.state,
+		};
 
-			if(item.state.parent !== null && typeof item.state.parent === "object") {
-				obj.parent = `@${ item.state.parent.id }`;
-			} else {
-				obj.parent = null;
-			}
+		if(item.state.parent !== null && typeof item.state.parent === "object") {
+			obj.parent = `@${ item.state.parent.id }`;
+		} else {
+			obj.parent = null;
+		}
 
-			return obj;
-		},
+		return obj;
 	},
 };
 

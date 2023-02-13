@@ -9,6 +9,7 @@ import { v4 as uuid, validate } from "uuid";
  * done at the static level * 
  */
 export class Identity {
+	static Token = `#remind:identity`;
 	/**
 	 * This registry will work *similarly* to flyweight version of `util\Registry`,
 	 * using the identity's ID as the key.  If tokens are present **upon instantiation**
@@ -180,7 +181,7 @@ export class Identity {
 		}
 
 		this.tokens.add(`#${ this.id }`);
-		this.tokens.add(`#remind:identity`);
+		this.tokens.add(Identity.Token);
 	}
 
 	deconstructor() {
@@ -202,14 +203,18 @@ export class Identity {
 		return tokens.some(token => this.tokens.has(token));
 	}
 
-	toObject() {
+	getLastToken() {
+		return Array.from(this.tokens).pop();
+	}
+
+	static ToObject(self) {
 		return {
-			id: this.id,
-			tokens: Array.from(this.tokens),
+			id: self.id,
+			tokens: Array.from(self.tokens),
 		};
 	}
-	toString() {
-		return JSON.stringify(this.toObject());
+	static ToString(self) {
+		return JSON.stringify(this.ToObject(self));
 	}
 };
 

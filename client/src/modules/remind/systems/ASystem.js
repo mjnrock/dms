@@ -1,3 +1,4 @@
+import Identity from "../lib/Identity";
 import Node from "../lib/Node";
 
 /**
@@ -17,77 +18,142 @@ export const dispatch = (emitter, event, ...args) => {
  * IDEA: Probably refactor this entirely where it returns { result: toObject(), registry: Registry<encounter Nodes> }, and accepts a Manifest as an argument
  * It may make sense to formalize the Manifest as a class, whose .state is the current ComponentManifest
  */
-export const toObject = (input = {}, { systems, depth = 0, forManifest = false } = {}) => {
-	if(input instanceof Node) {
-		if(depth > 0 && forManifest === true) {
-			return `@${ input.id.toUpperCase() }`;
+export function toObject(value, { idPath = '', registry, systems = {} } = {}) {
+	if(value instanceof Node) {
+		if(idPath.length > 0) {
+			return `@${ value.id }`;
 		}
 
-		let shared = {};
-		for(let [ component, state ] of Object.entries(input.shared)) {
-			if(systems instanceof Map) {
-				/* Assume that it is a Registry<ASystem>, check if entry contains .toObject (which would be treated as an override) */
-				const system = systems.get(component);
-				if(system && "toObject" in system) {
-					shared[ component ] = system.toObject(input);
-				} else {
-					shared[ component ] = toObject(state, { systems, forManifest, depth: depth + 1 });
-				}
-			} else {
-				shared[ component ] = toObject(state, { systems, forManifest, depth: depth + 1 });
-			}
-		}
+		let [ node ] = arguments,
+			state = {},
+			lastToken = node.getLastToken();
 
-		let state = {};
-		if(systems instanceof Map) {
-			/* Assume that it is a Registry<ASystem>, check if entry contains .toObject (which would be treated as an override) */
-			for(let [ key, value ] of systems.entries()) {
-				if(input.hasToken(key)) {
-					state = value.$.toState(input, { systems, forManifest });
-					break;
-				}
-			}
+		if(lastToken in systems) {
+			state = systems[ lastToken ].toState(node);
 		} else {
-			state = toObject(input.state, { systems, forManifest, depth: depth + 1 });
+			state = toObject(node.state, { idPath: `${ idPath }/${ node.id }`, registry });
 		}
 
 		return {
-			...input,
-			events: input.events.toObject(),
+			...Identity.ToObject(node),
+			events: Identity.ToObject(node.events),
 			state,
-			shared,
+			shared: Object.entries(node.shared).reduce((acc, [ key, component ]) => {
+				acc[ key ] = systems[ key ] && systems[ key ].toObject
+					? systems[ key ].toObject(component)
+					: toObject(component, { idPath: `${ idPath }/${ node.id }/${ key }`, registry });
+				return acc;
+			}, {})
 		};
 	}
 
-	const obj = {};
-	for(let [ key, value ] of Object.entries(input)) {
-		if(value === null) {
-			obj[ key ] = null;
-		} else if(value instanceof Node) {
-			obj[ key ] = toObject(value, { systems, forManifest, depth: depth + 1 });
-		} else if(typeof value === "function") {
-			obj[ key ] = value.toString();
-		} else if(value instanceof Set) {
-			obj[ key ] = Array.from(value).map(toObject);
-		} else if(typeof value === "object") {
-			if(Array.isArray(value)) {
-				if(key === "tokens") {
-					obj[ key ] = value;
-				} else {
-					obj[ key ] = value.map(toObject);
-				}
-			} else if("toObject" in value) {
-				obj[ key ] = value.toObject();
-			} else {
-				obj[ key ] = { ...value };
-			}
-		} else {
-			obj[ key ] = value;
-		}
+	if(typeof value === "function") {
+		return value.toString();
 	}
 
-	return obj;
+	if(Array.isArray(value)) {
+		return value.map((item, index) => toObject(item, { idPath: `${ idPath }/${ index }`, registry }));
+	}
+
+	if(value instanceof Map) {
+		return Array.from(value.entries()).reduce((acc, [ key, item ]) => {
+			acc[ key ] = toObject(item, { idPath: `${ idPath }/${ key }`, registry });
+			return acc;
+		}, {});
+	}
+
+	if(value instanceof Set) {
+		return Array.from(value.values()).map((item, index) => toObject(item, { idPath: `${ idPath }/${ index }`, registry }));
+	}
+
+	if(typeof value === "object" && value !== null) {
+		if(value.parent && value.children) {
+			return {
+				...value,
+				parent: value.parent ? `@${ idPath }/${ value.parent.id }` : null,
+				children: value.children.map(child => toObject(child, { idPath: `${ idPath }/${ child.id }`, registry }))
+			};
+		}
+
+		return Object.entries(value).reduce((acc, [ key, item ]) => {
+			acc[ key ] = toObject(item, { idPath: `${ idPath }/${ key }`, registry });
+			return acc;
+		}, {});
+	}
+
+	return value;
 };
+// export const toObject = (input = {}, { systems, depth = 0, forManifest = false } = {}) => {
+// 	if(input instanceof Node) {
+// 		if(depth > 0 && forManifest === true) {
+// 			return `@${ input.id.toUpperCase() }`;
+// 		}
+
+// 		let shared = {};
+// 		for(let [ component, state ] of Object.entries(input.shared)) {
+// 			if(systems instanceof Map) {
+// 				/* Assume that it is a Registry<ASystem>, check if entry contains .toObject (which would be treated as an override) */
+// 				const system = systems.get(component);
+// 				if(system && "toObject" in system) {
+// 					shared[ component ] = system.toObject(input);
+// 				} else {
+// 					shared[ component ] = toObject(state, { systems, forManifest, depth: depth + 1 });
+// 				}
+// 			} else {
+// 				shared[ component ] = toObject(state, { systems, forManifest, depth: depth + 1 });
+// 			}
+// 		}
+
+// 		let state = {};
+// 		if(systems instanceof Map) {
+// 			/* Assume that it is a Registry<ASystem>, check if entry contains .toObject (which would be treated as an override) */
+// 			for(let [ key, value ] of systems.entries()) {
+// 				if(input.hasToken(key)) {
+// 					state = value.$.toState(input, { systems, forManifest });
+// 					break;
+// 				}
+// 			}
+// 		} else {
+// 			state = toObject(input.state, { systems, forManifest, depth: depth + 1 });
+// 		}
+
+// 		return {
+// 			...input,
+// 			events: input.events.toObject(),
+// 			state,
+// 			shared,
+// 		};
+// 	}
+
+// 	const obj = {};
+// 	for(let [ key, value ] of Object.entries(input)) {
+// 		if(value === null) {
+// 			obj[ key ] = null;
+// 		} else if(value instanceof Node) {
+// 			obj[ key ] = toObject(value, { systems, forManifest, depth: depth + 1 });
+// 		} else if(typeof value === "function") {
+// 			obj[ key ] = value.toString();
+// 		} else if(value instanceof Set) {
+// 			obj[ key ] = Array.from(value).map(toObject);
+// 		} else if(typeof value === "object") {
+// 			if(Array.isArray(value)) {
+// 				if(key === "tokens") {
+// 					obj[ key ] = value;
+// 				} else {
+// 					obj[ key ] = value.map(toObject);
+// 				}
+// 			} else if("toObject" in value) {
+// 				obj[ key ] = value.toObject();
+// 			} else {
+// 				obj[ key ] = { ...value };
+// 			}
+// 		} else {
+// 			obj[ key ] = value;
+// 		}
+// 	}
+
+// 	return obj;
+// };
 
 export const toJSON = (input = {}, toObject = false) => {
 	if(toObject === true) {
