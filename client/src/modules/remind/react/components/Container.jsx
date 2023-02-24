@@ -1,15 +1,13 @@
 import Node from "../../lib/Node";
 import useNodeEvent from "../useNodeEvent";
 
-export function Cell({ item, jsx, ...props }) {
-	const { } = useNodeEvent("update", item);
-
-	let JSX = jsx;
-	return (
-		<JSX item={ item } { ...props } />
-	);
-};
-
+/**
+ * 
+ * @param {*} item 
+ * @param {*} index 
+ * @param {*} param2 
+ * @returns 
+ */
 export function parseItem(item, index, { current = 1, maxDepth = 10 } = {}) {
 	if(item instanceof Node) {
 		/* Direct node reference */
@@ -53,6 +51,26 @@ export function parseItem(item, index, { current = 1, maxDepth = 10 } = {}) {
 	}
 
 	return null;
+};
+
+/**
+ * This is a generic cell component that can be used to render any
+ * item in a `Grid` or `Flex` container. @item should be a `Node`
+ * and @jsx should be a React component that will be used to render
+ * the `item.shared[component]` data. @props are JSX props and will be
+ * spread onto the rendered component.
+ * 
+ * @param {Node} item
+ * @param {React.Component} jsx
+ * @param {React.ComponentProps} props These will be spread onto the rendered component
+ */
+export function Cell({ item, jsx, ...props }) {
+	const { } = useNodeEvent("update", item);
+
+	let JSX = jsx;
+	return (
+		<JSX item={ item } { ...props } />
+	);
 };
 
 export function Grid({ item, schema = [], className = "", props = {}, ...rest }) {
@@ -137,6 +155,23 @@ export function Flex({ item, schema = [], className = "", props = {}, ...rest })
 	);
 };
 
+/**
+ * The @type parameter determines which layout component to use, either `Grid` or `Flex`.
+ * From here, the @schema parameter is used to define the layout, being an array of
+ * elements that define the layout. For `Grid`, the schema is an array of two numbers
+ * that define the width and height of the grid, while the 3rd element an object that
+ * uses [x,y]:JSX key-value pairs to define the JSX component to render at that position.
+ * For `Flex`, the schema is an array of arrays that define the rows, with each row
+ * being an array of objects that define the cell, with the `jsx` property being the
+ * JSX component to render at that position, among other keys.  Finally, the @data
+ * parameter is the data to be rendered, which can be a single `Node`, an array of
+ * `Node`s that utilize a light schema-syntax, or a function that returns a `Node` or
+ * similar array of `Node`s.
+ * @param {str} type "grid" or "flex"
+ * @param {array} schema An array of elements that define the layout, based on the @type
+ * @param {Node|[...Node]|fn*} data The data to be rendered
+ * @returns 
+ */
 export function Container({ type, schema, data, ...rest }) {
 	if(type === "grid") {
 		const [ width, height ] = schema;

@@ -113,6 +113,7 @@ function download(input, filename) {
 	//TODO: You need to invoke recursive .toObject() on the input properties
 	let data = { ...input };
 	delete data.data;
+	console.log(data)
 	data = JSON.stringify(data, null, 2);
 
 	let file = new Blob([ data ], { type: "application/json" });

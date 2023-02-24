@@ -1,6 +1,10 @@
 import { Identity } from "./Identity";
 import { Events } from "./Events";
 
+/**
+ * NOTE: An important framing to keep in mind is that *all* event invocation is done through the `System` classes, *not* internally.
+ * All methods within the Node class are solely a convenience-API for the `System` developers.
+ */
 export class Node extends Identity {
 	static Token = `#remind:node`;
 	constructor ({ state = {}, shared = {}, events = [], id, tokens, eventOpts = {} } = {}) {
@@ -28,6 +32,10 @@ export class Node extends Identity {
 		this.tokens.add(Node.Token);
 	}
 
+	/**
+	 * A simple helper-function that parses a @component into a @parent and @key.
+	 * This is used in the namespace traversal functionality.
+	 */
 	__parseComponent(component) {
 		if(component.includes(".")) {
 			let tiers = component.split(".");
@@ -54,6 +62,9 @@ export class Node extends Identity {
 			};
 		}
 	}
+	/**
+	 * Get the state of a @component, allowing the use of namespaces (e.g. "foo.bar.baz").
+	 */
 	get(component) {
 		if(component.includes(".")) {
 			let { parent, key } = this.__parseComponent(component);
@@ -63,6 +74,14 @@ export class Node extends Identity {
 			return this.shared[ component ];
 		}
 	}
+	/**
+	 * When a @component is set, the @state is set to the @component, and a payload is returned.
+	 * The payload is an object with the following properties:
+	 * - emitter: The Node instance that emitted the event.
+	 * - component: The component (key) that was set.
+	 * - previous: The previous state of the component.
+	 * - current: The current state of the component.
+	 */
 	set(component, state) {
 		if(component.includes(".")) {
 			let { parent, key } = this.__parseComponent(component);
@@ -94,6 +113,15 @@ export class Node extends Identity {
 			return payload;
 		}
 	}
+	/**
+	 * Identical to set, but merges the @state with the existing state of the @component.
+	 * When a @component is set, the @state is merged to the @component, and a payload is returned.
+	 * The payload is an object with the following properties:
+	 * - emitter: The Node instance that emitted the event.
+	 * - component: The component (key) that was set.
+	 * - previous: The previous state of the component.
+	 * - current: The current state of the component.
+	 */
 	merge(component, state) {
 		if(component.includes(".")) {
 			let { parent, key } = this.__parseComponent(component);
@@ -134,6 +162,14 @@ export class Node extends Identity {
 			return payload;
 		}
 	}
+	/**
+	 * Invoke `delete` on the @component, and return a payload.
+	 * The payload is an object with the following properties:
+	 * - emitter: The Node instance that emitted the event.
+	 * - component: The component (key) that was set.
+	 * - previous: The previous state of the component.
+	 * - current: The current state of the component.
+	 */
 	remove(component) {
 		if(component.includes(".")) {
 			let { parent, key } = this.__parseComponent(component);
