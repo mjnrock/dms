@@ -1,7 +1,15 @@
-import { dispatch, toObject } from "./../ASystem";
+import { dispatch } from "./../ASystem";
 import { Item as SysItem } from "./Item";
 
 export const ItemGroup = {
+	toObject(emitter) {
+		return {
+			...emitter.state,
+			parent: emitter.state.parent ? `@${ emitter.state.parent.id }` : null,
+			children: emitter.state.children.map(child => `@${ child.id }`),
+		};
+	},
+
 	addChild(parent, ...children) {
 		parent.state.children.push(...children);
 

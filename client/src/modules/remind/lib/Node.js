@@ -201,6 +201,15 @@ export class Node extends Identity {
 			return payload;
 		}
 	}
+
+	static ToObject(node) {
+		return {
+			...Identity.ToObject(node),
+			events: Events.ToObject(node.events),
+			state: { ...node.state },
+			shared: { ...node.shared },
+		};
+	}
 };
 
 export default Node;

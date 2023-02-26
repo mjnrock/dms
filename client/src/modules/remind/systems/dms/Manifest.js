@@ -18,6 +18,31 @@ export const Helper = {
 
 export const Manifest = {
 	Name,
+	toObject(emitter) {
+		let ret = {
+			...emitter.shared[ Name ],
+			data: [ ...emitter.shared[ Name ].data.state.values() ].map(node => `@${ node.id }`),
+		};
+
+		let exclude = [ "data", "meta" ];
+		for(let [ key, value ] of Object.entries(emitter.shared[ Name ])) {
+			if(!exclude.includes(key)) {
+				for(let [ sys, obj ] of Object.entries(value)) {
+					ret[ key ][ sys ] = {};
+
+					for(let [ k, v ] of Object.entries(obj)) {
+						if(typeof v === "function") {
+							ret[ key ][ sys ][ k ] = v.toString();
+						} else {
+							ret[ key ][ sys ][ k ] = v;
+						}
+					}
+				}
+			}
+		}
+
+		return ret;
+	},
 
 	update(emitter, data = {}) {
 		console.log(data);
@@ -70,4 +95,9 @@ export const Manifest = {
 	},
 };
 
-export default Manifest;
+export default {
+	...Manifest,
+	Helper: {
+		...Helper
+	},
+};

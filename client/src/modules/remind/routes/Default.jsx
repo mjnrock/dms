@@ -31,6 +31,8 @@ import { Viewport as ViewportJSX } from "../react/components/Viewport";
 import { Container as ContainerJSX } from "./../react/components/Container";
 import { StatusDropdown as StatusDropdownJSX } from "./../react/components/ecs/StatusDropdown";
 
+import { Serialize } from "../systems/lib/Serializer";
+
 //TODO: Manifest should replace the need for this, refactor accordingly
 const baseItemCollection = new ItemCollection({
 	// register: [],
@@ -71,7 +73,7 @@ const [ baseItemGroup ] = baseItemCollection.state.factory.ItemGroup(1, {
 	],
 	shared: {
 		...ComponentManifest.AsEntry(),
-		container: ComponentContainer({
+		[ SysContainer.Name ]: ComponentContainer({
 			type: "grid",
 			schema: [
 				2,
@@ -109,12 +111,11 @@ SysManifest.sysRegister(baseItemGroup, { [ ComponentManifest.Name ]: SysManifest
 // console.log(baseItemGroup.shared[ ComponentManifest.Name ]);
 
 // Function to download data to a file
-function download(input, filename) {
-	//TODO: You need to invoke recursive .toObject() on the input properties
+function FileDownload(input, filename) {
 	let data = { ...input };
 	delete data.data;
 	console.log(data)
-	data = JSON.stringify(data, null, 2);
+	data = JSON.stringify(data, null, 4);
 
 	let file = new Blob([ data ], { type: "application/json" });
 	if(window.navigator.msSaveOrOpenBlob) {
@@ -147,24 +148,44 @@ export function Default() {
 	let registry = [ ...baseItemCollection.state.registry.values() ],
 		item = registry[ 3 ];
 
-	//FIXME: This serialization does not work
-	// const systems = new Map([
-	// 	[ `#remind:registry`, SysRegistry ],
-	// 	[ `#remind:item-group`, SysItemGroup ],
-	// 	[ `#remind:item`, SysItem ],
-	// ]);
-	const systems = {
-		[ `#remind:registry` ]: SysRegistry,
-		[ `#remind:item-group` ]: SysItemGroup,
-		[ `#remind:item` ]: SysItem,
-	};
-	console.log(SysASystem.toObject(item, { systems }));
-	console.log(SysASystem.toObject(item, { systems, forManifest: true }));
-
 	//IDEA: Container component already stores: mode, type, schema -- so consider how that should play into this
 	// Maybe create a wrapper entity that eventually merges itself into a Manifest?
 	const [ manifest, setManifest ] = React.useState(ComponentManifest.Create());
 	const [ containerType, setContainerType ] = React.useState("grid");	//grid, flex
+
+	item.state.parent = registry[ 2 ];
+
+	console.log(item)
+
+	function download() {
+		// let obj = Serialize({
+		// 	node: item,
+		// 	resultType: "@node",
+		// 	systems: {
+		// 		[ SysManifest.Name ]: SysManifest,
+		// 		[ SysContainer.Name ]: SysContainer,
+		// 		[ ItemGroup.Token ]: SysItemGroup,
+		// 	},
+		// 	fn: Serialize,
+		// });
+
+		//TODO: The serialization finally works, but now onto the deserialization
+
+		let obj = Serialize({
+			node: item,
+			resultType: SysManifest.Name,
+			systems: {
+				[ SysManifest.Name ]: SysManifest,
+				// [ SysContainer.Name ]: SysContainer,
+				// [ ItemGroup.Token ]: SysItemGroup,
+			},
+			fn: Serialize,
+		});
+
+		console.log(obj)
+
+		FileDownload(obj, "test");
+	}
 
 	return (
 		<RemindContext.Provider value={ { stub: true } }>
@@ -189,7 +210,8 @@ export function Default() {
 
 					reader.readAsText(file);
 				} } />
-				<div className={ `p-4 cursor-pointer rounded border border-solid border-gray-400 bg-gray-200 hover:bg-gray-300` } onClick={ () => download(manifest, "test") }>Save</div>
+				<div className={ `p-4 cursor-pointer rounded border border-solid border-gray-400 bg-gray-200 hover:bg-gray-300` } onClick={ () => download() }>Save</div>
+				<div className={ `p-4 cursor-pointer rounded border border-solid border-gray-400 bg-gray-200 hover:bg-gray-300` } onClick={ () => download() }>Execute</div>
 				<div className={ `flex flex-row` }>
 					<div className={ `p-4 cursor-pointer rounded border border-solid border-gray-400 ${ containerType === "flex" ? "bg-sky-400" : "bg-gray-200 hover:bg-gray-300" }` } onClick={ () => { alert("implement this"); setContainerType("flex"); } }>Flex</div>
 					<div className={ `p-4 cursor-pointer rounded border border-solid border-gray-400 ${ containerType === "grid" ? "bg-sky-400" : "bg-gray-200 hover:bg-gray-300 " }` } onClick={ () => { alert("implement this"); setContainerType("grid"); } }>Grid</div>
@@ -198,7 +220,7 @@ export function Default() {
 				{/* TODO: Create FLEX and GRID specific VIEW & EDIT components */ }
 				{/* IDEA: Review ItemCollection and use paradigm as a "Lookup Repository" -- allow hot-swapping collections.  Search functionality will ONLY show w/e is in currently-mounted ItemCollection */ }
 
-				<ContainerJSX type={ item.shared.container.type } schema={ item.shared.container.schema } data={ item } />
+				<ContainerJSX type={ item.shared[ SysContainer.Name ].type } schema={ item.shared[ SysContainer.Name ].schema } data={ item } />
 			</div>
 
 

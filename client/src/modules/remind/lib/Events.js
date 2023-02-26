@@ -7,7 +7,7 @@ export class Events extends Identity {
 		this.events = new Map();
 
 		this.addObject(events);
-		
+
 		this.tokens.add(`#remind:events`);
 	}
 
@@ -72,7 +72,7 @@ export class Events extends Identity {
 	 */
 	off(event, listener) {
 		if(this.events.has(event)) {
-			return this.events.get(event).delete(listener);
+			return this.events.get(event).delete(listener);			
 		}
 
 		return false;
@@ -111,7 +111,7 @@ export class Events extends Identity {
 	 */
 	dispatch(event, ...args) {
 		let results = [];
-		
+
 		if(this.events.has(event)) {
 			/**
 			 * Evaluate the listeners for that @event
@@ -178,6 +178,13 @@ export class Events extends Identity {
 		copy.events = new Map(this.events);
 
 		return copy;
+	}
+
+	static ToObject(events) {
+		return {
+			...Identity.ToObject(events),
+			events: [ ...events.events.entries() ].map(([ key, value ]) => [ key, [ ...value ].map(v => v.toString()) ]),
+		};
 	}
 };
 

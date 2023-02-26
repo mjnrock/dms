@@ -1,3 +1,5 @@
+import Node from "../../lib/Node";
+
 export const EnumType = {
 	OBJECT: "object",
 	JSON: "json",
@@ -11,82 +13,61 @@ export const EnumType = {
  * specific overrides to a particular invocation, while allowing for default
  * serialization behavior to be used, as a default.
  */
-export function toObject({ node, target, result = {}, fn } = {}) {
-	/* Create a generic payload object that the `fn` can use */
-	let payload = {
-		target,
-		node,
-		result,
-	};
-
-	if(target === "@node") {
-		/* Add the "@node" `value` to the `result` */
-		payload.value = node;
-
-		/* The `fn` can be a function or an object of target:fn pairs */
-		if(typeof fn === "object") {
-			result.state = toObject({ node, target: "@state", result, fn: fn.state });
-
-			let keys = Object.keys(fn.shared || {});
-			delete keys[ "*" ];
-
-			/* Create special "default" function for all components */
-			if(typeof fn[ "*" ] === "function") {
-				for(let key in node.shared) {
-					result.shared[ key ] = toObject({ node, target: key, result, fn: fn[ "*" ] });
-				}
-			}
-
-			/* Overwrite the "default" function with the specific component functions */
-			for(let key in keys) {
-				result.shared[ key ] = toObject({ node, target: key, result, fn: fn.shared[ key ] });
-			}
-		} else if(typeof fn === "function") {
-			/* Set the `result` to the `fn` return value */
-			result = fn(payload);
-		}
-
-		return result;
-	} else if(target === "@state") {
-		/* Add the "@state" `value` to the `result.state` */
-		payload.value = node.state;
-
-		if(typeof node.state === null) {
-			/* Handle the null object case */
-			result.state = null;
-		} else if(typeof node.state === "object") {
-			/* Handle the array case */
-			if(Array.isArray(node.state)) {
-				if(typeof fn === "function") {
-					result.state = fn(payload);
-				} else {
-					result.state = [
-						...(result.state || []),
-						...node.state,
-					];
-				}
-			} else {
-				/* Handle the iterable case */
-				result.state = {
-					...result.state,
-					...node.state,
-				};
-			}
-		}
-
-		return result;
-	} else {
-		/* Add the `target` `value` to the `result.shared[ target ]` */
-		payload.value = node.shared[ target ];
+export function toObject({ node, resultType = "@node", result = {}, fn, systems } = {}) {
+	if(resultType === "@node") {
+		let ret = {
+			...result,
+			...Node.ToObject(node),
+		};
 
 		if(typeof fn === "function") {
-			result.shared[ target ] = fn(payload);
-		} else {
-			/* Shallowly copy the node's component into the result space */
-			result.shared[ target ] = { ...node.shared[ target ] };
+			ret.state = fn({ node: node, resultType: "@state", result: ret.state, fn, systems });
+
+			for(let comp in node.shared) {
+				ret.shared[ comp ] = fn({ node: node, resultType: comp, result: ret.shared[ comp ] || {}, fn, systems });
+			}
 		}
 
-		return obj;
+		return ret;
+	} else if(resultType === "@state") {
+		let ret = {
+			...node.state,
+		};
+
+		for(let key in systems) {
+			if(node.hasToken(key)) {
+				return systems[ key ].toObject(node);
+			}
+		}
+
+		if(Object.keys(result).length === 0) {
+			return ret;
+		} else {
+			return {
+				...ret,
+				...result,
+			};
+		}
+	} else if(!!resultType) {
+		let ret = {
+			...result,
+		};
+
+		if(resultType in systems && "toObject" in systems[ resultType ]) {
+			return systems[ resultType ].toObject(node);
+		}
+
+		if(typeof fn === "function") {
+			return fn({ node: node, resultType: false, result: ret, fn, systems });
+		}
+
+		return ret;
+	} else {
+		if(typeof fn === "function") {
+			return fn({ node: node, resultType: false, result: result, fn: false, systems });
+		}
+
+		return result || null;
 	}
 };
 
