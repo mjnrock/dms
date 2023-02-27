@@ -106,7 +106,12 @@ SysItemCollection.register(baseItemCollection, baseItemGroup);
 
 SysManifest.register(baseItemGroup, baseItem);
 SysManifest.compRegister(baseItemGroup, { [ ComponentManifest.Name ]: ComponentManifest });
-SysManifest.sysRegister(baseItemGroup, { [ ComponentManifest.Name ]: SysManifest });
+SysManifest.sysRegister(baseItemGroup, {
+	[ SysManifest.Name ]: SysManifest,
+	[ SysContainer.Name ]: SysContainer,
+	[ SysItem.Name ]: SysItem,
+	[ SysItemGroup.Name ]: SysItemGroup,
+});
 
 // console.log(baseItemGroup.shared[ ComponentManifest.Name ]);
 
@@ -150,14 +155,18 @@ export function Default() {
 
 	//IDEA: Container component already stores: mode, type, schema -- so consider how that should play into this
 	// Maybe create a wrapper entity that eventually merges itself into a Manifest?
-	const [ manifest, setManifest ] = React.useState(ComponentManifest.Create());
+	const [ manifest, setManifest ] = React.useState(ComponentManifest.Create({
+		Systems: {}
+	}));
 	const [ containerType, setContainerType ] = React.useState("grid");	//grid, flex
 
 	item.state.parent = registry[ 2 ];
+	item.shared[ ComponentManifest.Name ].data.addAlias(baseItem.id, "test");
+	item.shared[ ComponentManifest.Name ].data.setPool("poo", baseItem.id);
 
 	console.log(item)
 
-	function download() {
+	function download(toFile = true) {
 		// let obj = Serialize({
 		// 	node: item,
 		// 	resultType: "@node",
@@ -170,21 +179,24 @@ export function Default() {
 		// });
 
 		//TODO: The serialization finally works, but now onto the deserialization
-
+		console.log(baseItemGroup.shared[ SysManifest.Name ].Systems);
 		let obj = Serialize({
 			node: item,
-			resultType: SysManifest.Name,
-			systems: {
-				[ SysManifest.Name ]: SysManifest,
-				// [ SysContainer.Name ]: SysContainer,
-				// [ ItemGroup.Token ]: SysItemGroup,
-			},
+			resultType: "@node",
+			// resultType: SysManifest.Name,
+			systems: baseItemGroup.shared[ SysManifest.Name ].Systems,
 			fn: Serialize,
 		});
 
-		console.log(obj)
+		if(toFile) {
+			return FileDownload(obj, "test");
+		}
 
-		FileDownload(obj, "test");
+		let reg = SysManifest.toRegistry(item);
+		console.log(reg);
+
+		console.log(obj);
+		return obj;
 	}
 
 	return (
@@ -211,7 +223,7 @@ export function Default() {
 					reader.readAsText(file);
 				} } />
 				<div className={ `p-4 cursor-pointer rounded border border-solid border-gray-400 bg-gray-200 hover:bg-gray-300` } onClick={ () => download() }>Save</div>
-				<div className={ `p-4 cursor-pointer rounded border border-solid border-gray-400 bg-gray-200 hover:bg-gray-300` } onClick={ () => download() }>Execute</div>
+				<div className={ `p-4 cursor-pointer rounded border border-solid border-gray-400 bg-gray-200 hover:bg-gray-300` } onClick={ () => download(false) }>Execute</div>
 				<div className={ `flex flex-row` }>
 					<div className={ `p-4 cursor-pointer rounded border border-solid border-gray-400 ${ containerType === "flex" ? "bg-sky-400" : "bg-gray-200 hover:bg-gray-300" }` } onClick={ () => { alert("implement this"); setContainerType("flex"); } }>Flex</div>
 					<div className={ `p-4 cursor-pointer rounded border border-solid border-gray-400 ${ containerType === "grid" ? "bg-sky-400" : "bg-gray-200 hover:bg-gray-300 " }` } onClick={ () => { alert("implement this"); setContainerType("grid"); } }>Grid</div>

@@ -1,9 +1,22 @@
 import Node from "../../lib/Node";
+import { Registry } from "../../lib/Registry";
 
 export const EnumType = {
 	OBJECT: "object",
 	JSON: "json",
 	STRING: "string",
+};
+
+export function toRegistry(registry) {
+	if(registry instanceof Registry) {
+		return new Registry({
+			state: new Map(registry.state),
+		});
+	} else if(registry instanceof Node) {
+		return toRegistry(registry.state);
+	}
+
+	return false;
 };
 
 /**
@@ -30,13 +43,11 @@ export function toObject({ node, resultType = "@node", result = {}, fn, systems 
 
 		return ret;
 	} else if(resultType === "@state") {
-		let ret = {
-			...node.state,
-		};
+		let ret = {};
 
 		for(let key in systems) {
-			if(node.hasToken(key)) {
-				return systems[ key ].toObject(node);
+			if(node.hasToken(key) && typeof systems[ key ].toObject === "function") {
+				ret = systems[ key ].toObject(node, ret);
 			}
 		}
 
@@ -44,8 +55,8 @@ export function toObject({ node, resultType = "@node", result = {}, fn, systems 
 			return ret;
 		} else {
 			return {
-				...ret,
 				...result,
+				...ret,
 			};
 		}
 	} else if(!!resultType) {
@@ -53,7 +64,7 @@ export function toObject({ node, resultType = "@node", result = {}, fn, systems 
 			...result,
 		};
 
-		if(resultType in systems && "toObject" in systems[ resultType ]) {
+		if(resultType in systems && "toObject" in systems[ resultType ] && typeof systems[ resultType ].toObject === "function") {
 			return systems[ resultType ].toObject(node);
 		}
 
@@ -82,4 +93,13 @@ export function Serialize({ format = EnumType.OBJECT, replacer, spaces, ...rest 
 		default:
 			return JSON.stringify(rest, replacer, spaces);
 	}
+};
+
+export default {
+	EnumType,
+
+	toRegistry,
+	toObject,
+
+	Serialize,
 };

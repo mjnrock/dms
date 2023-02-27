@@ -1,6 +1,16 @@
+import { Item as ItemJS } from "./../../lib/Item";
 import { dispatch } from "../ASystem";
 
 export const Item = {
+	Name: ItemJS.Token,
+
+	toObject(emitter, base = false) {
+		return {
+			...(base || emitter.state),
+			parent: emitter.state.parent ? `@${ emitter.state.parent.id }` : null,
+		};
+	},
+
 	addComponent(item, key, component, args = {}) {
 		item.shared[ key ] = component.Create(args);
 

@@ -1,6 +1,7 @@
 import { dispatch } from "./../ASystem";
 import { Name } from "../../components/dms/Manifest";
 import Node from "../../lib/Node";
+import { Registry } from "../../lib/Registry";
 
 export const Helper = {
 	register(emitter, type, data = {}, broadcast = false) {
@@ -18,10 +19,21 @@ export const Helper = {
 
 export const Manifest = {
 	Name,
+	toRegistry(emitter) {
+		return new Registry({
+			state: new Map(emitter.shared[ Name ].data.state),
+		});
+	},
 	toObject(emitter) {
 		let ret = {
 			...emitter.shared[ Name ],
-			data: [ ...emitter.shared[ Name ].data.state.values() ].map(node => `@${ node.id }`),
+			data: Registry.ToObject(emitter.shared[ Name ].data,
+				{
+					...emitter.shared[ Name ].Systems,
+					// [ ItemGroup.Token ]: SysItemGroup,
+					// [ Item.Token ]: SysItem,
+				}
+			),
 		};
 
 		let exclude = [ "data", "meta" ];
@@ -45,7 +57,6 @@ export const Manifest = {
 	},
 
 	update(emitter, data = {}) {
-		console.log(data);
 		emitter.shared[ Name ] = {
 			...emitter.shared[ Name ],
 			...data,

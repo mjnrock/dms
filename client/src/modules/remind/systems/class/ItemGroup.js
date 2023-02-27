@@ -1,11 +1,13 @@
+import { ItemGroup as ItemGroupJS } from "./../../lib/ItemGroup";
 import { dispatch } from "./../ASystem";
 import { Item as SysItem } from "./Item";
 
 export const ItemGroup = {
-	toObject(emitter) {
+	Name: ItemGroupJS.Token,
+
+	toObject(emitter, base = false) {
 		return {
-			...emitter.state,
-			parent: emitter.state.parent ? `@${ emitter.state.parent.id }` : null,
+			...(base || emitter.state),
 			children: emitter.state.children.map(child => `@${ child.id }`),
 		};
 	},

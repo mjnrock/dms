@@ -1,4 +1,7 @@
+import { validate } from "uuid";
 import { Node } from "./Node";
+import Deserializer from "../systems/lib/Deserializer";
+import Serializer from "../systems/lib/Serializer";
 
 export class Registry extends Node {
 	constructor ({ state = {}, ...rest } = {}) {
@@ -23,7 +26,7 @@ export class Registry extends Node {
 				this.setEntry(key, entry);
 			}
 		}
-		
+
 		this.tokens.add(`#remind:registry`);
 	}
 
@@ -187,6 +190,30 @@ export class Registry extends Node {
 		}
 
 		return false;
+	}
+
+	static ToObject(registry, systems) {
+		let obj = Node.ToObject(registry);
+
+		if(systems) {
+			obj.state = [ ...registry.state.entries() ].map(([ key, entry ]) => {
+				if(!validate(key)) {
+					return [ key, entry ];
+				}
+
+				return [ key, Serializer.toObject({ node: entry, resultType: "@node", fn: Serializer.toObject, systems }) ];
+			});
+		} else {
+			obj.state = [ ...registry.state.entries() ].map(([ key, entry ]) => {
+				if(!validate(key)) {
+					return [ key, entry ];
+				}
+
+				return `@${ entry.id }`;
+			});
+		}
+
+		return obj;
 	}
 }
 
